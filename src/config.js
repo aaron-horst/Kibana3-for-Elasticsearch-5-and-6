@@ -74,6 +74,7 @@ function (Settings) {
       'query',
       'terms',
       'stats',
+      'percentiles',
       'sparklines'
     ]
   });
