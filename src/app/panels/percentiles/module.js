@@ -67,7 +67,6 @@ define([
       value_name: 'Value',
       spyable     : true,
       show: {
-        '50.0': true,
         '75.0': true,
         '90.0': true,
         '95.0': true,
@@ -119,6 +118,8 @@ define([
         boolQuery = boolQuery.should(querySrv.toEjsObj(q));
       });
 
+      var percents = _.keys($scope.panel.show);
+
       request = {
         'stats': {
           'filter': JSON.parse($scope.ejs.QueryFilter(
@@ -131,7 +132,7 @@ define([
             'stats': {
               'percentiles': {
                 'field': $scope.panel.field,
-                'percents': $scope.modes
+                'percents': percents
               }
             }
           }
@@ -146,7 +147,7 @@ define([
         aggsquery[qname] = {
           'percentiles': {
             'field': $scope.panel.field,
-            'percents': $scope.modes
+            'percents': percents
           }
         };
         request[qname] = {
