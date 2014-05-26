@@ -170,7 +170,7 @@ define([
 
       results.then(function(results) {
         $scope.panelMeta.loading = false;
-        var value = results.data.aggregations.stats['doc_count'];
+        var value = results.data.aggregations.stats['stats'][$scope.panel.mode];
 
         var rows = queries.map(function (q, i) {
           var alias = q.alias || q.query;
