@@ -50,7 +50,7 @@ define([
       description: 'A percentiles panel for displaying aggregations using the Elastic Search percentiles aggregation query.'
     };
 
-    $scope.modes = ['50.0','75.0','90.0','95.0','99.0'];
+    $scope.modes = ['50','75','90','95','99'];
 
     var defaults = {
       queries     : {
@@ -67,10 +67,10 @@ define([
       value_name: 'Value',
       spyable     : true,
       show: {
-        '75.0': true,
-        '90.0': true,
-        '95.0': true,
-        '99.0': true,
+        '75': true,
+        '90': true,
+        '95': true,
+        '99': true,
       }
     };
 
@@ -85,7 +85,6 @@ define([
     };
 
     $scope.set_sort = function(field) {
-      console.log(field);
       if($scope.panel.sort_field === field && $scope.panel.sort_reverse === false) {
         $scope.panel.sort_reverse = true;
       } else if($scope.panel.sort_field === field && $scope.panel.sort_reverse === true) {
@@ -178,8 +177,13 @@ define([
           var obj = _.clone(q);
           obj.label = alias;
           obj.Label = alias.toLowerCase(); //sort field
-          obj.value = results.data.aggregations['stats_'+i]['stats_'+i];
-          obj.Value = results.data.aggregations['stats_'+i]['stats_'+i]; //sort field
+          obj.value = {};
+          obj.Value = {};
+          var data = results.data.aggregations['stats_'+i]['stats_'+i];
+          for ( var keys in data ) {
+              obj.value[parseInt(keys)] = data[keys];
+              obj.Value[parseInt(keys)] = data[keys]; //sort field
+          };
           return obj;                                           
         });
 
