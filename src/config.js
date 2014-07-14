@@ -75,6 +75,7 @@ function (Settings) {
       'terms',
       'stats',
       'percentiles',
+      'statisticstrend',
       'sparklines'
     ]
   });
