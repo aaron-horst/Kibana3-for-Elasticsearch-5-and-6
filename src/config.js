@@ -74,10 +74,11 @@ function (Settings) {
       'query',
       'terms',
       'stats',
+      'sparklines',
       'percentiles',
       'statisticstrend',
-      'sparklines',
-      'multifieldhistogram'
+      'multifieldhistogram',
+      'valuehistogram'
     ]
   });
 });
