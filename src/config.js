@@ -76,7 +76,8 @@ function (Settings) {
       'stats',
       'percentiles',
       'statisticstrend',
-      'sparklines'
+      'sparklines',
+      'multifieldhistogram'
     ]
   });
 });
