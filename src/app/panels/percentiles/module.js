@@ -108,6 +108,8 @@ define([
         boolQuery,
         queries;
 
+      request = $scope.ejs.Request();
+
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
       queries = querySrv.getQueryObjs($scope.panel.queries.ids);
 
@@ -119,58 +121,48 @@ define([
 
       var percents = _.keys($scope.panel.show);
 
-      request = {
-        'stats': {
-          'filter': JSON.parse($scope.ejs.QueryFilter(
-            $scope.ejs.FilteredQuery(
-              boolQuery,
-              filterSrv.getBoolFilter(filterSrv.ids())
+      request = request
+        .aggregation(
+          $scope.ejs.FilterAggregation('stats')
+            .filter($scope.ejs.QueryFilter(
+              $scope.ejs.FilteredQuery(
+                boolQuery,
+                filterSrv.getBoolFilter(filterSrv.ids())
+              )
+            ))
+            .aggregation($scope.ejs.PercentilesAggregation('stats')
+              .field($scope.panel.field)
+              .percents(percents)
             )
-          ).toString(), true),
-          'aggs': {
-            'stats': {
-              'percentiles': {
-                'field': $scope.panel.field,
-                'percents': percents
-              }
-            }
-          }
-        }
-      };
+          ).size(0);
 
       $.each(queries, function (i, q) {
         var query = $scope.ejs.BoolQuery();
         query.should(querySrv.toEjsObj(q));
         var qname = 'stats_'+i;
-        var aggsquery = {};
-        aggsquery[qname] = {
-          'percentiles': {
-            'field': $scope.panel.field,
-            'percents': percents
-          }
-        };
-        request[qname] = {
-          'filter': JSON.parse($scope.ejs.QueryFilter(
-            $scope.ejs.FilteredQuery(
-              query,
-              filterSrv.getBoolFilter(filterSrv.ids())
+
+        request.aggregation(
+          $scope.ejs.FilterAggregation(qname)
+            .filter($scope.ejs.QueryFilter(
+              $scope.ejs.FilteredQuery(
+                boolQuery,
+                filterSrv.getBoolFilter(filterSrv.ids())
+              )
+            ))
+            .aggregation($scope.ejs.PercentilesAggregation(qname)
+              .field($scope.panel.field)
+              .percents(percents)
             )
-          ).toString(), true),
-          'aggs': aggsquery
-        };
+          );
       });
       // Populate the inspector panel
       $scope.inspector = angular.toJson({aggs:request},true);
 
-      results = $http({
-        url: config.elasticsearch + '/' + dashboard.indices + '/_search?size=0',
-        method: "POST",
-        data: { aggs: request }
-      });
+      results = $scope.ejs.doSearch(dashboard.indices, request);
 
       results.then(function(results) {
         $scope.panelMeta.loading = false;
-        var value = parseInt(results.data.aggregations.stats['stats'][$scope.panel.mode]);
+        var value = parseInt(results.aggregations.stats['stats'][$scope.panel.mode]);
 
         var rows = queries.map(function (q, i) {
           var alias = q.alias || q.query;
@@ -179,7 +171,7 @@ define([
           obj.Label = alias.toLowerCase(); //sort field
           obj.value = {};
           obj.Value = {};
-          var data = results.data.aggregations['stats_'+i]['stats_'+i];
+          var data = results.aggregations['stats_'+i]['stats_'+i];
           for ( var keys in data ) {
               obj.value[parseInt(keys)] = data[keys];
               obj.Value[parseInt(keys)] = data[keys]; //sort field
