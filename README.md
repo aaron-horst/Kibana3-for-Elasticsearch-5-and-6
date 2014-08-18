@@ -7,7 +7,19 @@ Percentile is a great data analysis method. Elasticsearch add percentile aggrega
 
 *Elasticsearch had add percentile rank in version 1.3.0, so exciting!*
 
-*Tips: merged new version of elasticjs at 2014/08/15, should rewrite this panel now.*
+*Tips: merged new version of elasticjs at 2014/08/15, should rewrite this panel now.*(DONE at 2014/08/16)
+
+## range panel
+
+I need a pie chart to show percentile of range sections(percentile rank wait for only one value). So I use RangeFacet to implement this.
+
+Here is the rendering:
+
+![](src/img/chenryn_img/range-panel.jpg)
+
+And you can add more range sections as you like:
+
+![](src/img/chenryn_img/range-setting.jpg)
 
 ## china map
 
