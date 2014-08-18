@@ -24,8 +24,7 @@ function (Settings) {
      * kibana installed on. You probably want to set it to the FQDN of your
      * elasticsearch host
      */
-    //elasticsearch: "http://"+window.location.hostname+":9200",
-    elasticsearch: "http://10.13.57.35:9200",
+    elasticsearch: "http://"+window.location.hostname+":9200",
     
     /** @scratch /configuration/config.js/5
      *
@@ -82,6 +81,7 @@ function (Settings) {
       'stats',
       'sparklines',
       'percentiles',
+      'ranges',
       'statisticstrend',
       'multifieldhistogram',
       'valuehistogram'
