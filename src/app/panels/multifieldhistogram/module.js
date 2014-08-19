@@ -354,7 +354,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       }
 
       $scope.panelMeta.loading = true;
-      request = $scope.ejs.Request().indices(dashboard.indices[segment]);
+      reqeest = $scope.ejs.Request();
       if (!$scope.panel.annotate.enable) {
         request.searchType("count");
       }
@@ -406,7 +406,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       $scope.populate_modal(request);
 
       // Then run it
-      results = request.doSearch();
+      results = $scope.ejs.doSearch(dashboard.indices[segment], request);
 
       // Populate scope when we have results
       return results.then(function(results) {
@@ -571,7 +571,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
 
     // I really don't like this function, too much dom manip. Break out into directive?
     $scope.populate_modal = function(request) {
-      $scope.inspector = angular.toJson(JSON.parse(request.toString()),true);
+      $scope.inspector = request.toJSON();
     };
 
     $scope.set_refresh = function (state) {
