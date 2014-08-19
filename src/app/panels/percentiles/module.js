@@ -162,7 +162,7 @@ define([
 
       results.then(function(results) {
         $scope.panelMeta.loading = false;
-        var value = parseInt(results.aggregations.stats['stats'][$scope.panel.mode]);
+        var value = results.aggregations.stats['stats'][$scope.panel.mode+'.0'];
 
         var rows = queries.map(function (q, i) {
           var alias = q.alias || q.query;
