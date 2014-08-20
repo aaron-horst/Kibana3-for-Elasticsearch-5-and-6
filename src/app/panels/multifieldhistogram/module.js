@@ -354,10 +354,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       }
 
       $scope.panelMeta.loading = true;
-      reqeest = $scope.ejs.Request();
-      if (!$scope.panel.annotate.enable) {
-        request.searchType("count");
-      }
+      request = $scope.ejs.Request();
 
       // Build the queries
       _.each($scope.panel.values, function(panel_value, panel_value_index) {
