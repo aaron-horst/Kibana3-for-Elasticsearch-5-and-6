@@ -80,3 +80,12 @@ Many thanks to this author(@thegreenpizza)!
 * Updated to the latest elasticjs
 
 <https://github.com/elasticsearch/kibana/pull/1377>
+
+TODO
+=======================
+
+* <del>Math.log() for valuehistogram panel</del> (had try `_.map(series, function(v){return Math.log(v)})`, not so useful)
+* percentile histogram panel <http://www.flotcharts.org/flot/examples/percentiles/index.html>??
+* heatmap panel <http://www.patrick-wied.at/static/heatmapjs/plugin-leaflet-layer.html>
+* threshold for histogram <http://www.flotcharts.org/flot/examples/threshold/index.html>
+* webkit.notification for histogram
