@@ -12,7 +12,7 @@ function (angular, _, config) {
 
     this.versions = [];
 
-    var ejs = ejsResource(config.elasticsearch, config.api_version);
+    var ejs = ejsResource(config.elasticsearch, config.api_version, config.sniff);
 
 
     // save a reference to this

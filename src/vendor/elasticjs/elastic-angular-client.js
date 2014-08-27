@@ -13,7 +13,7 @@ be injected into your angular controllers.
 angular.module('elasticjs.service', ['elasticsearch'])
   .factory('ejsResource', ['esFactory', function (esFactory) {
 
-  return function (esHost, apiVersion) {
+  return function (esHost, apiVersion, sniff) {
 
     var
 
@@ -29,7 +29,7 @@ angular.module('elasticjs.service', ['elasticsearch'])
         ejs.config = {
             host: esHost,
             apiVersion: apiVersion,
-            sniffOnStart: true
+            sniffOnStart: sniff
         };
     }
       

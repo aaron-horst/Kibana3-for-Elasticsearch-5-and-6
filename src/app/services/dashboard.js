@@ -65,7 +65,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     };
 
     // An elasticJS client to use
-    var ejs = ejsResource(config.elasticsearch, config.api_version);
+    var ejs = ejsResource(config.elasticsearch, config.api_version, config.sniff);
 
     var gist_pattern = /(^\d{5,}$)|(^[a-z0-9]{10,}$)|(gist.github.com(\/*.*)\/[a-z0-9]{5,}\/*$)/;
 

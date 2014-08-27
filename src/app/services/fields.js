@@ -13,7 +13,7 @@ function (angular, _, config) {
     // Save a reference to this
     var self = this;
 
-    var ejs = ejsResource(config.elasticsearch, config.api_version);
+    var ejs = ejsResource(config.elasticsearch, config.api_version, config.sniff);
 
 
     this.list = ['_type'];

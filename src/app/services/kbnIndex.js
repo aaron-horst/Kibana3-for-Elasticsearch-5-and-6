@@ -28,7 +28,7 @@ function (angular, _, config, moment) {
       });
     };
 
-    var ejs = ejsResource(config.elasticsearch, config.api_version);
+    var ejs = ejsResource(config.elasticsearch, config.api_version, config.sniff);
 
 
     // returns a promise containing an array of all indices in an elasticsearch

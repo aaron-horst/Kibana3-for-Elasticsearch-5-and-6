@@ -35,6 +35,16 @@ function (Settings) {
      * Valid version: 0.9, 1.0, 1.1, 1.2
      */
     api_version: "1.0",
+    
+    /** @scratch /configuration/config.js/5
+     *
+     * ==== sniff
+     *
+     * Whether to sniff elasticsearch nodes on kibana start. kibana would send queries to nodes by round-robin. You may want to set to false if you had a proxy before elasticsearch cluster.
+     *
+     * Valid value: true, false
+     */
+    sniff: true,
 
     /** @scratch /configuration/config.js/5
      *
