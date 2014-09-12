@@ -7,6 +7,12 @@
     </div>
     <div class="editor-option">
       <form>
+        <h6>Map providers</h6>
+        <select class="input-medium" ng-model="panel.provider" ng-options="f for f in ['OpenStreetMap','OpenSeaMap','Thunderforest','OpenMapSurfer','Hydda','MapQuestOpen','MapBox','Stamen','Esri','OpenWeatherMap','HERE','Acetate','FreeMapSK','MtbMap','TianDiTu','MapABC','GaoDe']"></select>
+      </form>
+    </div>
+    <div class="editor-option">
+      <form>
         <h6>Tooltip Field</h6>
         <input  bs-typeahead="fields.list" type="text" class="input-small" ng-model="panel.tooltip">
       </form>

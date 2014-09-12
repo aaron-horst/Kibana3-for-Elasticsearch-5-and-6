@@ -71,6 +71,10 @@ function (angular, app, _, L, localRequire) {
        */
       field   : null,
       /** @scratch /panels/bettermap/5
+       * provider:: The map provider of leaflet.js
+       */
+      provider: 'MapQuestOpen',
+      /** @scratch /panels/bettermap/5
        * size:: The number of documents to use when drawing the map
        */
       size    : 1000,
@@ -229,7 +233,7 @@ function (angular, app, _, L, localRequire) {
         function render_panel() {
           elem.css({height:scope.panel.height||scope.row.height});
 
-          scope.require(['./leaflet/plugins'], function () {
+          scope.require(['./leaflet/plugins', './leaflet/providers'], function () {
             scope.panelMeta.loading = false;
             L.Icon.Default.imagePath = 'app/panels/bettermap/leaflet/images';
             if(_.isUndefined(map)) {
@@ -239,10 +243,8 @@ function (angular, app, _, L, localRequire) {
                 zoom: 10
               });
 
-              // This could be made configurable?
-              L.tileLayer('http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg', {
-                attribution: 'Data, imagery and map information provided by MapQuest, '+
-                  'OpenStreetMap <http://www.openstreetmap.org/copyright> and contributors, ODbL',
+              // This could be made more configurable?
+              L.tileLayer.provider(scope.panel.provider, {
                 maxZoom: 18,
                 minZoom: 2
               }).addTo(map);

@@ -21,6 +21,14 @@ And you can add more range sections as you like:
 
 ![](src/img/chenryn_img/range-setting.jpg)
 
+## bettermap providers
+
+Now you can select different leaflet map providers from `bettermap` panel settings.
+
+For chinese user, there is **GaoDe**(高德地图)!
+
+![](src/img/chenryn_img/bettermap-gaode.png)
+
 ## china map
 
 Use map.cn.js from <http://jvectormap.com/maps/countries/china/>, delete `CN-` because `filter/geoip` don't have such prefix.
@@ -87,5 +95,5 @@ TODO
 * <del>Math.log() for valuehistogram panel</del> (had try `_.map(series, function(v){return Math.log(v)})`, not so useful)
 * percentile histogram panel <http://www.flotcharts.org/flot/examples/percentiles/index.html>??
 * heatmap panel <http://www.patrick-wied.at/static/heatmapjs/plugin-leaflet-layer.html>
-* threshold for histogram <http://www.flotcharts.org/flot/examples/threshold/index.html>
+* <del>threshold for histogram <http://www.flotcharts.org/flot/examples/threshold/index.html></del> (had try, not so useful, but I keep this commit in the repo)
 * webkit.notification for histogram
