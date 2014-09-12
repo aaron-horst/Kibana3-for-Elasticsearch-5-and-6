@@ -33,6 +33,13 @@
       <label class="small">Y Format <tip>Y-axis formatting</tip></label>
       <select class="input-small" ng-model="panel.y_format" ng-options="f for f in ['none','short','bytes']"></select>
     </div>
+    <div class="editor-option">
+      <label class="small">Threshold</label><input type="checkbox" ng-model="panel.threshold" ng-checked="panel.threshold">
+    </div>
+    <div class="editor-option" ng-show="panel.threshold">
+      <label style="white-space:nowrap" class="small">Above <tip>the threshold of lines</tip></label>
+      <input type="text" class="input-mini" ng-model="panel.above">
+    </div>
   </div>
   <div class="section">
     <h5>Multiple Series</h5>

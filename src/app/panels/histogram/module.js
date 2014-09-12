@@ -26,6 +26,7 @@ define([
   'jquery.flot.events',
   'jquery.flot.selection',
   'jquery.flot.time',
+  'jquery.flot.threshold',
   'jquery.flot.byte',
   'jquery.flot.stack',
   'jquery.flot.stackpercent'
@@ -181,6 +182,10 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
        * stack:: Stack multiple series
        */
       stack         : true,
+      /** @scratch /panels/histogram/3
+       * threshold:: Set threshold on chart
+       */
+      threshold     : false,
       /** @scratch /panels/histogram/3
        * spyable:: Show inspect icon
        */
@@ -631,6 +636,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
               series: {
                 stackpercent: scope.panel.stack ? scope.panel.percentage : false,
                 stack: scope.panel.percentage ? null : stack,
+                threshold: null,
                 lines:  {
                   show: scope.panel.lines,
                   // Silly, but fixes bug in stacked percentages
@@ -676,6 +682,12 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
               }
             };
 
+            if (scope.panel.threshold) {
+              options.series.threshold = {
+                above: scope.panel.above,
+                color: "#FFF"
+              };
+            }
             if (scope.panel.y_format === 'bytes') {
               options.yaxis.mode = "byte";
               options.yaxis.tickFormatter = function (val, axis) {
