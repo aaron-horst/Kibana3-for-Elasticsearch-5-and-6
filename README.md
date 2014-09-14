@@ -1,6 +1,69 @@
 chenryn's changelog
 ================
 
+## Auth WebUI in Mojolicious
+
+There is alreadys kibana-auth repos wrote in NodeJs or RubyOnRails. However I don't familar with both those but can only write a little Perl5 code. So, I use [Mojolicious](http://mojolicio.us) web framework to do this.
+
+I place all my auth code at `kbnauth` sub directory, if you don't want any auth, just use the original `src` directory.(In facts, I use symlinks for my `kbnauth/public/*`)
+
+### features
+
+* full proxy
+
+You can control every requests sending to elasticsearch. I use `config.js.ep` for `elasticsearch` setting, and return a **fake** `/_nodes` response body which only has one node point to the webserver.
+
+* using a elasticsearch `kibana-auth` index for authorization
+
+Since all the requests would send to the proxy server, every user would has his own namespace for dashboards(`kibana-int-$username`, yes, it's a common implement that kibana-proxy used) and can only access his own indices or even cluster.
+
+I assume the `kibana-auth` for user "sri" as follow:
+
+```
+$ curl 127.0.0.1:9200/kibana-auth/indices/sri/_source
+{"prefix":["logstash-sri","logstash-ops"],"server":"192.168.0.2"}
+```
+
+* using [Authen::Simple](https://metacpan.org/pod/Authen::Simple) framework for authentication
+
+Authen::Simple is a great framework that support so many authentication methods. For example: LDAP, DBI, SSH, Kerberos, PAM, SMB, NIS, PAM, ActiveDirectory etc.
+
+I use Passwd as default(using `htpasswd` commandline). But you can add/change more methods to `kbn_auth.conf` as follow:
+
+```perl
+  authen => {
+    LDAP => {
+      host   => 'ad.company.com',
+      binddn => 'proxyuser@company.com',
+      bindpw => 'secret',
+      basedn => 'cn=users,dc=company,dc=com',
+      filter => '(&(objectClass=organizationalPerson)(objectClass=user)(sAMAccountName=%s))'
+    },
+  }
+```
+
+### Install
+
+The code depands on Mojolicious and Authen::Simple.
+
+```
+curl http://xrl.us/cpanm -o /usr/local/bin/cpanm
+chmod +x /usr/local/bin/cpanm
+cpanm Mojolicious Authen::Simple::Passwd
+```
+
+If you want use other authen methods, for example, LDAP, just run `cpanm Authen::Simple::LDAP`.
+
+*Tips: if you run the code at a clean RHEL system, you may find `Digest::SHA` need to install too. RedHat split Perl core modules to a special `perl-core` RPM. Run `yum install -y perl-core` to solve it. I HATE REDHAT!*
+
+### Run
+
+```
+cd kbnauth
+morbo scripts/kbnauth # listen :3000 for development
+./scripts/kbnauth     # listen :80 for production, ports defined at kbn_auth.conf
+```
+
 ## percentile panel
 
 Percentile is a great data analysis method. Elasticsearch add percentile aggregation support after version 1.1.0. But Kibana v3 use an outdate elastic.js which don't support aggergation! So I write this panel using native angularjs `$.http` api.
