@@ -64,6 +64,8 @@ morbo scripts/kbnauth # listen :3000 for development
 ./scripts/kbnauth     # listen :80 for production, ports defined at kbn_auth.conf
 ```
 
+Now you can login with init user/pass: "sri/secr3t". (this is the name of mojolicious creator)
+
 ## percentile panel
 
 Percentile is a great data analysis method. Elasticsearch add percentile aggregation support after version 1.1.0. But Kibana v3 use an outdate elastic.js which don't support aggergation! So I write this panel using native angularjs `$.http` api.
