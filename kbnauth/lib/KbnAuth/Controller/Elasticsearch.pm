@@ -34,13 +34,15 @@ sub auth_proxy {
 
 sub hidden_nodes {
   my $self = shift;
+  my $local_addr = $self->tx->local_address;
+  my $local_port = $self->tx->local_port;
   $self->render(
     json => {
       nodes => {
         "web" => {
           version      => '1.1.1',
-          http_address => "inet[/192.168.0.102:3000]",
-          ip           => '192.168.0.102'
+          http_address => "inet[/$local_addr:$local_port]",
+          ip           => "$local_addr",
         }
       }
     }
