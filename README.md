@@ -17,12 +17,16 @@ You can control every requests sending to elasticsearch. I use `config.js.ep` fo
 
 Since all the requests would send to the proxy server, every user would has his own namespace for dashboards(`kibana-int-$username`, yes, it's a common implement that kibana-proxy used) and can only access his own indices or even cluster.
 
-I assume the `kibana-auth` for user "sri" as follow:
+You can add `kibana-auth` for user "sri" as follow:
 
 ```
-$ curl 127.0.0.1:9200/kibana-auth/indices/sri/_source
-{"prefix":["logstash-sri","logstash-ops"],"server":"192.168.0.2"}
+$ curl -XPOST http://127.0.0.1:9200/kibana-auth/indices/sri -d '{
+  "prefix":["logstash-sri","logstash-ops"],
+  "server":"192.168.0.2:9200"
+}'
 ```
+
+Then "sri" can access the "logstash-sri-YYYY.mm.dd" and "logstash-ops-YYYY.mm.dd" indices stored on "192.168.0.2:9200".
 
 * using [Authen::Simple](https://metacpan.org/pod/Authen::Simple) framework for authentication
 

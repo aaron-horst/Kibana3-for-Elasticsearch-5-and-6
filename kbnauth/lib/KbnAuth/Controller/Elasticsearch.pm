@@ -5,10 +5,8 @@ use List::MoreUtils 'uniq';
 sub proxy {
   my $self = shift;
   my $preq = $self->req->clone;
-  my ( $eshost, $esport ) = qw(127.0.0.1 9200);
-  ( $eshost, $esport ) = $self->config('eshost') =~ m!^http://(.+):(\d+)!;
-  $eshost = $self->users->server($self->session('user'))
-    if $self->users->server($self->session('user'));
+  my $esurl = $self->users->server($self->session('user')) // $self->config('eshost');
+  my ( $eshost, $esport ) = $esurl =~ m!^http://(.+)(?::(\d+))!;
   $preq->url->scheme('http')->host($eshost)->port($esport);
   my $tx = Mojo::Transaction::HTTP->new( req => $preq );
   $self->ua->start($tx);
