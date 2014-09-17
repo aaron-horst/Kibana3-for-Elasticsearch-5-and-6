@@ -6,7 +6,9 @@ sub proxy {
   my $self = shift;
   my $preq = $self->req->clone;
   my $esurl = $self->users->server($self->session('user')) // $self->config('eshost');
-  my ( $eshost, $esport ) = $esurl =~ m!^http://(.+)(?::(\d+))!;
+  my ( $eshost, $esport ) = $esurl =~ m!^(?:https?://)?([^:]+)(?::(\d+))?!;
+  $eshost ||= 'localhost';
+  $esport ||= 9200;
   $preq->url->scheme('http')->host($eshost)->port($esport);
   my $tx = Mojo::Transaction::HTTP->new( req => $preq );
   $self->ua->start($tx);
