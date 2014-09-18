@@ -64,8 +64,8 @@ If you want use other authen methods, for example, LDAP, just run `cpanm Authen:
 
 ```
 cd kbnauth
-morbo scripts/kbnauth # listen :3000 for development
-./scripts/kbnauth     # listen :80 for production, ports defined at kbn_auth.conf
+morbo script/kbnauth # listen :3000 for development
+hypnotoad script/kbnauth     # listen :80 for production, ports defined at kbn_auth.conf
 ```
 
 Now you can login with init user/pass: "sri/secr3t". (this is the name of mojolicious creator)
