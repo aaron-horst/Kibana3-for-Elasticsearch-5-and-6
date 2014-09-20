@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Authen::Simple;
 use Mojo::UserAgent;
+use Data::Dumper;
 
 sub new {
   my ($class, $config) = @_;
@@ -29,8 +30,8 @@ sub permiss {
   my ($self, $user, $indices) = @_;
   my $eshost = $self->{eshost};
   my $ret = Mojo::UserAgent->new->get("$eshost/kibana-auth/indices/$user/_source")->res->json;
-  my %e = map{ $_ => undef } @{$indices};
-  return 1 unless grep( !exists( $e{$_} ), @{$ret->{'prefix'}} );
+  my %e = map{ $_ => undef } @{$ret->{'prefix'}};
+  return 1 if !grep( !exists( $e{$_} ), @{$indices} );
   return undef;
 }
 
