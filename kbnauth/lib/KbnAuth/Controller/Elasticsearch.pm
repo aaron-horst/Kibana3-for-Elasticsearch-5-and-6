@@ -1,11 +1,11 @@
 package KbnAuth::Controller::Elasticsearch;
 use Mojo::Base 'Mojolicious::Controller';
-use List::MoreUtils 'uniq';
 
 sub proxy {
-  my $self = shift;
-  my $preq = $self->req->clone;
-  my $esurl = $self->users->server($self->session('user')) // $self->config('eshost');
+  my $self  = shift;
+  my $preq  = $self->req->clone;
+  my $esurl = $self->users->server( $self->session('user') )
+    // $self->config('eshost');
   my ( $eshost, $esport ) = $esurl =~ m!^(?:https?://)?([^:]+)(?::(\d+))?!;
   $eshost ||= 'localhost';
   $esport ||= 9200;
@@ -25,7 +25,10 @@ sub auth_dashboards {
 
 sub auth_proxy {
   my $self = shift;
-  my @indices = uniq grep { s/-\d{4}\.\d{2}\.\d{2}$// } split( /,/, $self->param('index') );
+  my %seen = ();
+  my @indices =
+    grep { not $seen{$_}++ }
+    grep { s/-\d{4}\.\d{2}\.\d{2}$// } split( /,/, $self->param('index') );
   return $self->render(
     json => { status => 404, error => 'IndexNoPermissionException' } )
     unless $self->users->permiss( $self->session('user'), \@indices );
@@ -33,7 +36,7 @@ sub auth_proxy {
 }
 
 sub hidden_nodes {
-  my $self = shift;
+  my $self       = shift;
   my $local_addr = $self->tx->local_address;
   my $local_port = $self->tx->local_port;
   $self->render(
