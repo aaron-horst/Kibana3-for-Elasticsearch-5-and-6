@@ -108,6 +108,14 @@ angular.module('elasticjs.service', ['elasticsearch'])
           ignoreUnavailable: true
         });
     };
+
+    ejs.getFieldMapping = function(indices, field) {
+        return esClient.indices.getFieldMapping({
+          index: indices,
+          field: field,
+          ignoreUnavailable: true
+        });
+    };
       
     ejs.getSource = function(index, type, id) {
         var result = esClient.getSource({

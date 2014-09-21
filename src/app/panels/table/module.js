@@ -216,12 +216,7 @@ function (angular, app, _, kbn, moment) {
         count: _.countBy(docs,function(doc){return _.contains(_.keys(doc),field);})['true']
       };
 
-
-      var nodeInfo = $scope.ejs.client.get('/' + dashboard.indices + '/_mapping/field/' + field,
-        undefined, undefined, function(data, status) {
-        console.log(status);
-        return;
-      });
+      var nodeInfo = $scope.ejs.getFieldMapping(dashboard.indices, field);
 
       return nodeInfo.then(function(p) {
         var types = _.uniq(jsonPath(p, '*.*.*.*.mapping.*.type'));
