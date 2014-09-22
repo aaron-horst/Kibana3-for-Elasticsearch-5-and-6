@@ -26,9 +26,10 @@ sub auth_dashboards {
 sub auth_proxy {
   my $self = shift;
   my %seen = ();
+  print $self->param('index');
   my @indices =
     grep { not $seen{$_}++ }
-    grep { s/-\d{4}\.\d{2}\.\d{2}$// } split( /,/, $self->param('index') );
+    grep { s/-\d{4}\.\d{2}\.\d{2}$// } split( /,|\%2C/, $self->param('index') );
   return $self->render(
     json => { status => 404, error => 'IndexNoPermissionException' } )
     unless $self->users->permiss( $self->session('user'), \@indices );
