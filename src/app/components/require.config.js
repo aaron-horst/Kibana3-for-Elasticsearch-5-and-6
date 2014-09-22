@@ -23,7 +23,7 @@ require.config({
     'angular-sanitize':       '../vendor/angular/angular-sanitize',
     'angular-resource':       '../vendor/angular/angular-resource',
     'angular-route':          '../vendor/angular/angular-route',
-    'angular-loader':          '../vendor/angular/angular-loader',
+    'angular-loader':         '../vendor/angular/angular-loader',
     timepicker:               '../vendor/angular/timepicker',
     datepicker:               '../vendor/angular/datepicker',
     bindonce:                 '../vendor/angular/bindonce',
@@ -46,6 +46,7 @@ require.config({
     'jquery.flot.time':       '../vendor/jquery/jquery.flot.time',
     'jquery.flot.byte':       '../vendor/jquery/jquery.flot.byte',
     'jquery.flot.threshold':  '../vendor/jquery/jquery.flot.threshold',
+     multiselect:             '../vendor/jquery/jquery.multiselect',
 
 
     modernizr:                '../vendor/modernizr-2.6.1',

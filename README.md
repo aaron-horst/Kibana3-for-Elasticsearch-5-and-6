@@ -98,6 +98,12 @@ For chinese user, there is **GaoDe**(高德地图)!
 
 ![](src/img/chenryn_img/bettermap-gaode.png)
 
+## queries generator
+
+Fetch `_type` and `fields` from `/_mapping` API. and help you to generate some querystrings by click multi-select.
+
+![](src/img/chenryn_img/query-panel.png)
+
 ## china map
 
 Use map.cn.js from <http://jvectormap.com/maps/countries/china/>, delete `CN-` because `filter/geoip` don't have such prefix.
