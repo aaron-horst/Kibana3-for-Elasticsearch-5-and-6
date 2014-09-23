@@ -13,6 +13,8 @@ I place all my auth code at `kbnauth` sub directory, if you don't want any auth,
 
 You can control every requests sending to elasticsearch. I use `config.js.ep` for `elasticsearch` setting, and return a **fake** `/_nodes` response body which only has one node point to the webserver.
 
+*Note: Mojolicious set default `max_message_size` to 10MB, I change this setting to 0 which means indefinite size in `script/kbnauth`. You can change this to any threshold value you want.*
+
 * using a elasticsearch `kibana-auth` index for authorization
 
 Since all the requests would send to the proxy server, every user would has his own namespace for dashboards(`kibana-int-$username`, yes, it's a common implement that kibana-proxy used) and can only access his own indices or even cluster.
