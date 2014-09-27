@@ -106,6 +106,12 @@ Fetch `_type` and `fields` from `/_mapping` API. and help you to generate some q
 
 ![](src/img/chenryn_img/query-panel.png)
 
+## histogram threshold notification
+
+Use [HTML5 Notification API](https://developer.mozilla.org/en-US/docs/Web/API/notification) to alert the outier value of queries.
+
+![](src/img/chenryn_img/hist-notification.png)
+
 ## china map
 
 Use map.cn.js from <http://jvectormap.com/maps/countries/china/>, delete `CN-` because `filter/geoip` don't have such prefix.
@@ -173,4 +179,4 @@ TODO
 * percentile histogram panel <http://www.flotcharts.org/flot/examples/percentiles/index.html>??
 * heatmap panel <http://www.patrick-wied.at/static/heatmapjs/plugin-leaflet-layer.html>
 * <del>threshold for histogram <http://www.flotcharts.org/flot/examples/threshold/index.html></del> (had try, not so useful, but I keep this commit in the repo)
-* webkit.notification for histogram
+* <del>webkit.notification for histogram</del>

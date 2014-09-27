@@ -38,7 +38,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
   var module = angular.module('kibana.panels.histogram', []);
   app.useModule(module);
 
-  module.controller('histogram', function($scope, querySrv, dashboard, filterSrv) {
+  module.controller('histogram', function($scope, querySrv, dashboard, filterSrv, monitor) {
     $scope.panelMeta = {
       modals : [
         {
@@ -112,10 +112,14 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
        * ==== Queries
        * queries object:: This object describes the queries to use on this panel.
        * queries.mode::: Of the queries available, which to use. Options: +all, pinned, unpinned, selected+
+       * queries.check::: Of the queries check mode. Options: +none, threshold, anomaly+
+       * queries.threshold::: In +threshold+ check mode, what's the check threshold.
        * queries.ids::: In +selected+ mode, which query ids are selected.
        */
       queries     : {
         mode        : 'all',
+        check       : [],
+        threshold   : {},
         ids         : []
       },
       /** @scratch /panels/histogram/3
@@ -248,8 +252,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
     _.defaults($scope.panel.tooltip,_d.tooltip);
     _.defaults($scope.panel.annotate,_d.annotate);
     _.defaults($scope.panel.grid,_d.grid);
-
-
+    _.defaults($scope.panel.queries,_d.queries);
 
     $scope.init = function() {
       // Hide view options by default
@@ -477,6 +480,13 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
               time_series: time_series,
               hits: hits,
               counters: counters
+            };
+
+            var monitorTitle = $scope.panel.queries.check[i] +' for query: '+ ( queries[i].alias || queries[i].query );
+            if ($scope.panel.queries.check[i] === 'threshold') {
+              monitor.check(data[i].counters, monitorTitle, $scope.panel.queries.threshold[i]);
+            } else if ($scope.panel.queries.check[i] === 'anomaly') {
+              monitor.check(data[i].counters, monitorTitle);
             };
 
             i++;
