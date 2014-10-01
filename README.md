@@ -17,7 +17,7 @@ You can control every requests sending to elasticsearch. I use `config.js.ep` fo
 
 * using a elasticsearch `kibana-auth` index for authorization
 
-Since all the requests would send to the proxy server, every user would has his own namespace for dashboards(`kibana-int-$username`, yes, it's a common implement that kibana-proxy used) and can only access his own indices or even cluster.
+Since all the requests would send to the proxy server, every user would has his own namespace for dashboards(`kibana-int-$username`, yes, it's a common implement that kibana-proxy used. You can run `./script/kbnauth migratint username hisdashname...` for quick migration) and can only access his own indices or even cluster.
 
 You can add `kibana-auth` for user "sri" as follow:
 
