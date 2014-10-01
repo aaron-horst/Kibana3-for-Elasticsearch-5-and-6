@@ -1,0 +1,11 @@
+requires "perl", "5.10.0";
+requires "Digest::SHA";
+requires "Mojolicious";
+requires "Authen::Simple";
+requires "Authen::Simple::Passwd";
+
+feature "ldap", "LDAP Support" => sub {
+  requires "Authen::Simple::LDAP";
+};
+
+

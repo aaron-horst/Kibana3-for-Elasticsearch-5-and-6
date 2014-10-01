@@ -5,6 +5,8 @@ use KbnAuth::Model::Users;
 sub startup {
   my $self = shift;
   my $config = $self->plugin('Config');
+  push @{$self->commands->namespaces}, 'KbnAuth::Command';
+  $self->secrets([$self->config->{secret}]);
   $self->stash(config => $config);
   $self->helper(users => sub {
     state $users = KbnAuth::Model::Users->new($config);
