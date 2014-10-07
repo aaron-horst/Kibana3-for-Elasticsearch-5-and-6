@@ -30,6 +30,9 @@ require.config({
 
     lodash:                   'components/lodash.extended',
     'lodash-src':             '../vendor/lodash',
+    'underscore.string':      '../vendor/underscore.string',
+    'gauss':                  '../vendor/gauss',
+    'ss':                     '../vendor/simple_statistics',
     bootstrap:                '../vendor/bootstrap/bootstrap',
 
     jquery:                   '../vendor/jquery/jquery-1.8.0',
