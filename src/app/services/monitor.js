@@ -2,10 +2,9 @@ define([
   'angular',
   'lodash',
   'underscore.string',
-  'ss',
-  'gauss',
+  'simple_statistics'
 ],
-function (angular, _, _.str, ss, gauss) {
+function (angular, _, str, ss) {
   'use strict';
 
   var module = angular.module('kibana.services');
@@ -46,6 +45,19 @@ function (angular, _, _.str, ss, gauss) {
       }
     };
 
+    // ema from Gauss.js
+    var ema = function(vector, period) {
+      var ratio = 2 / (period + 1);
+      var sum = ss.sum(vector.slice(0, period));
+      var ema = [sum / period];
+      for (var i = 1; i < vector.length - period + 1; i++) {
+        ema.push(
+          ratio * (vector[i + period - 1] - ema[i - 1]) + ema[i - 1]
+        );
+      }
+      return ema;
+    };
+
     // Perl5's Statistics::Distributions
     var SIGNIFICANT = 5;
     var _subu = function(p) {
@@ -78,14 +90,14 @@ function (angular, _, _.str, ss, gauss) {
       }
  
       var u = _subu(p);
-      var u2 = u ** 2;
+      var u2 = Math.pow(u, 2);
       var a = (u2 + 1) / 4;
       var b = ((5 * u2 + 16) * u2 + 3) / 96;
       var c = (((3 * u2 + 19) * u2 + 17) * u2 - 15) / 384;
       var d = ((((79 * u2 + 776) * u2 + 1482) * u2 - 1920) * u2 - 945) / 92160;
       var e = (((((27 * u2 + 339) * u2 + 930) * u2 - 1782) * u2 - 765) * u2 + 17955) / 368640;
       var x = u * (1 + (a + (b + (c + (d + e / n) / n) / n) / n) / n);
-      if (n <= (Math.log(p)/Math.log(10)) ** 2 + 3) {
+      if (n <= Math.pow((Math.log(p)/Math.log(10)), 2) + 3) {
         var round;
         do { 
           var p1 = _subtprob(n, x);
@@ -95,7 +107,7 @@ function (angular, _, _.str, ss, gauss) {
           + Math.log(n/n1/2/Math.PI) - 1 
           + (1/n1 - 1/n) / 6) / 2);
           x += delta;
-          round = _.str.sprintf("%."+Math.abs(parseInt((Math.log(Math.abs(x))/Math.log(10)) -4))+"f", delta);
+          round = str.sprintf("%."+Math.abs(parseInt((Math.log(Math.abs(x))/Math.log(10)) -4))+"f", delta);
         } while ((x) && (round != 0));
       }
       return x;
@@ -103,7 +115,7 @@ function (angular, _, _.str, ss, gauss) {
     var _subtprob = function(n, x) {
       var a, b;
       var w = Math.atan2(x / Math.sqrt(n), 1);
-      var z = Math.cos(w) ** 2;
+      var z = Math.pow(Math.cos(w), 2);
       var y = 1;
  
       for (var i = n-2; i >= 2; i -= 2) {
@@ -120,11 +132,11 @@ function (angular, _, _.str, ss, gauss) {
       return _.max(0, 1 - b - a * y);
     };
     var precision = function(x) {
-      return Math.abs(parseInt((Math.log(abs(x))/Math.log(10)) - SIGNIFICANT));
+      return Math.abs(parseInt((Math.log(Math.abs(x))/Math.log(10)) - SIGNIFICANT));
     };
     var precision_string = function(x) {
       if (x) {
-        return _.str.sprintf("%." + precision(x) + "f", x);
+        return str.sprintf("%." + precision(x) + "f", x);
       } else {
         return "0";
       }
@@ -146,7 +158,7 @@ function (angular, _, _.str, ss, gauss) {
       var mean = ss.mean(vector);
       var stdDev = ss.standard_deviation(vector);
       var z_score = ss.z_score(vector, mean, stdDev);
-      var len_series = vector.length();
+      var len_series = _.size(vector);
       var threshold = tdistr( 0.05/(2*len_series), len_series-2 );
       var threshold_squared = threshold * threshold;
       var grubbs_score = ( ( len_series - 1 ) / Math.sqrt(len_series) ) * Math.sqrt( threshold_squared / ( len_series - 2 + threshold_squared ) );
@@ -181,33 +193,32 @@ function (angular, _, _.str, ss, gauss) {
           return item[1];
         };
       });
-      return Math.abs(parseInt(timeSeries[-1][1]) - ss.mean(fvector))  > 3 * ss.standard_deviation(fvector);
+      return Math.abs(parseInt(_.last(timeSeries)[1]) - ss.mean(fvector))  > 3 * ss.standard_deviation(fvector);
     };
 
     var stddev_from_average = function(timeSeries) {
       var vector = _.map(timeSeries, function(item) {return item[1]});
-      return Math.abs(parseInt(timeSeries[-1][1]) - ss.mean(vector))  > 3 * ss.standard_deviation(vector);
+      return Math.abs(parseInt(_.last(vector)) - ss.mean(vector))  > 3 * ss.standard_deviation(vector);
     };
 
     var stddev_from_moving_average = function(timeSeries) {
       var vector = _.map(timeSeries, function(item) {return item[1]});
-      var gaussVector = new gauss.Vector(vector);
-      var mvector = gaussVector.ema(10);
-      return Math.abs(parseInt(timeSeries[-1][1]) - mvector[-1])  > 3 * mvector.stdev;
+      var mvector = ema(vector, 10);
+      return Math.abs(parseInt(_.last(vector)) - _.last(mvector))  > 3 * mvector.stdev;
     };
 
     var mean_subtraction_cumulation = function(timeSeries) {
       var vector = _.map(timeSeries, function(item) {return item[1]});
       var mean = ss.mean(vector);
       vector = _.map(vector, function(i) { return i - mean });
-      return Math.abs(vector[-1])  > 3 * ss.standard_deviation(vector);
+      return Math.abs(_.last(vector))  > 3 * ss.standard_deviation(vector);
     };
 
     var median_absolute_deviation = function(timeSeries) {
       var vector = _.map(timeSeries, function(item) {return item[1]});
       var median = ss.median(vector);
       vector = _.map(vector, function(i) { return Math.abs(i - median) });
-      return vector[-1]  > 6 * ss.median(vector);
+      return _.last(vector)  > 6 * ss.median(vector);
     };
 
     var least_squares = function(timeSeries) {
@@ -215,7 +226,7 @@ function (angular, _, _.str, ss, gauss) {
       var yvector = _.map(timeSeries, function(i) {
         return y(i[0]);
       });
-      return Math.abs(yvector[-1]) > 3 * ss.standard_deviation(yvector);
+      return Math.abs(_.last(yvector)) > 3 * ss.standard_deviation(yvector);
     };
 
     this.notify = function(title, msg) {

@@ -18,6 +18,13 @@
         this.ss = ss;
     }
 
+    if (typeof define === 'function' && define.amd) {
+        define([], function () {
+            return ss;
+        });
+    }
+
+
     // # [Linear Regression](http://en.wikipedia.org/wiki/Linear_regression)
     //
     // [Simple linear regression](http://en.wikipedia.org/wiki/Simple_linear_regression)
