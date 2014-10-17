@@ -172,11 +172,19 @@ Many thanks to this author(@thegreenpizza)!
 
 <https://github.com/elasticsearch/kibana/pull/1377>
 
+*If you had wrote your own panels and want to migrate to the latest elasticjs, just change a few codes as follow:*
+
+```javascript
+request = $scope.ejs.Request();
+results = $scope.ejs.doSearch(dashboard.indices, request);
+$scope.inspector = request.toJSON();
+```
+
 ## force panel
 
 Add force panel of packetbeat.
 
-![](src/img/chenryn_img/force-panel.jpg)
+![](src/img/chenryn_img/force-panel.png)
 
 <https://github.com/packetbeat/kibana/commit/27cba54a73dd4246161df1bb1ed45d380588c6a5>
 
