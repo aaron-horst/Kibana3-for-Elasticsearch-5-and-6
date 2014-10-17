@@ -156,7 +156,7 @@ define([
           );
       });
       // Populate the inspector panel
-      $scope.inspector = angular.toJson({aggs:request},true);
+      $scope.inspector = request.toJSON();
 
       results = $scope.ejs.doSearch(dashboard.indices, request);
 

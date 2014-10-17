@@ -172,6 +172,14 @@ Many thanks to this author(@thegreenpizza)!
 
 <https://github.com/elasticsearch/kibana/pull/1377>
 
+## force panel
+
+Add force panel of packetbeat.
+
+![](src/img/chenryn_img/force-panel.jpg)
+
+<https://github.com/packetbeat/kibana/commit/27cba54a73dd4246161df1bb1ed45d380588c6a5>
+
 TODO
 =======================
 
