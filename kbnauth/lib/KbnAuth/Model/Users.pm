@@ -3,7 +3,6 @@ use strict;
 use warnings;
 use Authen::Simple;
 use Mojo::UserAgent;
-use Data::Dumper;
 
 sub new {
   my ($class, $config) = @_;
@@ -40,6 +39,13 @@ sub server {
   my $eshost = $self->{eshost};
   my $ret = Mojo::UserAgent->new->get("$eshost/kibana-auth/indices/$user/_source")->res->json;
   return $ret->{'server'};
+}
+
+sub default_route {
+  my ($self, $user) = @_;
+  my $eshost = $self->{eshost};
+  my $ret = Mojo::UserAgent->new->get("$eshost/kibana-auth/indices/$user/_source")->res->json;
+  return $ret->{'route'} || '/dashboard/file/default.json';
 }
 
 1;

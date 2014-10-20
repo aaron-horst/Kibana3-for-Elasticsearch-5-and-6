@@ -8,6 +8,7 @@ sub webui {
 
 sub config {
   my $self = shift;
+  $self->stash(route => $self->users->default_route($self->session('user')));
   $self->render( format => 'js' );
 }
 

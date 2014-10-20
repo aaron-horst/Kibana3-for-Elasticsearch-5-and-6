@@ -56,7 +56,7 @@ function (Settings) {
      *
      * default_route: '/dashboard/elasticsearch/WebLogs',
      */
-    default_route     : '/dashboard/file/default.json',
+    default_route     : '<%= $route %>',
 
     /** @scratch /configuration/config.js/5
      *
@@ -92,6 +92,7 @@ function (Settings) {
       'sparklines',
       'percentiles',
       'ranges',
+      'force',
       'statisticstrend',
       'multifieldhistogram',
       'valuehistogram'

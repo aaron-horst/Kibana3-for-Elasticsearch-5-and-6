@@ -24,11 +24,12 @@ You can add `kibana-auth` for user "sri" as follow:
 ```
 $ curl -XPOST http://127.0.0.1:9200/kibana-auth/indices/sri -d '{
   "prefix":["logstash-sri","logstash-ops"],
+  "route" :"/dashboard/elasticsearch/sri-dash",
   "server":"192.168.0.2:9200"
 }'
 ```
 
-Then "sri" can access the "logstash-sri-YYYY.mm.dd" and "logstash-ops-YYYY.mm.dd" indices stored on "192.168.0.2:9200".
+Then "sri" can access the "logstash-sri-YYYY.mm.dd" and "logstash-ops-YYYY.mm.dd" indices stored on "192.168.0.2:9200". And he would see `/dashboard/elasticsearch/sri-dash` dashboard as homepage.
 
 * using [Authen::Simple](https://metacpan.org/pod/Authen::Simple) framework for authentication
 
