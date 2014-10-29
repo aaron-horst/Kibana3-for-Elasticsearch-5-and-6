@@ -12,6 +12,7 @@ sub proxy {
     $preq->url->scheme('http')->host($eshost)->port($esport);
     my $tx = Mojo::Transaction::HTTP->new( req => $preq );
     $self->ua->start($tx);
+    $self->res->headers->access_control_allow_origin('*');
     $self->render( json => $tx->res->json );
 }
 
