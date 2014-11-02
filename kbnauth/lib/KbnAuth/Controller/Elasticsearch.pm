@@ -5,14 +5,17 @@ sub proxy {
     my $self  = shift;
     my $preq  = $self->req->clone;
     my $esurl = $self->user('server') // $self->config('eshost');
-    my ( $eshost, $esport ) = $esurl =~ m!^(?:https?://)?([^:]+)(?::(\d+))?!;
+    my ( $eshost, $esport ) = $esurl =~ m!^(?:https?://)?([^:]+)(?::(\d+))?!o;
     $eshost ||= 'localhost';
     $esport ||= 9200;
     $preq->url->scheme('http')->host($eshost)->port($esport);
     my $tx = Mojo::Transaction::HTTP->new( req => $preq );
-    $self->ua->start($tx);
-    $self->res->headers->access_control_allow_origin('*');
-    $self->render( json => $tx->res->json );
+    $self->render_later;
+    $self->ua->start($tx => sub {
+        my ($ua, $tx) = @_;
+        $self->res->headers->access_control_allow_origin('*');
+        $self->render( json => $tx->res->json );
+    });
 }
 
 sub auth_dashboards {
