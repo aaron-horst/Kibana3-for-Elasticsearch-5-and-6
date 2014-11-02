@@ -4,8 +4,7 @@ use Mojo::Base 'Mojolicious::Controller';
 sub proxy {
     my $self  = shift;
     my $preq  = $self->req->clone;
-    my $esurl = $self->users->server( $self->session('user') )
-      // $self->config('eshost');
+    my $esurl = $self->user('server') // $self->config('eshost');
     my ( $eshost, $esport ) = $esurl =~ m!^(?:https?://)?([^:]+)(?::(\d+))?!;
     $eshost ||= 'localhost';
     $esport ||= 9200;
@@ -32,9 +31,16 @@ sub auth_proxy {
       grep { s/-\d{4}(?:\.\d{2}\.(?:\d{2})?)?$// || $_ }
       split( /,|\%2C/, $self->param('index') );
     return $self->render(
-        json => { status => 404, error => 'IndexNoPermissionException' } )
-      unless $self->users->permiss( $self->session('user'), \@indices );
+        json => { status => 403, error => 'IndexNoPermissionException' } )
+      unless $self->permiss( \@indices );
     $self->proxy;
+}
+
+sub permiss {
+    my ( $self, $indices ) = @_;
+    my $prefix = $self->user('prefix') // [];
+    my %e = map { $_ => undef } @{$prefix};
+    return 1 if !grep( !exists( $e{$_} ), @{$indices} );
 }
 
 sub hidden_nodes {

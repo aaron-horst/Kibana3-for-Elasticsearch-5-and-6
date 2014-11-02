@@ -1,51 +1,34 @@
 package KbnAuth::Model::Users;
-use strict;
-use warnings;
-use Authen::Simple;
+use Mojo::Base -base;
+use Mojo::Cache;
 use Mojo::UserAgent;
+use Authen::Simple;
 
-sub new {
-  my ($class, $config) = @_;
-  my @adapters;
-  for my $adapter ( keys %{$config->{'authen'}} ) {
-    my $sub_pm = "Authen::Simple::$adapter";
-    eval "use $sub_pm";
-    push @adapters, $sub_pm->new(%{$config->{'authen'}->{$adapter}});
-  };
-  my $self = {
-    authen => Authen::Simple->new(@adapters),
-    eshost => $config->{'eshost'},
-  };
-  return bless $self, $class;
-}
+has ua     => sub { Mojo::UserAgent->new };
+has cache  => sub { Mojo::Cache->new };
+has config => sub { {} };
+has host   => sub { shift->config->{'eshost'} // 'http://127.0.0.1:9200' };
+has authen => sub {
+    my $config = shift->config;
+    my @adapters;
+    for my $adapter ( keys %{ $config->{'authen'} } ) {
+        my $sub_pm = "Authen::Simple::$adapter";
+        eval "use $sub_pm";
+        push @adapters, $sub_pm->new( %{ $config->{'authen'}->{$adapter} } );
+    }
+    Authen::Simple->new(@adapters);
+};
 
 sub check {
-  my ($self, $user, $pass) = @_;
-  return 1 if $self->{authen}->authenticate($user, $pass);
-  return undef;
-}
-
-sub permiss {
-  my ($self, $user, $indices) = @_;
-  my $eshost = $self->{eshost};
-  my $ret = Mojo::UserAgent->new->get("$eshost/kibana-auth/indices/$user/_source")->res->json;
-  my %e = map{ $_ => undef } @{$ret->{'prefix'}};
-  return 1 if !grep( !exists( $e{$_} ), @{$indices} );
-  return undef;
-}
-
-sub server {
-  my ($self, $user) = @_;
-  my $eshost = $self->{eshost};
-  my $ret = Mojo::UserAgent->new->get("$eshost/kibana-auth/indices/$user/_source")->res->json;
-  return $ret->{'server'};
-}
-
-sub default_route {
-  my ($self, $user) = @_;
-  my $eshost = $self->{eshost};
-  my $ret = Mojo::UserAgent->new->get("$eshost/kibana-auth/indices/$user/_source")->res->json;
-  return $ret->{'route'} || '/dashboard/file/default.json';
+    my ( $self, $user, $pass ) = @_;
+    if ( $self->authen->authenticate( $user, $pass ) ) {
+        my $host = $self->host;
+        my $ret =
+          $self->ua->new->get("$host/kibana-auth/indices/$user/_source")
+          ->res->json;
+        $self->cache->set( $user, $ret );
+        return 1;
+    }
 }
 
 1;
