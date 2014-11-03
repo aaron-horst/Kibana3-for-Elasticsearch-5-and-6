@@ -22,13 +22,18 @@ has authen => sub {
 sub check {
     my ( $self, $user, $pass ) = @_;
     if ( $self->authen->authenticate( $user, $pass ) ) {
-        my $host = $self->host;
-        my $ret =
-          $self->ua->new->get("$host/kibana-auth/indices/$user/_source")
-          ->res->json;
-        $self->cache->set( $user, $ret );
+        $self->rset($user);
         return 1;
     }
+}
+
+sub rset {
+    my ( $self, $user ) = @_;
+    my $host = $self->host;
+    my $ret =
+      $self->ua->new->get("$host/kibana-auth/indices/$user/_source")
+      ->res->json;
+    $self->cache->set( $user, $ret );
 }
 
 1;

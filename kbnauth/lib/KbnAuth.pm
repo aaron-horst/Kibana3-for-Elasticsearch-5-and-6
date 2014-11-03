@@ -16,7 +16,12 @@ sub startup {
     $self->helper(
         user => sub {
             my ( $c, $key ) = @_;
+            return unless $c->session('user');
             my $user = $c->users->cache->get( $c->session('user') );
+			if ( !defined $user ) {
+               $c->users->rset( $c->session('user') );
+               $user = $c->users->cache->get( $c->session('user') );
+            };
             return $user->{$key} if $user;
         }
     );
