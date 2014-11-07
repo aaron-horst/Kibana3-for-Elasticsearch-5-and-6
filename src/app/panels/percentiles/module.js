@@ -32,7 +32,7 @@ define([
   var module = angular.module('kibana.panels.percentiles', []);
   app.useModule(module);
 
-  module.controller('percentiles', function ($scope, querySrv, dashboard, filterSrv, $http) {
+  module.controller('percentiles', function ($scope, querySrv, dashboard, filterSrv, $http, esVersion) {
 
     $scope.panelMeta = {
       modals : [
@@ -162,29 +162,59 @@ define([
 
       results.then(function(results) {
         $scope.panelMeta.loading = false;
-        var value = results.aggregations.stats['stats'][$scope.panel.mode+'.0'];
-
-        var rows = queries.map(function (q, i) {
-          var alias = q.alias || q.query;
-          var obj = _.clone(q);
-          obj.label = alias;
-          obj.Label = alias.toLowerCase(); //sort field
-          obj.value = {};
-          obj.Value = {};
-          var data = results.aggregations['stats_'+i]['stats_'+i];
-          for ( var keys in data ) {
-              obj.value[parseInt(keys)] = data[keys];
-              obj.Value[parseInt(keys)] = data[keys]; //sort field
-          };
-          return obj;                                           
+        esVersion.gte('1.3.0').then(function(is) {
+          if (is) {
+            var value = results.aggregations.stats['stats']['values'][$scope.panel.mode+'.0'];
+            var rows = queries.map(function (q, i) {
+              var alias = q.alias || q.query;
+              var obj = _.clone(q);
+              obj.label = alias;
+              obj.Label = alias.toLowerCase(); //sort field
+              obj.value = {};
+              obj.Value = {};
+              var data = results.aggregations['stats_'+i]['stats_'+i]['values'];
+              for ( var keys in data ) {
+                obj.value[parseInt(keys)] = data[keys];
+                obj.Value[parseInt(keys)] = data[keys]; //sort field
+              };
+              return obj;                                           
+            });
+    
+            $scope.data = {
+              value: value,
+              rows: rows
+            };
+    
+            $scope.$emit('render');
+          }
+        });
+        esVersion.gte('1.1.0').then(function(is) {
+          if (is) {
+            var value = results.aggregations.stats['stats'][$scope.panel.mode+'.0'];
+            var rows = queries.map(function (q, i) {
+              var alias = q.alias || q.query;
+              var obj = _.clone(q);
+              obj.label = alias;
+              obj.Label = alias.toLowerCase(); //sort field
+              obj.value = {};
+              obj.Value = {};
+              var data = results.aggregations['stats_'+i]['stats_'+i];
+              for ( var keys in data ) {
+                obj.value[parseInt(keys)] = data[keys];
+                obj.Value[parseInt(keys)] = data[keys]; //sort field
+              };
+              return obj;                                           
+            });
+    
+            $scope.data = {
+              value: value,
+              rows: rows
+            };
+    
+            $scope.$emit('render');
+          }
         });
 
-        $scope.data = {
-          value: value,
-          rows: rows
-        };
-
-        $scope.$emit('render');
       });
     };
 
