@@ -146,6 +146,12 @@ define([
                 ejs.TermFilter($scope.panel.src_field, src),
                 ejs.TermFilter($scope.panel.dst_field, dst)
               ]))
+              .facetFilter($scope.ejs.QueryFilter(
+                $scope.ejs.FilteredQuery(
+                  boolQuery,
+                  filterSrv.getBoolFilter(filterSrv.ids)
+                )
+              ))
               ).size(0);
 
           });

@@ -12,5 +12,12 @@
 	  <input bs-typeahead="fields.list" type="text" class="input-small" ng-model="panel.dst_field" ng-change="set_refresh(true)">
 	</form>
   </div>
+
+  <div class="editor-option">
+	<form>
+	  <h6>Size <tip>How many IP addresses you want to fetch</tip></h6>
+	  <input type="text" class="input-small" ng-model="panel.size" ng-change="set_refresh(true)">
+	</form>
+  </div>
 </div>
 
