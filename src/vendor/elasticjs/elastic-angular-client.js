@@ -13,23 +13,19 @@ be injected into your angular controllers.
 angular.module('elasticjs.service', ['elasticsearch'])
   .factory('ejsResource', ['esFactory', function (esFactory) {
 
-  return function (esHost, apiVersion, sniff) {
+  return function (config) {
 
     var
 
     // use existing ejs object if it exists
     ejs = window.ejs || {}, esClient = window.esClient || undefined;
-      
-    // default to 1.0 API if none specified
-    if(!apiVersion) {
-        apiVersion = '1.0';
-    }
-      
+
     if(!ejs.config) {
         ejs.config = {
-            host: esHost,
-            apiVersion: apiVersion,
-            sniffOnStart: sniff
+            host: config.elasticsearch,
+            apiVersion: config.api_version,
+            sniffOnStart: config.sniff,
+            requestTimeout: config.request_timeout
         };
     }
       
@@ -39,7 +35,7 @@ angular.module('elasticjs.service', ['elasticsearch'])
     }
       
     ejs.getEsVersion = function() {
-        if(apiVersion == '0.9') {
+        if(config.api_version == '0.9') {
             return esClient.cluster.nodeInfo({all:true});
         } else {
             return esClient.nodes.info();

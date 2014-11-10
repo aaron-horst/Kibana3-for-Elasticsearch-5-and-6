@@ -48,6 +48,14 @@ function (Settings) {
 
     /** @scratch /configuration/config.js/5
      *
+     * ==== request_timeout
+     *
+     * The timeout in milliseconds for requests to Elasticsearch
+     */
+    request_timeout: 30000,
+
+    /** @scratch /configuration/config.js/5
+     *
      * ==== default_route
      *
      * This is the default landing page when you don't specify a dashboard to load. You can specify
