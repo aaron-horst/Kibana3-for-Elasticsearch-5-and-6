@@ -12,6 +12,7 @@ function (_) {
     var defaults = {
       elasticsearch     : "http://"+window.location.hostname+":9200",
       api_version       : "1.0",
+      sniff             : true,
       request_timeout   : 30000,
       panel_names       : [],
       kibana_index      : 'kibana-int',
