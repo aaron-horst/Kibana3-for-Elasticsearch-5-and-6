@@ -186,33 +186,34 @@ define([
             };
     
             $scope.$emit('render');
-          }
-        });
-        esVersion.gte('1.1.0').then(function(is) {
-          if (is) {
-            var value = results.aggregations.stats['stats'][$scope.panel.mode+'.0'];
-            var rows = queries.map(function (q, i) {
-              var alias = q.alias || q.query;
-              var obj = _.clone(q);
-              obj.label = alias;
-              obj.Label = alias.toLowerCase(); //sort field
-              obj.value = {};
-              obj.Value = {};
-              var data = results.aggregations['stats_'+i]['stats_'+i];
-              for ( var keys in data ) {
-                obj.value[parseInt(keys)] = data[keys];
-                obj.Value[parseInt(keys)] = data[keys]; //sort field
-              };
-              return obj;                                           
+          } else {
+            esVersion.gte('1.1.0').then(function(is) {
+              if (is) {
+                var value = results.aggregations.stats['stats'][$scope.panel.mode+'.0'];
+                var rows = queries.map(function (q, i) {
+                  var alias = q.alias || q.query;
+                  var obj = _.clone(q);
+                  obj.label = alias;
+                  obj.Label = alias.toLowerCase(); //sort field
+                  obj.value = {};
+                  obj.Value = {};
+                  var data = results.aggregations['stats_'+i]['stats_'+i];
+                  for ( var keys in data ) {
+                    obj.value[parseInt(keys)] = data[keys];
+                    obj.Value[parseInt(keys)] = data[keys]; //sort field
+                  };
+                  return obj;                                           
+                });
+        
+                $scope.data = {
+                  value: value,
+                  rows: rows
+                };
+        
+                $scope.$emit('render');
+              }
             });
-    
-            $scope.data = {
-              value: value,
-              rows: rows
-            };
-    
-            $scope.$emit('render');
-          }
+          };
         });
 
       });

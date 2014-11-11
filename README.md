@@ -185,6 +185,11 @@ Many thanks to this author(@thegreenpizza)!
 
 <https://github.com/elasticsearch/kibana/pull/1377>
 
+Add two configuration settings into `config.js`:
+
+1. sniff: now kibana would sniff all your nodes by default
+2. request_timeout: now kibana wouldn't render panels if your data return after 30 seconds
+
 *If you had wrote your own panels and want to migrate to the latest elasticjs, just change a few codes as follow:*
 
 ```javascript
