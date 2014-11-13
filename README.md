@@ -64,14 +64,14 @@ I use Passwd as default(using `htpasswd` commandline). But you can add/change mo
 The code depands on Mojolicious and Authen::Simple.
 
 ```
-curl http://xrl.us/cpanm -o /usr/local/bin/cpanm
+curl -L http://xrl.us/cpanm -o /usr/local/bin/cpanm
 chmod +x /usr/local/bin/cpanm
 cpanm Mojolicious Authen::Simple::Passwd
 ```
 
 *For windows user, install [Strawpberry Perl](http://strawberryperl.com/) which bring `cpanm` already.*
 
-If you want use other authen methods, for example, LDAP, just run `cpanm Authen::Simple::LDAP`.
+**If you want use other authen methods, for example, LDAP, just run `cpanm Authen::Simple::LDAP`.**
 
 *Tips: if you run the code at a clean RHEL system, you may find `Digest::SHA` need to install too. RedHat split Perl core modules to a special `perl-core` RPM. Run `yum install -y perl-core` to solve it. I HATE REDHAT!*
 
