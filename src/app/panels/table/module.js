@@ -193,9 +193,9 @@ function (angular, app, _, kbn, moment) {
       var rows = _.map($scope.data, function(e) {
         var exportFields = [];
         _.each($scope.panel.fields, function(field) {
-          exportFields.push(e._source[field]);
+          exportFields.push(escape(e._source[field]));
         });
-        return _.values(exportFields).join($scope.csv.separator) + '\r\n';
+        return exportFields.join($scope.csv.separator) + '\r\n';
       });
 
       var blob = new Blob(rows, { type: 'text/plain' });
