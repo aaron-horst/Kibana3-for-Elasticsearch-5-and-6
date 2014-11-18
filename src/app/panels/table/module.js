@@ -18,7 +18,9 @@ define([
   'lodash',
   'kbn',
   'moment',
-  'jsonpath'
+  'jsonpath',
+  'filesaver',
+  'blob'
 ],
 function (angular, app, _, kbn, moment) {
   'use strict';
@@ -30,6 +32,12 @@ function (angular, app, _, kbn, moment) {
     fields, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       modals : [
+        {
+          description: "Export",
+          icon: "icon-download-alt",
+          partial: "app/panels/table/export.html",
+          show: $scope.panel.exportable
+        },
         {
           description: "Inspect",
           icon: "icon-info-sign",
@@ -126,6 +134,10 @@ function (angular, app, _, kbn, moment) {
        */
       spyable : true,
       /** @scratch /panels/table/5
+       * exportable:: Set to false to disable the export icon
+       */
+      exportable : true,
+      /** @scratch /panels/table/5
        *
        * ==== Queries
        * queries object:: This object describes the queries to use on this panel.
@@ -157,6 +169,39 @@ function (angular, app, _, kbn, moment) {
 
     // Create a percent function for the view
     $scope.percent = kbn.to_percent;
+
+    $scope.csv = {
+      showOptions: false,
+      separator: ',',
+      quoteValues: true,
+      filename: 'table.csv'
+    };
+    $scope.exportAsCsv = function() {
+      if (!$scope.data) return;
+
+      var text = '';
+      var nonAlphaNumRE = /[^a-zA-Z0-9]/;
+      var allDoubleQuoteRE = /"/g;
+      var escape = function (val) {
+        val = String(val);
+        if ($scope.csv.quoteValues && nonAlphaNumRE.test(val)) {
+          val = '"' + val.replace(allDoubleQuoteRE, '""') + '"';
+        }
+        return val;
+      };
+
+      var rows = _.map($scope.data, function(e) {
+        var exportFields = [];
+        _.each($scope.panel.fields, function(field) {
+          exportFields.push(e._source[field]);
+        });
+        return _.values(exportFields).join($scope.csv.separator) + '\r\n';
+      });
+
+      var blob = new Blob(rows, { type: 'text/plain' });
+
+      window.saveAs(blob, $scope.csv.filename);
+    };
 
     $scope.closeFacet = function() {
       if($scope.modalField) {
