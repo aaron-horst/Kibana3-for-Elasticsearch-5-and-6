@@ -105,6 +105,20 @@ And you can add more range sections as you like:
 
 ![](src/img/chenryn_img/range-setting.jpg)
 
+## export table panel as CSV
+
+Port kibana 4 exportAsCsv function back to kibana 3.
+
+Note that I add the export icon in panelModal, so you may need add a `"exportable":true` into your exists dashboard json by hands, overwise it won't trigger the `ng-show`.
+
+## uniq mode for histogram panel
+
+First, I re-implement histogram panel using the new aggregations api instead of facets api. The requst now is a nested aggregation with global/filter/date_histogram in turns. Then we can set stats aggregation as a sub aggr for "min/max/avg", and also cardinality aggregation for "uniq"! What ever you want could be added in the same way. Much thanks for aggr.
+
+**Attention: the cardinality aggregation was added in elasticsearch 1.1.0.**
+
+Offical blog about cardinality aggr: <http://www.elasticsearch.org/blog/count-elasticsearch/>
+
 ## bettermap providers
 
 Now you can select different leaflet map providers from `bettermap` panel settings.
