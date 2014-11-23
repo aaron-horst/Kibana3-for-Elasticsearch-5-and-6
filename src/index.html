@@ -39,7 +39,7 @@
       <button type="button" class="close" ng-click="dashAlerts.clear(alert)" style="padding-right:50px">&times;</button>
       <strong>{{alert.title}}</strong> <span ng-bind-html='alert.text'></span> <div style="padding-right:10px" class='pull-right small'> {{$index + 1}} alert(s) </div>
     </div>
-    <div ng-cloak class="navbar navbar-static-top">
+    <div ng-cloak class="navbar navbar-static-top" ng-show="dashboard.current.nav.length">
       <div class="navbar-inner">
         <div class="container-fluid">
           <span class="brand"><img src="img/small.png" bs-tooltip="'Kibana '+(kbnVersion=='@REV@'?'master':kbnVersion)" data-placement="bottom"> {{dashboard.current.title}}</span>
