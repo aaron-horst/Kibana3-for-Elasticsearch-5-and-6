@@ -220,6 +220,13 @@ Add force panel of packetbeat.
 
 <https://github.com/packetbeat/kibana/commit/27cba54a73dd4246161df1bb1ed45d380588c6a5>
 
+## hiddenable navbar
+
+Add `ng-show="dashboard.current.nav.length"` into `index.html`. So now you can use dynamic script dashboard to show only panel without any other things. This is very useful if you want embed some panel chart into other systems.
+
+See script dashboard at : <./src/app/dashboards/panel.js>
+
+
 TODO
 =======================
 
