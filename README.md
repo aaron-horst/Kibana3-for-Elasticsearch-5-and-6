@@ -59,14 +59,26 @@ I use Passwd as default(using `htpasswd` commandline). But you can add/change mo
   }
 ```
 
-### Install
+### Install(bundle way)
+
+I used `carton` to bundle the whole dependent libraries into `vendor/cache`. So you can install and run kbnauth as follow:
+
+```
+./vendor/bin/carton install --cached
+./vendor/bin/carton exec local/bin/hypnotoad script/kbnauth
+```
+
+### Install(manual way)
 
 The code depands on Mojolicious and Authen::Simple.
 
 ```
+cd kbnauth
 curl -L http://xrl.us/cpanm -o /usr/local/bin/cpanm
 chmod +x /usr/local/bin/cpanm
 cpanm Mojolicious Authen::Simple::Passwd
+morbo script/kbnauth # listen :3000 for development
+hypnotoad script/kbnauth     # listen :80 for production, ports defined at kbn_auth.conf
 ```
 
 *For windows user, install [Strawpberry Perl](http://strawberryperl.com/) which bring `cpanm` already.*
@@ -74,14 +86,6 @@ cpanm Mojolicious Authen::Simple::Passwd
 **If you want use other authen methods, for example, LDAP, just run `cpanm Authen::Simple::LDAP`.**
 
 *Tips: if you run the code at a clean RHEL system, you may find `Digest::SHA` need to install too. RedHat split Perl core modules to a special `perl-core` RPM. Run `yum install -y perl-core` to solve it. I HATE REDHAT!*
-
-### Run
-
-```
-cd kbnauth
-morbo script/kbnauth # listen :3000 for development
-hypnotoad script/kbnauth     # listen :80 for production, ports defined at kbn_auth.conf
-```
 
 Now you can login with init user/pass: "sri/secr3t". (this is the name of mojolicious creator)
 
