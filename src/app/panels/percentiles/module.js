@@ -145,7 +145,7 @@ define([
           $scope.ejs.FilterAggregation(qname)
             .filter($scope.ejs.QueryFilter(
               $scope.ejs.FilteredQuery(
-                boolQuery,
+                query,
                 filterSrv.getBoolFilter(filterSrv.ids())
               )
             ))
