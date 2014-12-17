@@ -12,6 +12,10 @@
       <label class="small">Unit</label>
         <input type="text" class="input-large" ng-model="panel.unit">
     </div>
+    <div class="editor-option">
+      <label class="small">Compression <tip>Compression controls memory usage and approximation error</tip></label>
+        <input type="text" class="input-small" ng-model="panel.compression">
+    </div>
 
     <h5>Columns</h5>
     <div class="editor-option" ng-repeat="stat in modes">

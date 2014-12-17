@@ -64,6 +64,7 @@ I use Passwd as default(using `htpasswd` commandline). But you can add/change mo
 I used `carton` to bundle the whole dependent libraries into `vendor/cache`. So you can install and run kbnauth as follow:
 
 ```
+cd kbnauth
 ./vendor/bin/carton install --cached
 ./vendor/bin/carton exec local/bin/hypnotoad script/kbnauth
 ```
@@ -91,11 +92,9 @@ Now you can login with init user/pass: "sri/secr3t". (this is the name of mojoli
 
 ## percentile panel
 
-Percentile is a great data analysis method. Elasticsearch add percentile aggregation support after version 1.1.0. But Kibana v3 use an outdate elastic.js which don't support aggergation! So I write this panel using native angularjs `$.http` api.
+Percentile is a great data analysis method. Elasticsearch add percentile aggregation support after version 1.1.0. ~~But Kibana v3 use an outdate elastic.js which don't support aggergation! So I write this panel using native angularjs `$.http` api.~~ Merged new version of elasticjs at 2014/08/15, rewrite this panel now.(DONE at 2014/08/16)
 
-*Elasticsearch had add percentile rank in version 1.3.0, so exciting!*
-
-*Tips: merged new version of elasticjs at 2014/08/15, should rewrite this panel now.*(DONE at 2014/08/16)
+Add compression options to control PercentileAggregation, because percentile may be so slow. Saw <http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-metrics-percentile-aggregation.html#search-aggregations-metrics-percentile-aggregation-compression> for the reason.
 
 ## range panel
 
@@ -234,8 +233,8 @@ See script dashboard at : <./src/app/dashboards/panel.js>
 TODO
 =======================
 
-* <del>Math.log() for valuehistogram panel</del> (had try `_.map(series, function(v){return Math.log(v)})`, not so useful)
+* ~~Math.log() for valuehistogram panel~~ (had try `_.map(series, function(v){return Math.log(v)})`, not so useful)
 * percentile histogram panel <http://www.flotcharts.org/flot/examples/percentiles/index.html>??
 * heatmap panel <http://www.patrick-wied.at/static/heatmapjs/plugin-leaflet-layer.html>
-* <del>threshold for histogram <http://www.flotcharts.org/flot/examples/threshold/index.html></del> (had try, not so useful, but I keep this commit in the repo)
-* <del>webkit.notification for histogram</del>
+* ~~threshold for histogram <http://www.flotcharts.org/flot/examples/threshold/index.html>~~ (had try, not so useful, but I keep this commit in the repo)
+* ~~webkit.notification for histogram~~

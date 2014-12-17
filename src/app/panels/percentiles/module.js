@@ -66,6 +66,7 @@ define([
       label_name: 'Query',
       value_name: 'Value',
       spyable     : true,
+      compression : 100,
       show: {
         '25': true,
         '75': true,
@@ -133,6 +134,7 @@ define([
             .aggregation($scope.ejs.PercentilesAggregation('stats')
               .field($scope.panel.field)
               .percents(percents)
+              .compression($scope.panel.compression)
             )
           ).size(0);
 
@@ -152,6 +154,7 @@ define([
             .aggregation($scope.ejs.PercentilesAggregation(qname)
               .field($scope.panel.field)
               .percents(percents)
+              .compression($scope.panel.compression)
             )
           );
       });
