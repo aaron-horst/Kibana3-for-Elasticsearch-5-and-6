@@ -229,6 +229,11 @@ Add `ng-show="dashboard.current.nav.length"` into `index.html`. So now you can u
 
 See script dashboard at : <./src/app/dashboards/panel.js>
 
+## scriptField for terms panel
+
+Support to define scripted field for terms/termstats facet. Just like what you can do in Kibana4.
+
+![](src/img/chenryn_img/script-field.png)
 
 TODO
 =======================
@@ -238,3 +243,4 @@ TODO
 * heatmap panel <http://www.patrick-wied.at/static/heatmapjs/plugin-leaflet-layer.html>
 * ~~threshold for histogram <http://www.flotcharts.org/flot/examples/threshold/index.html>~~ (had try, not so useful, but I keep this commit in the repo)
 * ~~webkit.notification for histogram~~
+* ~~script fields for terms panel~~

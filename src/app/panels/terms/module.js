@@ -115,6 +115,10 @@ function (angular, app, _, $, kbn) {
         ids         : []
       },
       /** @scratch /panels/terms/5
+       * fmode:: Field mode: normal or script
+       */
+      fmode       : 'normal',
+      /** @scratch /panels/terms/5
        * tmode:: Facet mode: terms or terms_stats
        */
       tmode       : 'terms',
@@ -148,6 +152,8 @@ function (angular, app, _, $, kbn) {
 
       $scope.panelMeta.loading = true;
       var request,
+        terms_facet,
+        termstats_facet,
         results,
         boolQuery,
         queries;
@@ -168,8 +174,7 @@ function (angular, app, _, $, kbn) {
 
       // Terms mode
       if($scope.panel.tmode === 'terms') {
-        request = request
-          .facet($scope.ejs.TermsFacet('terms')
+        terms_facet = $scope.ejs.TermsFacet('terms')
           .field($scope.field)
           .size($scope.panel.size)
           .order($scope.panel.order)
@@ -178,11 +183,14 @@ function (angular, app, _, $, kbn) {
             $scope.ejs.FilteredQuery(
               boolQuery,
               filterSrv.getBoolFilter(filterSrv.ids())
-            )))).size(0);
+            )));
+        if($scope.panel.fmode === 'script') {
+          terms_facet.scriptField($scope.panel.script)
+        }
+        request = request.facet(terms_facet).size(0);
       }
       if($scope.panel.tmode === 'terms_stats') {
-        request = request
-          .facet($scope.ejs.TermStatsFacet('terms')
+        termstats_facet = $scope.ejs.TermStatsFacet('terms')
           .valueField($scope.panel.valuefield)
           .keyField($scope.field)
           .size($scope.panel.size)
@@ -191,7 +199,11 @@ function (angular, app, _, $, kbn) {
             $scope.ejs.FilteredQuery(
               boolQuery,
               filterSrv.getBoolFilter(filterSrv.ids())
-            )))).size(0);
+            )));
+        if($scope.panel.fmode === 'script') {
+          termstats_facet.scriptField($scope.panel.script)
+        }
+        request = request.facet(termstats_facet).size(0);
       }
 
       // Populate the inspector panel
