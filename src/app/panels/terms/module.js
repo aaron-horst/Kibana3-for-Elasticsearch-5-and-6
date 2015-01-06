@@ -225,7 +225,10 @@ function (angular, app, _, $, kbn) {
     };
 
     $scope.build_search = function(term,negate) {
-      if(_.isUndefined(term.meta)) {
+      if($scope.panel.fmode === 'script') {
+        filterSrv.set({type:'script',script:$scope.panel.script + ' == \"' + term.label + '\"',
+          mandate:(negate ? 'mustNot':'must')});
+      } else if(_.isUndefined(term.meta)) {
         filterSrv.set({type:'terms',field:$scope.field,value:term.label,
           mandate:(negate ? 'mustNot':'must')});
       } else if(term.meta === 'missing') {

@@ -186,6 +186,8 @@ define([
         return ejs.ExistsFilter(filter.field);
       case 'missing':
         return ejs.MissingFilter(filter.field);
+      case 'script':
+        return ejs.ScriptFilter(filter.script);
       default:
         return false;
       }
