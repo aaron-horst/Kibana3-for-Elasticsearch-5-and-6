@@ -176,6 +176,10 @@ Many thanks to this author(@tvvmb)!
 
 <https://github.com/elasticsearch/kibana/pull/1296>
 
+## multiple Y-Axis for multifieldhistogram panel
+
+You can select one field to use right Y-Axis to show your data.
+
 ## valuehistogram panel
 
 Enhances the histogram panel to support value-based histograms in addition to time-series histograms.
@@ -244,3 +248,4 @@ TODO
 * ~~threshold for histogram <http://www.flotcharts.org/flot/examples/threshold/index.html>~~ (had try, not so useful, but I keep this commit in the repo)
 * ~~webkit.notification for histogram~~
 * ~~script fields for terms panel~~
+* Multiple axis support for multifieldhistogram

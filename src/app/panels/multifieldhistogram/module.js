@@ -85,6 +85,10 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       /** @scratch /panels/multifieldhistogram/3
        * derivative:: Show each point on the x-axis as the change from the previous point
        */
+      yaxisposition  : 'left',
+      /** @scratch /panels/multifieldhistogram/3
+       * yaxispostion:: Show y-axis at which position.
+       */
       derivative    : false,
       /** @scratch /panels/multifieldhistogram/5
        * queries array:: which query ids are selected.
@@ -494,6 +498,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
 
               data[serie_id] = {
                 info: info,
+                yaxis: panel_value.yaxisposition === 'left' ? 1 : 2,
                 time_series: time_series,
                 hits: hits,
                 counters: counters
@@ -674,11 +679,16 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
                 },
                 shadowSize: 1
               },
-              yaxis: {
+              yaxes: [{
                 show: scope.panel['y-axis'],
                 min: scope.panel.grid.min,
                 max: scope.panel.percentage && scope.panel.stack ? 100 : scope.panel.grid.max
-              },
+              },{
+                show: scope.panel['y-axis'],
+                position: 'right',
+                min: scope.panel.grid.min,
+                max: scope.panel.percentage && scope.panel.stack ? 100 : scope.panel.grid.max
+              }],
               xaxis: {
                 timezone: scope.panel.timezone,
                 show: scope.panel['x-axis'],
@@ -698,14 +708,14 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
             };
 
             if (scope.panel.y_format === 'bytes') {
-              options.yaxis.mode = "byte";
-              options.yaxis.tickFormatter = function (val, axis) {
+              options.yaxes[0].mode = "byte";
+              options.yaxes[0].tickFormatter = function (val, axis) {
                 return kbn.byteFormat(val, 0, axis.tickSize);
               };
             }
 
             if (scope.panel.y_format === 'short') {
-              options.yaxis.tickFormatter = function (val, axis) {
+              options.yaxis[0].tickFormatter = function (val, axis) {
                 return kbn.shortFormat(val, 0, axis.tickSize);
               };
             }
