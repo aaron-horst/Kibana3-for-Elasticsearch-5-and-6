@@ -407,7 +407,8 @@ function (angular, app, _, $, kbn) {
             $tooltip
               .html(
                 kbn.query_color_dot(item.series.color, 20) + ' ' +
-                item.series.label + " (" + value.toFixed(0)+")"
+                item.series.label + " (" + value.toFixed(0) +
+                (scope.panel.chart === 'pie' ? (", " + Math.round(item.datapoint[0]) + "%") : "") + ")"
               )
               .place_tt(pos.pageX, pos.pageY);
           } else {
