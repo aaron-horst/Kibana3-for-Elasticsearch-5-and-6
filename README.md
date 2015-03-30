@@ -102,11 +102,11 @@ I need a pie chart to show percentile of range sections(percentile rank wait for
 
 Here is the rendering:
 
-![](src/img/chenryn_img/range-panel.jpg)
+![](docs/chenryn_img/range-panel.jpg)
 
 And you can add more range sections as you like:
 
-![](src/img/chenryn_img/range-setting.jpg)
+![](docs/chenryn_img/range-setting.jpg)
 
 ## export table panel as CSV
 
@@ -128,19 +128,19 @@ Now you can select different leaflet map providers from `bettermap` panel settin
 
 For chinese user, there is **GaoDe**(高德地图)!
 
-![](src/img/chenryn_img/bettermap-gaode.png)
+![](docs/chenryn_img/bettermap-gaode.png)
 
 ## queries generator
 
 Fetch `_type` and `fields` from `/_mapping` API. and help you to generate some querystrings by click multi-select.
 
-![](src/img/chenryn_img/query-panel.png)
+![](docs/chenryn_img/query-panel.png)
 
 ## histogram threshold notification
 
 Use [HTML5 Notification API](https://developer.mozilla.org/en-US/docs/Web/API/notification) to alert the outier value of queries.
 
-![](src/img/chenryn_img/hist-notification.png)
+![](docs/chenryn_img/hist-notification.png)
 
 ## china map
 
@@ -223,7 +223,7 @@ $scope.inspector = request.toJSON();
 
 Add force panel of packetbeat.
 
-![](src/img/chenryn_img/force-panel.png)
+![](docs/chenryn_img/force-panel.png)
 
 <https://github.com/packetbeat/kibana/commit/27cba54a73dd4246161df1bb1ed45d380588c6a5>
 
@@ -237,7 +237,13 @@ See script dashboard at : <./src/app/dashboards/panel.js>
 
 Support to define scripted field for terms/termstats facet. Just like what you can do in Kibana4.
 
-![](src/img/chenryn_img/script-field.png)
+![](docs/chenryn_img/script-field.png)
+
+## multi-select to filtering for terms panel
+
+You can click multi `term.label` lines, and then submit to set an **either** `filterSrv`.
+
+![](docs/chenryn_img/multi-terms.png)
 
 TODO
 =======================
@@ -248,4 +254,4 @@ TODO
 * ~~threshold for histogram <http://www.flotcharts.org/flot/examples/threshold/index.html>~~ (had try, not so useful, but I keep this commit in the repo)
 * ~~webkit.notification for histogram~~
 * ~~script fields for terms panel~~
-* Multiple axis support for multifieldhistogram
+* ~~Multiple axis support for multifieldhistogram~~

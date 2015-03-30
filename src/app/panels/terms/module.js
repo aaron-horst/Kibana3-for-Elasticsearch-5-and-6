@@ -115,6 +115,10 @@ function (angular, app, _, $, kbn) {
         ids         : []
       },
       /** @scratch /panels/terms/5
+       * multiterms:: Multi terms: used to either filterSrv
+       */
+      multiterms  : [],
+      /** @scratch /panels/terms/5
        * fmode:: Field mode: normal or script
        */
       fmode       : 'normal',
@@ -237,6 +241,36 @@ function (angular, app, _, $, kbn) {
       } else {
         return;
       }
+    };
+
+    var build_multi_search = function(term) {
+      if($scope.panel.fmode === 'script') {
+        return({type:'script',script:$scope.panel.script + ' == \"' + term.label + '\"',
+          mandate:'either', alias: term.label});
+      } else if(_.isUndefined(term.meta)) {
+        return({type:'terms',field:$scope.field,value:term.label, mandate:'either'});
+      } else if(term.meta === 'missing') {
+        return({type:'exists',field:$scope.field, mandate:'either'});
+      } else {
+        return;
+      }
+    };
+
+    $scope.multi_search = function() {
+      _.each($scope.panel.multiterms, function(t) {
+        var f = build_multi_search(t);
+        filterSrv.set(f, undefined, true)
+      });
+      dashboard.refresh();
+    };
+    $scope.add_multi_search = function(term) {
+      $scope.panel.multiterms.push(term);
+    };
+    $scope.delete_multi_search = function(term) {
+      _.remove($scope.panel.multiterms, term);
+    };
+    $scope.check_multi_search = function(term) {
+      return _.indexOf($scope.panel.multiterms, term) >= 0;
     };
 
     $scope.set_refresh = function (state) {

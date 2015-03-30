@@ -91,15 +91,18 @@
   <!-- TABLE -->
   <table ng-style="panel.style" class="table table-striped table-condensed" ng-show="panel.chart == 'table'">
     <thead>
-      <th>Term</th> <th>{{ panel.tmode == 'terms_stats' ? panel.tstat : 'Count' }}</th> <th>Action</th>
+      <th>Term</th> <th>{{ panel.tmode == 'terms_stats' ? panel.tstat : 'Count' }}</th>
+      <th ng-hide="panel.multiterms.length">Action</th>
+      <th ng-show="panel.multiterms.length" ng-click="multi_search()">Submit<i class="icon-hand-left" ng-click="multi_search()"></i></th>
     </thead>
     <tr ng-repeat="term in data" ng-show="showMeta(term)">
-      <td class="terms-legend-term">{{term.label}}</td>
+      <td class="terms-legend-term" ng-click="add_multi_search(term)">{{term.label}}</td>
       <td>{{term.data[0][1]}}</td>
       <td>
         <span ng-hide="term.meta == 'other'">
           <i class='icon-search pointer' ng-click="build_search(term)"></i>
           <i class='icon-ban-circle pointer' ng-click="build_search(term,true)"></i>
+          <i class='icon-check pointer' ng-click="delete_multi_search(term)" ng-show="check_multi_search(term)"></i>
         </span>
       </td>
     </tr>
