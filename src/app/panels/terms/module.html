@@ -93,7 +93,7 @@
     <thead>
       <th>Term</th> <th>{{ panel.tmode == 'terms_stats' ? panel.tstat : 'Count' }}</th>
       <th ng-hide="panel.multiterms.length">Action</th>
-      <th ng-show="panel.multiterms.length" ng-click="multi_search()">Submit<i class="icon-hand-left" ng-click="multi_search()"></i></th>
+      <th ng-show="panel.multiterms.length"><button class="btn btn-mini btn-success" ng-click="multi_search()">Submit</button></th>
     </thead>
     <tr ng-repeat="term in data" ng-show="showMeta(term)">
       <td class="terms-legend-term" ng-click="add_multi_search(term)">{{term.label}}</td>
