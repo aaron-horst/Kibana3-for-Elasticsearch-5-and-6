@@ -47,11 +47,12 @@ angular.module('elasticjs.service', ['elasticsearch'])
             return esClient.search({
             index: indices,
             body: searchBody,
-                size: size
+            size: size
             });
         } else {
             return esClient.search({
             index: indices,
+            searchType: "count",
             body: searchBody
             });
         }

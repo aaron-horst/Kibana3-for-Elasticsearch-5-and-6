@@ -386,13 +386,12 @@ function (angular, app, _, kbn, moment) {
           .fragmentSize(2147483647) // Max size of a 32bit unsigned int
           .preTags('@start-highlight@')
           .postTags('@end-highlight@')
-        ).size($scope.panel.size*$scope.panel.pages)
-        .sort(sort);
+        ).sort(sort);
 
       $scope.populate_modal(request);
 
       // Populate scope when we have results
-      $scope.ejs.doSearch(dashboard.indices[_segment], request).then(function(results) {
+      $scope.ejs.doSearch(dashboard.indices[_segment], request, $scope.panel.size*$scope.panel.pages).then(function(results) {
         $scope.panelMeta.loading = false;
 
         if(_segment === 0) {
