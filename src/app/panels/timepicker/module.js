@@ -165,6 +165,10 @@ function (angular, app, _, moment, kbn) {
         to: "now"
       };
 
+      if ($scope.panel.nowDelay) {
+          _filter.to = 'now-' + $scope.panel.nowDelay;
+      }
+
       // Clear all time filters, set a new one
       filterSrv.removeByType('time',true);
 

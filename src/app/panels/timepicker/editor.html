@@ -12,5 +12,12 @@
         <label class="small">Time Field</label>
         <input type="text" class="input-small" ng-model="panel.timefield">
       </div>
+      <div class="editor-option">
+          <label class="small">Until</label>
+          <label class="tight-form-item">now-
+              <input type="text" class="input-mini tight-form-input last"
+              ng-model="panel.nowDelay" placeholder="0m" valid-time-span bs-tooltip="'Enter 1m to ignore the last minute (because it can contain incomplete metrics)'"data-placement="right">
+          </label>
+      </div>
     </div>
   </div>
