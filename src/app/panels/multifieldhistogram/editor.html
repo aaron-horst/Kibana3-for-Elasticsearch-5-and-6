@@ -30,7 +30,7 @@
           <td>
             <div class="editor-option">
               <label class="small">Mode</label>
-              <select ng-change="set_refresh(true)" class="input-small" ng-model="value.mode" ng-options="f for f in ['count','min','mean','max','total']"></select>
+              <select ng-change="set_refresh(true)" class="input-small" ng-model="value.mode" ng-options="f for f in ['count','uniq','min','mean','max','total']"></select>
             </div>
             <div class="editor-option" ng-show="value.mode != 'count'">
               <label class="small">Value Field <tip>This field must contain a numeric value</tip></label>
@@ -55,7 +55,7 @@
               <input type="checkbox" ng-model="value.zerofill" ng-checked="value.zerofill" ng-change="set_refresh(true)">
             </div>
             <div class="editor-option">
-              <label class="small">Yaxis Position<tip>default "left"</tip></label>
+              <label class="small">Yaxis Position<tip>default 'left'</tip></label>
               <select ng-model="value.yaxisposition" class='input-small' ng-options="f for f in ['left','right']" ng-change="set_refresh(true)"></select>
             </div>
           </td>
