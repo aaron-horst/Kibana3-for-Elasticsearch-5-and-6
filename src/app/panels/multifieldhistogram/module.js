@@ -370,20 +370,26 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
             filterSrv.getBoolFilter(filterSrv.ids())
           );
 
-          var facet = $scope.ejs.DateHistogramFacet(serie_id);
+          var aggr = $scope.ejs.DateHistogramAggregation(serie_id);
 
           if(panel_value.mode === 'count') {
-            facet = facet.field($scope.panel.time_field).global(true);
+            aggr = aggr.field($scope.panel.time_field);
+          } else if(panel_value.mode === 'uniq') {
+            aggr = aggr.field($scope.panel.time_field).agg($scope.ejs.CardinalityAggregation(serie_id).field(panel_value.value_field));
           } else {
             if(_.isNull(panel_value.value_field)) {
               $scope.panel.error = "In " + panel_value.mode + " mode a field must be specified";
               return;
             }
-            facet = facet.keyField($scope.panel.time_field).valueField(panel_value.value_field).global(true);
+            aggr = aggr.field($scope.panel.time_field).agg($scope.ejs.StatsAggregation(serie_id).field(panel_value.value_field));
           }
-          facet = facet.interval(_interval).facetFilter($scope.ejs.QueryFilter(query));
-          request = request.facet(facet)
-            .size($scope.panel.annotate.enable ? $scope.panel.annotate.size : 0);
+          request = request.agg(
+          $scope.ejs.GlobalAggregation(serie_id).agg(
+            $scope.ejs.FilterAggregation(serie_id).filter($scope.ejs.QueryFilter(query)).agg(
+              aggr.interval(_interval)
+            )
+          )
+        ).size($scope.panel.annotate.enable ? $scope.panel.annotate.size : 0);
         });
       });
 
@@ -435,7 +441,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
             queries = querySrv.getQueryObjs(panel_value.queries);
             _.each(queries, function(q) {
               var serie_id = panel_value_index.toString()+"_"+q.id.toString();
-              var query_results = results.facets[serie_id];
+              var query_results = results.aggregations[serie_id][serie_id][serie_id];
               // we need to initialize the data variable on the first run,
               // and when we are working on the first segment of the data.
               if(_.isUndefined(data[serie_id]) || segment === 0) {
@@ -455,38 +461,40 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
               }
 
               // push each entry into the time series, while incrementing counters
-              _.each(query_results.entries, function(entry) {
+              _.each(query_results.buckets, function(entry) {
                 var value;
 
-                hits += entry.count; // The series level hits counter
-                $scope.hits += entry.count; // Entire dataset level hits counter
-                counters[entry.time] = (counters[entry.time] || 0) + entry.count;
+                hits += entry.doc_count; // The series level hits counter
+                $scope.hits += entry.doc_count; // Entire dataset level hits counter
+                counters[entry.key] = (counters[entry.key] || 0) + entry.doc_count;
 
                 if(panel_value.mode === 'count') {
-                  value = (time_series._data[entry.time] || 0) + entry.count;
+                  value = (time_series._data[entry.key] || 0) + entry.doc_count;
+                } else if (panel_value.mode === 'uniq') {
+                  value = (time_series._data[entry.key] || 0) + entry[serie_id].value;
                 } else if (panel_value.mode === 'mean') {
                   // Compute the ongoing mean by
                   // multiplying the existing mean by the existing hits
                   // plus the new mean multiplied by the new hits
                   // divided by the total hits
-                  value = (((time_series._data[entry.time] || 0)*(counters[entry.time]-entry.count)) +
-                    entry.mean*entry.count)/(counters[entry.time]);
+                  value = (((time_series._data[entry.key] || 0)*(counters[entry.key]-entry.doc_count)) +
+                    entry[serie_id].avg*entry.doc_count)/(counters[entry.key]);
                 } else if (panel_value.mode === 'min'){
-                  if(_.isUndefined(time_series._data[entry.time])) {
-                    value = entry.min;
+                  if(_.isUndefined(time_series._data[entry.key])) {
+                    value = entry[serie_id].min;
                   } else {
-                    value = time_series._data[entry.time] < entry.min ? time_series._data[entry.time] : entry.min;
+                    value = time_series._data[entry.key] < entry[serie_id].min ? time_series._data[entry.key] : entry[serie_id].min;
                   }
                 } else if (panel_value.mode === 'max'){
-                  if(_.isUndefined(time_series._data[entry.time])) {
-                    value = entry.max;
+                  if(_.isUndefined(time_series._data[entry.key])) {
+                    value = entry[serie_id].max;
                   } else {
-                    value = time_series._data[entry.time] > entry.max ? time_series._data[entry.time] : entry.max;
+                    value = time_series._data[entry.key] > entry[serie_id].max ? time_series._data[entry.key] : entry[serie_id].max;
                   }
                 } else if (panel_value.mode === 'total'){
-                  value = (time_series._data[entry.time] || 0) + entry.total;
+                  value = (time_series._data[entry.key] || 0) + entry[serie_id].sum;
                 }
-                time_series.addValue(entry.time, value);
+                time_series.addValue(entry.key, value);
               });
 
               var info = {
@@ -679,7 +687,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
                 },
                 shadowSize: 1
               },
-              yaxes: [{
+              yaxis: [{
                 show: scope.panel['y-axis'],
                 min: scope.panel.grid.min,
                 max: scope.panel.percentage && scope.panel.stack ? 100 : scope.panel.grid.max
@@ -708,8 +716,8 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
             };
 
             if (scope.panel.y_format === 'bytes') {
-              options.yaxes[0].mode = "byte";
-              options.yaxes[0].tickFormatter = function (val, axis) {
+              options.yaxis[0].mode = "byte";
+              options.yaxis[0].tickFormatter = function (val, axis) {
                 return kbn.byteFormat(val, 0, axis.tickSize);
               };
             }
