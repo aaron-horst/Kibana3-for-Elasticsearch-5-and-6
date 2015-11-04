@@ -7,7 +7,7 @@
           <h1>Connection Failed</h1>
 
             <h5>Possibility #1: Your elasticsearch server is down or unreachable</h5>
-            This can be caused by a network outage, or a failure of the Elasticsearch process. If you have recently run a query that required a <i>terms</i> facet to be executed it is possible the process has run out of memory and stopped. Be sure to check your Elasticsearch logs for any sign of memory pressure.
+            This can be caused by a network outage, or a failure of the Elasticsearch process. If you have recently run a query that required a <i>terms</i> aggregation to be executed it is possible the process has run out of memory and stopped. Be sure to check your Elasticsearch logs for any sign of memory pressure.
             <h5>Possibility #2: You are running Elasticsearch 1.4 or higher</h5>
             Elasticsearch 1.4 ships with a security setting that prevents Kibana from connecting. You will need to set the following in your elasticsearch.yml:
             <p>

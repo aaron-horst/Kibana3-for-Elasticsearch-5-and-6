@@ -202,7 +202,7 @@ Many thanks to this author(@thegreenpizza)!
 
 * Angular is now at 1.2.20
 * Elasticsearch JS now included
-* Updated to the latest elasticjs
+* Updated to the latest elasticjs(use a new fork: <https://github.com/ErwanPigneul/elastic.js> 2015.11.04)
 
 <https://github.com/elasticsearch/kibana/pull/1377>
 
@@ -255,3 +255,5 @@ TODO
 * ~~webkit.notification for histogram~~
 * ~~script fields for terms panel~~
 * ~~Multiple axis support for multifieldhistogram~~
+* totally aggregation API
+* `geohash_grid` for bettermap
