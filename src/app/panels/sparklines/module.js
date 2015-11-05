@@ -176,20 +176,24 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           filterSrv.getBoolFilter(filterSrv.ids())
         );
 
-        var facet = $scope.ejs.DateHistogramFacet(q.id);
+        var aggr = $scope.ejs.DateHistogramAggregation(q.id);
 
         if($scope.panel.mode === 'count') {
-          facet = facet.field($scope.panel.time_field).global(true);
+            aggr = aggr.field($scope.panel.time_field);
         } else {
           if(_.isNull($scope.panel.value_field)) {
             $scope.panel.error = "In " + $scope.panel.mode + " mode a field must be specified";
             return;
           }
-          facet = facet.keyField($scope.panel.time_field).valueField($scope.panel.value_field);
+          aggr = aggr.field($scope.panel.time_field).agg($scope.ejs.StatsAggregation(q.id).field($scope.panel.value_field));
         }
-        facet = facet.interval(_interval).facetFilter($scope.ejs.QueryFilter(query));
-        request = request.facet(facet)
-          .size(0);
+        request = request.agg(
+                $scope.ejs.GlobalAggregation(q.id).agg(
+                    $scope.ejs.FilterAggregation(q.id).filter($scope.ejs.QueryFilter(query)).agg(
+                        aggr.interval(_interval)
+                        )
+                    )
+                ).size(0);
       });
 
       // Populate the inspector panel
@@ -222,7 +226,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             hits;
 
           _.each(queries, function(q) {
-            var query_results = results.facets[q.id];
+            var query_results = results.aggregations[q.id][q.id][q.id];
             // we need to initialize the data variable on the first run,
             // and when we are working on the first segment of the data.
             if(_.isUndefined($scope.data[i]) || segment === 0) {
@@ -240,10 +244,10 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             }
 
             // push each entry into the time series, while incrementing counters
-            _.each(query_results.entries, function(entry) {
-              time_series.addValue(entry.time, entry[$scope.panel.mode]);
-              hits += entry.count; // The series level hits counter
-              $scope.hits += entry.count; // Entire dataset level hits counter
+            _.each(query_results.buckets, function(entry) {
+              time_series.addValue(entry.key, entry.doc_count);
+              hits += entry.doc_count; // The series level hits counter
+              $scope.hits += entry.doc_count; // Entire dataset level hits counter
             });
             $scope.data[i] = {
               info: q,
