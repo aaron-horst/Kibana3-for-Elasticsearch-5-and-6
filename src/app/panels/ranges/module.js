@@ -8,7 +8,7 @@
  * == ranges
  * Status: *Experimental*
  *
- * A table, bar chart or pie chart based on the results of an Elasticsearch ranges facet.
+ * A table, bar chart or pie chart based on the results of an Elasticsearch ranges aggregation.
  *
  */
 define([
@@ -38,7 +38,7 @@ function (angular, app, _, $, kbn) {
         {title:'Queries', src:'app/partials/querySelect.html'}
       ],
       status  : "Stable",
-      description : "Displays the results of an elasticsearch facet as a pie chart, bar chart, or a "+
+      description : "Displays the results of an elasticsearch aggregation as a pie chart, bar chart, or a "+
         "table"
     };
 
@@ -62,16 +62,6 @@ function (angular, app, _, $, kbn) {
        * field:: The field on which to computer the facet
        */
       field   : '_type',
-      /** @scratch /panels/ranges/5
-       * missing:: Set to false to disable the display of a counter showing how much results are
-       * missing the field
-       */
-      missing : true,
-      /** @scratch /panels/ranges/5
-       * other:: Set to false to disable the display of a counter representing the aggregate of all
-       * values outside of the scope of your +size+ property
-       */
-      other   : true,
       style   : { "font-size": '10pt'},
       /** @scratch /panels/ranges/5
        * donut:: In pie chart mode, draw a hole in the middle of the pie to make a tasty donut.
@@ -138,7 +128,7 @@ function (angular, app, _, $, kbn) {
 
       $scope.panelMeta.loading = true;
       var request,
-        rangefacet,
+        rangeAgg,
         results,
         boolQuery,
         queries;
@@ -159,19 +149,16 @@ function (angular, app, _, $, kbn) {
 
       // Ranges mode
       if($scope.panel.tmode === 'ranges') {
-        rangefacet = $scope.ejs.RangeFacet('ranges');
+        rangeAgg = $scope.ejs.RangeAggregation('ranges');
         // AddRange
         _.each($scope.panel.values, function(v) {
-          rangefacet.addRange(v.from, v.to);
+          rangeAgg.range(v.from, v.to);
         });
-        request = request
-          .facet(rangefacet
-          .field($scope.field)
-          .facetFilter($scope.ejs.QueryFilter(
-            $scope.ejs.FilteredQuery(
-              boolQuery,
-              filterSrv.getBoolFilter(filterSrv.ids())
-            )))).size(0);
+        request = request.agg(
+          $scope.ejs.GlobalAggregation(q.id).agg( 
+            $scope.ejs.FilterAggregation(q.id).filter($scope.ejs.QueryFilter(query)).agg( 
+              rangeAgg.field($scope.field)
+            ))).size(0);
       }
 
       // Populate the inspector panel
@@ -193,7 +180,6 @@ function (angular, app, _, $, kbn) {
     };
 
     $scope.build_search = function(range,negate) {
-      console.log(range);
       if(_.isUndefined(range.meta)) {
         filterSrv.set({type:'range',field:$scope.field,from:range.label[0],to:range.label[1],
           mandate:(negate ? 'mustNot':'must')});
@@ -221,12 +207,6 @@ function (angular, app, _, $, kbn) {
       if(_.isUndefined(range.meta)) {
         return true;
       }
-      if(range.meta === 'other' && !$scope.panel.other) {
-        return false;
-      }
-      if(range.meta === 'missing' && !$scope.panel.missing) {
-        return false;
-      }
       return true;
     };
 
@@ -250,22 +230,14 @@ function (angular, app, _, $, kbn) {
         function build_results() {
           var k = 0;
           scope.data = [];
-          _.each(scope.results.facets.ranges.ranges, function(v) {
+          _.each(scope.results.aggregations.ranges.buckets, function(v) {
             var slice;
             if(scope.panel.tmode === 'ranges') {
-              slice = { label : [v.from,v.to], data : [[k,v.count]], actions: true};
+              slice = { label : [v.from,v.to], data : [[k,v.doc_count]], actions: true};
             }
             scope.data.push(slice);
             k = k + 1;
           });
-
-          scope.data.push({label:'Missing field',
-            data:[[k,scope.results.facets.ranges.missing]],meta:"missing",color:'#aaa',opacity:0});
-
-          if(scope.panel.tmode === 'ranges') {
-            scope.data.push({label:'Other values',
-              data:[[k+1,scope.results.facets.ranges.other]],meta:"other",color:'#444'});
-          }
         }
 
         // Function for rendering panel
@@ -279,10 +251,6 @@ function (angular, app, _, $, kbn) {
 
           // Make a clone we can operate on.
           chartData = _.clone(scope.data);
-          chartData = scope.panel.missing ? chartData :
-            _.without(chartData,_.findWhere(chartData,{meta:'missing'}));
-          chartData = scope.panel.other ? chartData :
-          _.without(chartData,_.findWhere(chartData,{meta:'other'}));
 
           // Populate element.
           require(['jquery.flot.pie'], function(){
@@ -339,7 +307,6 @@ function (angular, app, _, $, kbn) {
                       }
                     }
                   },
-                  //grid: { hoverable: true, clickable: true },
                   grid:   { hoverable: true, clickable: true, color: '#c8c8c8' },
                   colors: querySrv.colors
                 });
