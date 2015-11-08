@@ -124,10 +124,9 @@ define([
           querySrv.toEjsObj(q),
           filterSrv.getBoolFilter(filterSrv.ids()));
 
-        request = request
-          .facet($scope.ejs.QueryFacet(q.id)
-            .query(_q)
-          ).size(0);
+        request = request.agg(
+          $scope.ejs.FilterAggregation(q.id).filter($scope.ejs.QueryFilter(_q))
+        ).size(0);
       });
 
       // Populate the inspector panel
@@ -155,10 +154,10 @@ define([
         if($scope.query_id === query_id) {
           var i = 0;
           _.each(queries, function(q) {
-            var v = results.facets[q.id];
+            var v = results.aggregations[q.id];
             var hits = _.isUndefined($scope.data[i]) || _segment === 0 ?
-              v.count : $scope.data[i].hits+v.count;
-            $scope.hits += v.count;
+              v.doc_count : $scope.data[i].hits+v.doc_count;
+            $scope.hits += v.doc_count;
 
             // Create series
             $scope.data[i] = {
