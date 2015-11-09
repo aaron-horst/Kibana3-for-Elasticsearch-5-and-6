@@ -144,8 +144,12 @@ function (angular, app, _, $, kbn) {
       // This could probably be changed to a BoolFilter
       boolQuery = $scope.ejs.BoolQuery();
       _.each(queries,function(q) {
+        var query = $scope.ejs.FilteredQuery(
+          querySrv.toEjsObj(q),
+          filterSrv.getBoolFilter(filterSrv.ids())
+        );
         boolQuery = boolQuery.should(querySrv.toEjsObj(q));
-      });
+      
 
       // Ranges mode
       if($scope.panel.tmode === 'ranges') {
@@ -160,7 +164,7 @@ function (angular, app, _, $, kbn) {
               rangeAgg.field($scope.field)
             ))).size(0);
       }
-
+});
       // Populate the inspector panel
       $scope.inspector = request.toJSON();
 
@@ -177,44 +181,6 @@ function (angular, app, _, $, kbn) {
 
         $scope.$emit('render');
       });
-    };
-
-    $scope.build_search = function(range,negate) {
-      if(_.isUndefined(range.meta)) {
-        filterSrv.set({type:'range',field:$scope.field,from:range.label[0],to:range.label[1],
-          mandate:(negate ? 'mustNot':'must')});
-      } else if(range.meta === 'missing') {
-        filterSrv.set({type:'exists',field:$scope.field,
-          mandate:(negate ? 'must':'mustNot')});
-      } else {
-        return;
-      }
-    };
-
-    $scope.set_refresh = function (state) {
-      $scope.refresh = state;
-    };
-
-    $scope.close_edit = function() {
-      if($scope.refresh) {
-        $scope.get_data();
-      }
-      $scope.refresh =  false;
-      $scope.$emit('render');
-    };
-
-    $scope.showMeta = function(range) {
-      if(_.isUndefined(range.meta)) {
-        return true;
-      }
-      return true;
-    };
-
-    $scope.add_new_value = function(panel) {
-      panel.values.push(angular.copy($scope.defaultValue));
-    };
-
-  });
 
   module.directive('rangesChart', function(querySrv) {
     return {
@@ -228,15 +194,18 @@ function (angular, app, _, $, kbn) {
         });
 
         function build_results() {
-          var k = 0;
-          scope.data = [];
-          _.each(scope.results.aggregations.ranges.buckets, function(v) {
-            var slice;
-            if(scope.panel.tmode === 'ranges') {
-              slice = { label : [v.from,v.to], data : [[k,v.doc_count]], actions: true};
-            }
-            scope.data.push(slice);
-            k = k + 1;
+          _.each(queries,function(q){
+            var query_results = scope.results.aggregations[q.id][q.id];
+            var k = 0;
+            scope.data = [];
+            _.each(query_results.ranges.buckets, function(v) {
+              var slice;
+              if(scope.panel.tmode === 'ranges') {
+                slice = { label : [v.from,v.to], data : [[k,v.doc_count]], actions: true};
+              }
+              scope.data.push(slice);
+              k = k + 1;
+            });
           });
         }
 
@@ -349,9 +318,44 @@ function (angular, app, _, $, kbn) {
             $tooltip.remove();
           }
         });
-
       }
     };
   });
+};
 
+    $scope.build_search = function(range,negate) {
+      if(_.isUndefined(range.meta)) {
+        filterSrv.set({type:'range',field:$scope.field,from:range.label[0],to:range.label[1],
+          mandate:(negate ? 'mustNot':'must')});
+      } else if(range.meta === 'missing') {
+        filterSrv.set({type:'exists',field:$scope.field,
+          mandate:(negate ? 'must':'mustNot')});
+      } else {
+        return;
+      }
+    };
+
+    $scope.set_refresh = function (state) {
+      $scope.refresh = state;
+    };
+
+    $scope.close_edit = function() {
+      if($scope.refresh) {
+        $scope.get_data();
+      }
+      $scope.refresh =  false;
+      $scope.$emit('render');
+    };
+
+    $scope.showMeta = function(range) {
+      if(_.isUndefined(range.meta)) {
+        return true;
+      }
+      return true;
+    };
+
+    $scope.add_new_value = function(panel) {
+      panel.values.push(angular.copy($scope.defaultValue));
+    };
+  });
 });
