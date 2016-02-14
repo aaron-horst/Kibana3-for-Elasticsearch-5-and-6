@@ -11,7 +11,7 @@
 
   </style>
 
-  <h1 ng-style="panel.style" style="text-align: center; line-height: .6em">{{data.value|formatstats:panel.format}} <small style="font-size: .5em; line-height: 0;">{{panel.unit}} ({{panel.mode}})</small></h1>
+  <h1 ng-show="panel.mode!='-'" ng-style="panel.style" style="text-align: center; line-height: .6em">{{data.value|formatstats:panel.format}} <small style="font-size: .5em; line-height: 0;">{{panel.unit}} ({{panel.mode}})</small></h1>
   <table ng-show="panel.display_breakdown == 'yes'" cellspacing="0" class="table-hover table table-condensed stats-table" style="margin-top: 38px;">
     <tbody>
       <thead>

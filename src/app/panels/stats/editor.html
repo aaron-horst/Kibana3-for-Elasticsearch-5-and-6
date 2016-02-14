@@ -2,7 +2,7 @@
     <h5>Details</h5>
     <div class="editor-option">
       <label class="small">Featured Stat</label>
-      <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in modes"></select>
+      <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in add_dash_to_modes(modes)"></select>
     </div>
     <div class="editor-option">
       <label class="small">Field <tip>This field must contain a numeric value</tip></label>
