@@ -134,19 +134,16 @@ define([
         request = request
         .agg($scope.ejs.FilterAggregation('stats')
         .filter($scope.ejs.QueryFilter(
-          $scope.ejs.FilteredQuery(
             boolQuery
-          ))).agg($scope.ejs.ExtendedStatsAggregation("0").field($scope.panel.field))
+          )).agg($scope.ejs.ExtendedStatsAggregation("0").field($scope.panel.field))
         );
       }
 
 
       _.each(queries, function (q) {
         var alias = q.alias || q.query;
-        var query = $scope.ejs.BoolQuery();
-        query.must(querySrv.toEjsObj(q));
         request.agg($scope.ejs.FilterAggregation('stats_'+alias)
-          .filter($scope.ejs.QueryFilter(query))
+          .filter($scope.ejs.QueryFilter(querySrv.toEjsObj(q)))
           .agg($scope.ejs.ExtendedStatsAggregation("0").field($scope.panel.field))
         );
       });
