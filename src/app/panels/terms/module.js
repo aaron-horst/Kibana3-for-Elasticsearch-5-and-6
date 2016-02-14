@@ -38,8 +38,18 @@ function (angular, app, _, $, kbn) {
         {title:'Queries', src:'app/partials/querySelect.html'}
       ],
       status  : "Stable",
-      description : "Displays the results of an elasticsearch facet as a pie chart, bar chart, or a "+
-        "table"
+      description : "Displays the results of an elasticsearch facet as a pie " +
+        "chart, bar chart, or a table.<br>" +
+        "In order to be forward compatible, we reserve the right to display " +
+        "min and order by max/avg/total. So we have to use stats aggregate, " +
+        "But I think single min/max/avg/sum aggregation performs better.<br>" +
+        "And also we remove total_count option in editor.html<br>" +
+        "We do not support missing/other, but i will add them later<br>" +
+        "为了向前兼容, 我们选择了用stats aggregations, " +
+        "但考虑到性能以及可能不会有人按max排序,但展示的是最小值, " +
+        "换用单一的min/max/avg/sum aggregation, 可能会更好.<br>" +
+        "同时aggs里面不再有total_count的返回值,在配置界面中也拿掉了.<br>" +
+        "暂时没有missing/other功能,以后会补上.<br>"
     };
 
     // Set and populate defaults
@@ -188,9 +198,12 @@ function (angular, app, _, $, kbn) {
           .field($scope.field)
           .size($scope.panel.size)
           .exclude($scope.panel.exclude);
+          if($scope.panel.fmode === 'script') {
+            terms_aggs.script($scope.panel.script);
+          }
           switch($scope.panel.order) {
             case 'term':
-            terms_aggs.order('_term');
+            terms_aggs.order('_term','asc');
             break;
             case 'count':
             terms_aggs.order('_count');
@@ -199,15 +212,82 @@ function (angular, app, _, $, kbn) {
             terms_aggs.order('_count','asc');
             break;
             case 'reverse_term':
-            terms_aggs.order('_term','asc');
+            terms_aggs.order('_term');
             break;
             default:
             terms_aggs.order('_count');
           }
         request = request.query(query).agg(terms_aggs).size(0);
       }
-      if($scope.panel.tmode === 'terms_stats') {
-        // TODO
+      else if($scope.panel.tmode === 'terms_stats') {
+        var terms_aggs = $scope.ejs.TermsAggregation('terms')
+          .field($scope.panel.field)
+          .size($scope.panel.size);
+
+          var sub_aggs = $scope.ejs.StatsAggregation('subaggs')
+            .field($scope.panel.valuefield);;
+          // switch($scope.panel.tstat) {
+          //   case 'count':
+          //   break;
+          //   case 'min':
+          //   sub_aggs = $scope.ejs.MinAggregation('subaggs')
+          //     .field($scope.panel.valuefield);
+          //   break;
+          //   case 'max':
+          //   sub_aggs = $scope.ejs.MaxAggregation('subaggs')
+          //     .field($scope.panel.valuefield);
+          //   break;
+          //   case 'total':
+          //   sub_aggs = $scope.ejs.SumAggregation('subaggs')
+          //     .field($scope.panel.valuefield);
+          //   break;
+          //   case 'mean':
+          //   sub_aggs = $scope.ejs.AvgAggregation('subaggs')
+          //     .field($scope.panel.valuefield);
+          //   break;
+          // }
+
+          switch($scope.panel.order) {
+            case 'term':
+              terms_aggs.order('_term','asc');
+              break;
+            case 'reverse_term':
+              terms_aggs.order('_term','desc');
+              break;
+            case 'count':
+              terms_aggs.order('_count','desc');
+              break;
+            case 'reverse_count':
+              terms_aggs.order('_count','asc');
+              break;
+            case 'total':
+              terms_aggs.order('subaggs.sum','desc');
+              break;
+            case 'reverse_total':
+              terms_aggs.order('subaggs.sum','asc');
+              break;
+            case 'min':
+              terms_aggs.order('subaggs.min','desc');
+              break;
+            case 'reverse_min':
+              terms_aggs.order('subterms.min','asc');
+              break;
+            case 'max':
+              terms_aggs.order('subaggs.max','desc');
+              break;
+            case 'reverse_max':
+              terms_aggs.order('subaggs.max','asc');
+              break;
+            case 'mean':
+              terms_aggs.order('subaggs.avg','desc');
+              break;
+            case 'reverse_mean':
+              terms_aggs.order('subaggs.avg','asc');
+              break;
+          }
+
+        request = request.query(query)
+        .agg(terms_aggs.agg(sub_aggs)).size(0);
       }
 
       // Populate the inspector panel
@@ -218,9 +298,7 @@ function (angular, app, _, $, kbn) {
       // Populate scope when we have results
       results.then(function(results) {
         $scope.panelMeta.loading = false;
-        if($scope.panel.tmode === 'terms') {
-          $scope.hits = results.hits.total;
-        }
+        $scope.hits = results.hits.total;
 
         $scope.results = results;
 
@@ -312,6 +390,16 @@ function (angular, app, _, $, kbn) {
         });
 
         function build_results() {
+          //forward_compatible_map
+          var _fcm = {
+            "sum":"sum",
+            "total":"sum",
+            "mean":"avg",
+            "avg":"avg",
+            "min":"min",
+            "max":"max",
+            "count":"count"
+          };
           var k = 0;
           scope.data = [];
           _.each(scope.results.aggregations.terms.buckets, function(v) {
@@ -320,8 +408,11 @@ function (angular, app, _, $, kbn) {
               slice = { label : v.key, data : [[k,v.doc_count]], actions: true};
             }
             if(scope.panel.tmode === 'terms_stats') {
-              // TODO
-              // slice = { label : v.term, data : [[k,v[scope.panel.tstat]]], actions: true};
+              slice = {
+                label : v.key,
+                data : [[k,v['subaggs'][_fcm[scope.panel.tstat]]]],
+                actions: true
+              };
             }
             scope.data.push(slice);
             k = k + 1;
