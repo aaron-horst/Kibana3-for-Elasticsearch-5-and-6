@@ -176,38 +176,38 @@ function (angular, app, _, $, kbn) {
         boolQuery = boolQuery.should(querySrv.toEjsObj(q));
       });
 
+      var query = $scope.ejs.FilteredQuery(
+        boolQuery,
+        filterSrv.getBoolFilter(filterSrv.ids())
+      );
+      // request = request.query(query);
+
       // Terms mode
       if($scope.panel.tmode === 'terms') {
-        terms_facet = $scope.ejs.TermsFacet('terms')
+        var terms_aggs = $scope.ejs.TermsAggregation('terms')
           .field($scope.field)
           .size($scope.panel.size)
-          .order($scope.panel.order)
-          .exclude($scope.panel.exclude)
-          .facetFilter($scope.ejs.QueryFilter(
-            $scope.ejs.FilteredQuery(
-              boolQuery,
-              filterSrv.getBoolFilter(filterSrv.ids())
-            )));
-        if($scope.panel.fmode === 'script') {
-          terms_facet.scriptField($scope.panel.script)
-        }
-        request = request.facet(terms_facet).size(0);
+          .exclude($scope.panel.exclude);
+          switch($scope.panel.order) {
+            case 'term':
+            terms_aggs.order('_term');
+            break;
+            case 'count':
+            terms_aggs.order('_count');
+            break;
+            case 'reverse_count':
+            terms_aggs.order('_count','asc');
+            break;
+            case 'reverse_term':
+            terms_aggs.order('_term','asc');
+            break;
+            default:
+            terms_aggs.order('_count');
+          }
+        request = request.query(query).agg(terms_aggs).size(0);
       }
       if($scope.panel.tmode === 'terms_stats') {
-        termstats_facet = $scope.ejs.TermStatsFacet('terms')
-          .valueField($scope.panel.valuefield)
-          .keyField($scope.field)
-          .size($scope.panel.size)
-          .order($scope.panel.order)
-          .facetFilter($scope.ejs.QueryFilter(
-            $scope.ejs.FilteredQuery(
-              boolQuery,
-              filterSrv.getBoolFilter(filterSrv.ids())
-            )));
-        if($scope.panel.fmode === 'script') {
-          termstats_facet.scriptField($scope.panel.script)
-        }
-        request = request.facet(termstats_facet).size(0);
+        // TODO
       }
 
       // Populate the inspector panel
@@ -314,25 +314,26 @@ function (angular, app, _, $, kbn) {
         function build_results() {
           var k = 0;
           scope.data = [];
-          _.each(scope.results.facets.terms.terms, function(v) {
+          _.each(scope.results.aggregations.terms.buckets, function(v) {
             var slice;
             if(scope.panel.tmode === 'terms') {
-              slice = { label : v.term, data : [[k,v.count]], actions: true};
+              slice = { label : v.key, data : [[k,v.doc_count]], actions: true};
             }
             if(scope.panel.tmode === 'terms_stats') {
-              slice = { label : v.term, data : [[k,v[scope.panel.tstat]]], actions: true};
+              // TODO
+              // slice = { label : v.term, data : [[k,v[scope.panel.tstat]]], actions: true};
             }
             scope.data.push(slice);
             k = k + 1;
           });
 
-          scope.data.push({label:'Missing field',
-            data:[[k,scope.results.facets.terms.missing]],meta:"missing",color:'#aaa',opacity:0});
-
-          if(scope.panel.tmode === 'terms') {
-            scope.data.push({label:'Other values',
-              data:[[k+1,scope.results.facets.terms.other]],meta:"other",color:'#444'});
-          }
+          // scope.data.push({label:'Missing field',
+          //   data:[[k,scope.results.facets.terms.missing]],meta:"missing",color:'#aaa',opacity:0});
+          //
+          // if(scope.panel.tmode === 'terms') {
+          //   scope.data.push({label:'Other values',
+          //     data:[[k+1,scope.results.facets.terms.other]],meta:"other",color:'#444'});
+          // }
         }
 
         // Function for rendering panel
