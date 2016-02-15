@@ -18,9 +18,7 @@ define([
   'lodash',
   'kbn',
   'moment',
-  'jsonpath',
-  'filesaver',
-  'blob'
+  'jsonpath'
 ],
 function (angular, app, _, kbn, moment) {
   'use strict';
@@ -33,12 +31,6 @@ function (angular, app, _, kbn, moment) {
     $scope.panelMeta = {
       modals : [
         {
-          description: "Export",
-          icon: "icon-download-alt",
-          partial: "app/panels/table/export.html",
-          show: $scope.panel.exportable
-        },
-        {
           description: "Inspect",
           icon: "icon-info-sign",
           partial: "app/partials/inspector.html",
@@ -49,6 +41,10 @@ function (angular, app, _, kbn, moment) {
         {
           title:'Paging',
           src: 'app/panels/table/pagination.html'
+        },
+        {
+          title:'Color',
+          src: 'app/panels/table/color.html'
         },
         {
           title:'Queries',
@@ -130,13 +126,13 @@ function (angular, app, _, kbn, moment) {
        */
       timeField: '@timestamp',
       /** @scratch /panels/table/5
+       * colorRules:: filed, value(RegExp), color
+       */
+      colorRules: [],
+      /** @scratch /panels/table/5
        * spyable:: Set to false to disable the inspect icon
        */
       spyable : true,
-      /** @scratch /panels/table/5
-       * exportable:: Set to false to disable the export icon
-       */
-      exportable : true,
       /** @scratch /panels/table/5
        *
        * ==== Queries
@@ -169,39 +165,6 @@ function (angular, app, _, kbn, moment) {
 
     // Create a percent function for the view
     $scope.percent = kbn.to_percent;
-
-    $scope.csv = {
-      showOptions: false,
-      separator: ',',
-      quoteValues: true,
-      filename: 'table.csv'
-    };
-    $scope.exportAsCsv = function() {
-      if (!$scope.data) return;
-
-      var text = '';
-      var nonAlphaNumRE = /[^a-zA-Z0-9]/;
-      var allDoubleQuoteRE = /"/g;
-      var escape = function (val) {
-        val = String(val);
-        if ($scope.csv.quoteValues && nonAlphaNumRE.test(val)) {
-          val = '"' + val.replace(allDoubleQuoteRE, '""') + '"';
-        }
-        return val;
-      };
-
-      var rows = _.map($scope.data, function(e) {
-        var exportFields = [];
-        _.each($scope.panel.fields, function(field) {
-          exportFields.push(escape(e._source[field]));
-        });
-        return exportFields.join($scope.csv.separator) + '\r\n';
-      });
-
-      var blob = new Blob(rows, { type: 'text/plain' });
-
-      window.saveAs(blob, $scope.csv.filename);
-    };
 
     $scope.closeFacet = function() {
       if($scope.modalField) {
@@ -243,6 +206,29 @@ function (angular, app, _, kbn, moment) {
       },0);
     };
 
+    $scope.getStyle = function(event){
+      var backgroundColor = getBackgroundColor(event);
+      if(backgroundColor){
+        return {'background-color': backgroundColor};
+      }
+    };
+
+    var getBackgroundColor = function(event){
+      var i, len, cr, data;
+
+      for(i=0, len=$scope.panel.colorRules.length; i<len; i++){
+        cr = $scope.panel.colorRules[i];
+        if(cr.field != '_index' && cr.field != '_type' && cr.field != '_id' && cr.field != '_score'){
+          data = event._source;
+        } else{
+          data = event;
+        }
+        if(data[cr.field] && data[cr.field].match(new RegExp(cr.value))){
+          return cr.color;
+        }
+      }
+    };
+
     var showModal = function(panel,type) {
       $scope.facetPanel = panel;
       $scope.facetType = type;
@@ -260,6 +246,7 @@ function (angular, app, _, kbn, moment) {
         limit: 10,
         count: _.countBy(docs,function(doc){return _.contains(_.keys(doc),field);})['true']
       };
+
 
       var nodeInfo = $scope.ejs.getFieldMapping(dashboard.indices, field);
 
@@ -283,12 +270,26 @@ function (angular, app, _, kbn, moment) {
     };
 
     $scope.set_sort = function(field) {
-      if($scope.panel.sort[0] === field) {
-        $scope.panel.sort[1] = $scope.panel.sort[1] === 'asc' ? 'desc' : 'asc';
-      } else {
-        $scope.panel.sort[0] = field;
-      }
-      $scope.get_data();
+
+      var nodeInfo = $scope.ejs.getFieldMapping(dashboard.indices, field);
+
+      return nodeInfo.then(function(p) {
+        var types = _.uniq(jsonPath(p, '*.*.*.*.mapping.*.type'));
+        var indices = _.uniq(jsonPath(p, '*.*.*.*.mapping.*.index'));
+
+        if(_.intersection(types, ['string']).length > 0 && _.intersection(indices, ['not_analyzed']).length != 1) {
+          $scope.panel.error = "could not sort by an analyzed field;";
+          return;
+        }
+        else{
+          if($scope.panel.sort[0] === field) {
+            $scope.panel.sort[1] = $scope.panel.sort[1] === 'asc' ? 'desc' : 'asc';
+          } else {
+            $scope.panel.sort[0] = field;
+          }
+          $scope.get_data();
+        }
+      });
     };
 
     $scope.toggle_field = function(field) {
@@ -386,7 +387,9 @@ function (angular, app, _, kbn, moment) {
           .fragmentSize(2147483647) // Max size of a 32bit unsigned int
           .preTags('@start-highlight@')
           .postTags('@end-highlight@')
-        ).sort(sort);
+        )
+        .size($scope.panel.size*$scope.panel.pages)
+        .sort(sort);
 
       $scope.populate_modal(request);
 

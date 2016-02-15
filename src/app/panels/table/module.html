@@ -143,7 +143,7 @@
             </th>
 
           </thead>
-          <tbody bindonce ng-repeat="event in data| slice:panel.offset:panel.offset+panel.size" ng-class-odd="'odd'">
+          <tbody bindonce ng-repeat="event in data| slice:panel.offset:panel.offset+panel.size" ng-class-odd="'odd'" ng-style="getStyle(event)" >
             <tr ng-click="toggle_details(event)" class="pointer">
               <td ng-if="panel.fields.length<1" bo-text="event._source|stringify|tableTruncate:panel.trimFactor:1"></td>
               <td ng-show="panel.fields.length>0" ng-repeat="field in panel.fields">
@@ -174,7 +174,8 @@
                       <i class="pointer icon-th" ng-click="toggle_field(key)" bs-tooltip="'Toggle table column'"></i>
                     </td>
                     <!-- At some point we need to create a more efficient way of applying the filter pipeline -->
-                    <td style="white-space:pre-wrap;word-wrap:break-word" bo-html="value|noXml|urlLink|stringify"></td>
+                    <td ng-if="!panel.localTime || panel.timeField != key" style="white-space:pre-wrap;word-wrap:break-word" bo-html="value|noXml|urlLink|stringify"></td>
+                    <td ng-if="panel.localTime && panel.timeField == key" style="white-space:pre-wrap;word-wrap:break-word" bo-html="value|noXml|urlLink|stringify|tableLocalTime:event"></td>
                   </tr>
                 </table>
                 <pre style="white-space:pre-wrap;word-wrap:break-word"  bo-html="without_kibana(event)|tableJson:2" ng-switch-when="json"></pre>

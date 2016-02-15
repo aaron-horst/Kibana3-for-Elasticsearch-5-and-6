@@ -1,0 +1,13 @@
+<div class="row-fluid">
+    <div class="section span6">
+        <h5>Columns</h5>
+        <form class="input-append editor-option">
+            <input bs-typeahead="fields.list" type="text" placeholder="Field" class="input-small" ng-model='newfield'>
+            <input type="text" placeholder="Value" class="input-small" ng-model='newvalue'>
+            <input type="text" placeholder="Color" class="input-small" ng-model='newcolor'>
+            <button class="btn" ng-click="panel.colorRules = _.toggleInOut(panel.colorRules, {field: newfield, value: newvalue, color: newcolor});newfield='';newvalue='';newcolor=''"><i class="icon-plus"></i></button>
+        </form><br>
+        <span style="margin-left:3px" ng-repeat="cr in panel.colorRules" class="label">{{cr}} <i class="pointer icon-remove-sign" ng-click="panel.colorRules = _.toggleInOut(panel.colorRules,cr)"></i></span>
+
+    </div>
+</div>
