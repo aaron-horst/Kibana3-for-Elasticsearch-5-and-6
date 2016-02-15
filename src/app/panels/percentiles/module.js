@@ -202,8 +202,6 @@ define([
               value: value,
               rows: rows
             };
-
-            $scope.$emit('render');
           } else {
             esVersion.gte('1.1.0').then(function(is) {
               if (is) {
@@ -229,13 +227,10 @@ define([
                   value: value,
                   rows: rows
                 };
-
-                $scope.$emit('render');
               }
             });
           };
         });
-
       });
     };
 
@@ -248,7 +243,6 @@ define([
         $scope.get_data();
       }
       $scope.refresh =  false;
-      $scope.$emit('render');
     };
 
   });
