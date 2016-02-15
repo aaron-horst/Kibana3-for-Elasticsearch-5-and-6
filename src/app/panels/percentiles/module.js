@@ -116,6 +116,11 @@ define([
         queries;
 
       request = $scope.ejs.Request();
+      var query = $scope.ejs.FilteredQuery(
+        $scope.ejs.BoolQuery(),
+        filterSrv.getBoolFilter(filterSrv.ids())
+      );
+      request = $scope.ejs.Request().query(query);
 
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
       queries = querySrv.getQueryObjs($scope.panel.queries.ids);
@@ -140,14 +145,8 @@ define([
         request = request
         .aggregation(
           $scope.ejs.FilterAggregation('stats')
-          .filter($scope.ejs.QueryFilter(
-            $scope.ejs.FilteredQuery(
-              boolQuery,
-              filterSrv.getBoolFilter(filterSrv.ids())
-            )
-          ))
-          .aggregation(sub_aggs
-        )
+          .filter($scope.ejs.QueryFilter(boolQuery))
+          .aggregation(sub_aggs)
       ).size(0);
       }
 
@@ -167,13 +166,9 @@ define([
         request.aggregation(
           $scope.ejs.FilterAggregation(qname)
             .filter($scope.ejs.QueryFilter(
-              $scope.ejs.FilteredQuery(
-                query,
-                filterSrv.getBoolFilter(filterSrv.ids())
-              )
+                querySrv.toEjsObj(q)
             ))
-            .aggregation(sub_aggs
-            )
+            .aggregation(sub_aggs)
           );
       });
       // Populate the inspector panel
