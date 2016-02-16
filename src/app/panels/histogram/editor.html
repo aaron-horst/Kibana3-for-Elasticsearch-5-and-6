@@ -3,11 +3,19 @@
     <h5>Values</h5>
     <div class="editor-option">
       <label class="small">Chart value</label>
-      <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in ['count','uniq','min','mean','max','total']"></select>
+      <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in ['count','min','mean','max','total']"></select>
     </div>
     <div class="editor-option" ng-show="panel.mode != 'count'">
       <label class="small">Value Field <tip>This field must contain a numeric value</tip></label>
         <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead="fields.list" type="text" class="input-medium" ng-model="panel.value_field">
+    </div>
+    <div class="editor-option" ng-show="panel.mode != 'count'">
+      <label class="small">Arithmetic</label>
+      <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.arithmetic" ng-options="f for f in ['none','add','subtract','multiply','divide']"></select>
+    </div>
+    <div class="editor-option" ng-show="panel.arithmetic != 'none'" ng-show="panel.mode != 'count'">
+      <label class="small">Value Field 2<tip>This field must contain a numeric value</tip></label>
+      <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead="fields.list" type="text" class="input-medium" ng-model="panel.value_field2">
     </div>
   </div>
   <div class="section">
@@ -46,6 +54,13 @@
     <div class="editor-option" ng-hide='panel.auto_int'>
       <label class="small">Interval <tip>Use Elasticsearch date math format (eg 1m, 5m, 1d, 2w, 1y)</tip></label>
       <input type="text" class='input-mini' ng-model="panel.interval" ng-change='set_refresh(true)'/>
+    </div>
+  </div>
+  <div class="section">
+  <h5>Time Shift</h5>
+    <div class="editor-option">
+      <label class="small">Time Shift</label>
+      <input type="text" class='input-mini' ng-model="panel.timeshift" ng-change='set_refresh(true)'/>
     </div>
   </div>
 </div>
