@@ -2,10 +2,6 @@
     <div class="section">
       <h5>Parameters</h5>
       <div class="editor-option">
-        <label class="small">Ranges mode</label>
-        <select class="input-medium" ng-model="panel.tmode" ng-options="f for f in ['ranges']" ng-change="set_refresh(true)"></select>
-      </div>
-      <div class="editor-option">
         <label class="small">Field</label>
         <input type="text" class="input-small" bs-typeahead="fields.list" ng-model="panel.field" ng-change="set_refresh(true)">
       </div>
