@@ -475,7 +475,6 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
             q.query = q.query+"[-"+$scope.panel.timeshift+"]";
             q.color = "#abc";
             var query_results = results.aggregations[q.id][q.id];
-            console.log(query_results);
             // we need to initialize the data variable on the first run,
             // and when we are working on the first segment of the data.
             if(_.isUndefined(data[queries.length + i]) || segment === 0) {
@@ -500,7 +499,6 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
               // push each entry into the time series, while incrementing counters
               _.each(query_results.buckets, function (entry) {
                 var value;
-                console.log(entry);
 
                 hits += entry.doc_count; // The series level hits counter
                 $scope.hits += entry.doc_count; // Entire dataset level hits counter
@@ -530,7 +528,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
                 } else if ($scope.panel.mode === 'total') {
                   value = (time_series._data[entry.key] || 0) + entry[q.id].sum;
                 }
-                time_series.addValue(entry.time+$scope.timeshift, value);
+                time_series.addValue(entry.key+$scope.timeshift, value);
               });
             }
 
@@ -571,10 +569,6 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           //   $scope.annotations = $scope.annotations.slice(0,$scope.panel.annotate.size);
           // }
         }
-
-        _.each(data,function(v){
-          console.log(v)
-        });
 
         // Tell the histogram directive to render.
         $scope.$emit('render', data);
