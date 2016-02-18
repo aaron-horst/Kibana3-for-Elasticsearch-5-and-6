@@ -506,6 +506,8 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
 
                 if ($scope.panel.mode === 'count') {
                   value = (time_series._data[entry.key] || 0) + entry.doc_count;
+                } else if ($scope.panel.mode === 'uniq') {
+                  value = (time_series._data[entry.key] || 0) + entry[q.id].value;
                 } else if ($scope.panel.mode === 'mean') {
                   // Compute the ongoing mean by
                   // multiplying the existing mean by the existing hits
