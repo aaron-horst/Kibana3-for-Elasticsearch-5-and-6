@@ -652,7 +652,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
         ).size($scope.panel.annotate.enable ? $scope.panel.annotate.size : 0);
 
         if($scope.panel.arithmetic !== 'none'){
-          facet = $scope.ejs.DateHistogramFacet(q.id+'_2');
+            facet = $scope.ejs.DateHistogramFacet(q.id+'_2');
 
           if($scope.panel.mode === 'count') {
             facet = facet.field($scope.panel.time_field).global(true);
@@ -745,6 +745,8 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
 
                 if ($scope.panel.mode === 'count') {
                   value = (time_series._data[entry.key] || 0) + entry.doc_count;
+                } else if ($scope.panel.mode === 'uniq') {
+                  value = (time_series._data[entry.key] || 0) + entry[q.id].value;
                 } else if ($scope.panel.mode === 'mean') {
                   // Compute the ongoing mean by
                   // multiplying the existing mean by the existing hits
