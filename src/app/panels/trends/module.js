@@ -134,12 +134,12 @@ function (angular, app, _, kbn) {
       _.each(queries, function(query) {
         var q = $scope.ejs.FilteredQuery(
           querySrv.toEjsObj(query),
-          filterSrv.getBoolFilter(filterSrv.ids()));
+          filterSrv.getBoolFilter(filterSrv.ids())
+        );
 
         request = request
-          .facet($scope.ejs.QueryFacet(query.id)
-            .query(q)
-          ).size(0);
+        .agg($scope.ejs.FilterAggregation(query.id)
+        .filter($scope.ejs.QueryFilter(q)));
       });
 
 
@@ -151,11 +151,12 @@ function (angular, app, _, kbn) {
             $scope.ejs.RangeFilter(timeField)
             .from($scope.old_time.from)
             .to($scope.old_time.to)
-          ));
+          )
+        );
+
         request = request
-          .facet($scope.ejs.QueryFacet("old_"+query.id)
-            .query(q)
-          ).size(0);
+        .agg($scope.ejs.FilterAggregation('old_'+query.id)
+        .filter($scope.ejs.QueryFilter(q)));
       });
 
 
@@ -201,8 +202,8 @@ function (angular, app, _, kbn) {
           var queries = querySrv.getQueryObjs($scope.panel.queries.ids);
 
           _.each(queries, function(query) {
-            var n = results.facets[query.id].count;
-            var o = results.facets['old_'+query.id].count;
+            var n = results.aggregations[query.id].doc_count;
+            var o = results.aggregations['old_'+query.id].doc_count;
 
             var hits = {
               new : _.isUndefined($scope.data[i]) || _segment === 0 ? n : $scope.data[i].hits.new+n,
