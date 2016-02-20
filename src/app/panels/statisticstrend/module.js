@@ -32,8 +32,10 @@ function (angular, app, _, $, kbn) {
       editorTabs : [
         {title:'Queries', src:'app/partials/querySelect.html'}
       ],
-      status  : "Dev",
-      description : "不一定准确,取决于trysize"
+      status  : "stable",
+      description : "上升趋势." +
+      "不一定准确,取决于trysize. trysize设置为0,可以获取所有terms,"+
+      "结果准确, 但需要考虑资源消耗情况."
     };
 
     // Set and populate defaults
