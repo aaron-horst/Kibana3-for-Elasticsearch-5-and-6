@@ -19,6 +19,7 @@ function (angular, app, _, $, kbn) {
   app.useModule(module);
 
   module.controller('statisticstrend', function($scope, kbnIndex, querySrv, dashboard, filterSrv, fields) {
+    $scope.inspector = "";
     $scope.panelMeta = {
       modals : [
         {
@@ -37,18 +38,18 @@ function (angular, app, _, $, kbn) {
 
     // Set and populate defaults
     var _d = {
-      /** 
+      /**
        * === Parameters
        *
        * field:: The field on which to computer the facet
        */
       mode          : 'count',
       field   : '_type',
-      /** 
+      /**
        * exclude:: terms to exclude from the results
        */
       missing : true,
-      /** 
+      /**
        * other:: Set to false to disable the display of a counter representing the aggregate of all
        * values outside of the scope of your +size+ property
        */
@@ -62,6 +63,10 @@ function (angular, app, _, $, kbn) {
        */
       order   : 'asce',
       style   : { "font-size": '10pt'},
+      /**
+       * counter_pos:: above, below or none
+       */
+      counter_pos       : 'above',
       /**
        * donut:: In pie chart mode, draw a hole in the middle of the pie to make a tasty donut.
        */
@@ -118,17 +123,14 @@ function (angular, app, _, $, kbn) {
       if(dashboard.indices.length === 0) {
         return;
       }
-      //ctrip , copied form trends
-      if (firstTime === undefined){
 
+      if (firstTime === undefined){
           // This logic can be simplifie greatly with the new kbn.parseDate
           $scope.time = filterSrv.timeRange('last');
           $scope.old_time = {
             from : new Date($scope.time.from.getTime() - kbn.interval_to_ms($scope.panel.ago)),
             to   : new Date($scope.time.to.getTime() - kbn.interval_to_ms($scope.panel.ago))
           };
-
-
 
           $scope.index = dashboard.indices;
           kbnIndex.indices(
@@ -143,7 +145,6 @@ function (angular, app, _, $, kbn) {
           return;
       }
 
-
       $scope.panelMeta.loading = true;
       var request,
         results,
@@ -152,8 +153,6 @@ function (angular, app, _, $, kbn) {
 
       $scope.field = _.contains(fields.list,$scope.panel.field+'.raw') ?
         $scope.panel.field+'.raw' : $scope.panel.field;
-
-
 
       request = $scope.ejs.Request();
 
@@ -165,7 +164,7 @@ function (angular, app, _, $, kbn) {
       _.each(queries,function(q) {
         boolQuery = boolQuery.should(querySrv.toEjsObj(q));
       });
-
+      request = request.query(boolQuery);
 
       if(_.isNull($scope.panel.value_field)) {
         $scope.panel.error = "In " + $scope.panel.mode + " mode a field must be specified";
@@ -184,50 +183,56 @@ function (angular, app, _, $, kbn) {
         timeField = timeField[0];
       }
 
+      var filter_aggs =
+      $scope.ejs.FilterAggregation('now').filter(filterSrv.getBoolFilter(filterSrv.ids()));
+
       var _ids_without_time = _.difference(filterSrv.ids,filterSrv.idsByType('time'));
+      var old_filter_aggs =
+      $scope.ejs.FilterAggregation('old').filter(
+        filterSrv.getBoolFilter(_ids_without_time).must(
+          $scope.ejs.RangeFilter(timeField)
+          .from($scope.old_time.from)
+          .to($scope.old_time.to)
+        )
+      );
+
+      var terms_aggs = $scope.ejs.TermsAggregation('termsaggs')
+      .field($scope.field);
+      if ($scope.panel.trysize !== ''){
+        terms_aggs.size($scope.panel.trysize);
+      }
+      if ($scope.panel.trysize !== ''){
+        terms_aggs.minDocCount($scope.panel.mincount);
+      }
 
       if ($scope.panel.mode === 'count'){
-        var facet = $scope.ejs.TermsFacet('terms').field($scope.field).global(true);
+        request = request
+        .agg(filter_aggs.agg(terms_aggs))
+        .agg(old_filter_aggs.agg(terms_aggs));
+      } else{
+        var sub_aggs;
+        switch($scope.panel.mode) {
+          case 'min':
+          sub_aggs = $scope.ejs.MinAggregation('statsaggs')
+          .field($scope.panel.value_field);
+          break;
+          case 'max':
+          sub_aggs = $scope.ejs.MaxAggregation('statsaggs')
+          .field($scope.panel.value_field);
+          break;
+          case 'total':
+          sub_aggs = $scope.ejs.SumAggregation('statsaggs')
+          .field($scope.panel.value_field);
+          break;
+          case 'mean':
+          sub_aggs = $scope.ejs.AvgAggregation('statsaggs')
+          .field($scope.panel.value_field);
+          break;
+        }
+        request = request
+        .agg(filter_aggs.agg(terms_aggs.agg(sub_aggs)))
+        .agg(old_filter_aggs.agg(terms_aggs.agg(sub_aggs)));
       }
-      else{
-        var facet = $scope.ejs.TermStatsFacet('terms').keyField($scope.field).valueField($scope.panel.value_field).global(true);
-      }
-      request = request
-        .facet(facet
-          .size($scope.panel.trysize || $scope.panel.size)
-          //.order($scope.panel.order)
-          .facetFilter($scope.ejs.QueryFilter(
-            $scope.ejs.FilteredQuery(
-              boolQuery,
-              filterSrv.getBoolFilter(_ids_without_time).must(
-                  $scope.ejs.RangeFilter(timeField)
-                    .from($scope.time.from)
-                    .to($scope.time.to)
-                  )
-              )))).size(0);
-
-
-      // And again for the old time period
-      if ($scope.panel.mode === 'count'){
-        var facet = $scope.ejs.TermsFacet('oldterms').field($scope.field).global(true);
-      }
-      else{
-        var facet = $scope.ejs.TermStatsFacet('oldterms').keyField($scope.field).valueField($scope.panel.value_field).global(true);
-      }
-      request = request
-        .facet(facet
-          .size($scope.panel.trysize || $scope.panel.size)
-          //.order($scope.panel.order)
-          .facetFilter($scope.ejs.QueryFilter(
-            $scope.ejs.FilteredQuery(
-              boolQuery,
-              filterSrv.getBoolFilter(_ids_without_time).must(
-                  $scope.ejs.RangeFilter(timeField)
-                    .from($scope.old_time.from)
-                    .to($scope.old_time.to)
-                  )
-              )))).size(0);
-
 
       // Populate the inspector panel
       $scope.inspector = request.toJSON();
@@ -236,26 +241,25 @@ function (angular, app, _, $, kbn) {
 
       // Populate scope when we have results
       results.then(function(results) {
-
         var all_filed_values = {};
-        for(var k in results.facets.terms.terms) {
-            var v = results.facets.terms.terms[k];
-            all_filed_values[v.term] = [v[$scope.panel.mode]];
-        };
-
-        for (var k in results.facets.oldterms.terms) {
-            var v = results.facets.oldterms.terms[k];
-            if (v.term in all_filed_values){
-                all_filed_values[v.term].push(v[$scope.panel.mode]);
+        _.each(results.aggregations.now.termsaggs.buckets,function(v){
+          if($scope.panel.mode === 'count'){
+            all_filed_values[v.key] = [v.doc_count];
+          }else{
+            all_filed_values[v.key] = [v.statsaggs.value];
+          }
+        });
+        _.each(results.aggregations.old.termsaggs.buckets,function(v){
+          if($scope.panel.mode === 'count'){
+            if (v.key in all_filed_values){
+              all_filed_values[v.key].push(v.doc_count);
             }
-        };
-
-        //filter all_filed_values
-        //for(var term in all_filed_values){
-            //if (all_filed_values[term].length == 1){
-                //delete all_filed_values[term];
-            //}
-        //}
+          }else{
+            if (v.key in all_filed_values){
+              all_filed_values[v.key].push(v.statsaggs.value);
+            }
+          }
+        });
 
         var l =[];
         for(var term in all_filed_values){
@@ -263,9 +267,9 @@ function (angular, app, _, $, kbn) {
                 l.push([term].concat(all_filed_values[term]));
             }
         }
-        
+
         for(var i in l){
-            var p = l[i][2] === 0 ? 100 : 100*(l[i][1] - l[i][2])/l[i][2];
+            var p = l[i][2] === 0 ? 100 : 100*l[i][1]/l[i][2];
             l[i].push(p);
         }
 
@@ -282,37 +286,9 @@ function (angular, app, _, $, kbn) {
 
         for(var i in l){
             $scope.data.push({ label : l[i][0], data : [[i,l[i][3].toFixed(2)]], extra:[l[i][1].toFixed(2),l[i][2].toFixed(2)], actions: true});
-            //$scope.data.push({ label :  l[i][0], data : [[i,100]], actions: true});
         }
-        
+
         $scope.panelMeta.loading = false;
-        //var all_terms = results.facets.terms.terms;
-
-        //for(var i = 0; i < all_terms.length; i++){
-          //var v = all_terms[i];
-          //if ($scope.data.length >= $scope.panel.size){
-            //break;
-          //}
-          //if ( $scope.panel.mincount && v.count < $scope.panel.mincount){
-            //continue;
-          //}
-          //if ( $scope.panel.maxcount && v.count > $scope.panel.maxcount){
-            //continue;
-          //}
-          //var _d = v[$scope.panel.mode];
-          //if (_d !=  _d.toFixed(2)) {
-              //_d = _d.toFixed(2);
-          //}
-          //var slice = { label : v.term, data : [[k,_d],v.count], actions: true};
-          //$scope.data.push(slice);
-          //k = k + 1;
-        //}
-
-
-        //$scope.data.push({label:'Missing field',
-          //data:[[k,results.facets.terms.missing]],meta:"missing",color:'#aaa',opacity:0});
-        //$scope.data.push({label:'Other values',
-          //data:[[k+1,results.facets.terms.other]],meta:"other",color:'#444'});
 
         $scope.$emit('render');
       });
