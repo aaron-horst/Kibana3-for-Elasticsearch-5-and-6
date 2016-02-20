@@ -2593,7 +2593,7 @@ function Buffer(subject, encoding, offset) {
   if (encoding == "base64" && typeof subject == "string") {
     subject = stringtrim(subject);
     while (subject.length % 4 != 0) {
-      subject = subject + "="; 
+      subject = subject + "=";
     }
   }
 
@@ -3701,7 +3701,7 @@ Buffer.prototype.writeDoubleBE = function(value, offset, noAssert) {
 
 	function b64ToByteArray(b64) {
 		var i, j, l, tmp, placeHolders, arr;
-	
+
 		if (b64.length % 4 > 0) {
 			throw 'Invalid string. Length must be a multiple of 4';
 		}
@@ -3892,7 +3892,7 @@ function Buffer(subject, encoding, offset) {
   if (encoding == "base64" && typeof subject == "string") {
     subject = stringtrim(subject);
     while (subject.length % 4 != 0) {
-      subject = subject + "="; 
+      subject = subject + "=";
     }
   }
 
@@ -5002,7 +5002,7 @@ module.exports=require('q9TxCC');
 
 	function b64ToByteArray(b64) {
 		var i, j, l, tmp, placeHolders, arr;
-	
+
 		if (b64.length % 4 > 0) {
 			throw 'Invalid string. Length must be a multiple of 4';
 		}
@@ -18114,6 +18114,10 @@ api.indices.prototype.getAlias = ca({
  */
 api.indices.prototype.getAliases = ca({
   params: {
+    ignoreUnavailable: {
+      type: 'boolean',
+      name: 'ignore_unavailable'
+    },
     timeout: {
       type: 'time'
     },
