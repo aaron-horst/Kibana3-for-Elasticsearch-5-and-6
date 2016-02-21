@@ -1,9 +1,6 @@
 <div ng-controller='statisticstrend' ng-init="init()">
-  <style>
-    .pieLabel { pointer-events: none }
-  </style>
-  <!-- START Pie or bar chart -->
-  <div ng-show="panel.counter_pos == 'above' && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend'>
+  <!-- START bar chart -->
+  <div ng-show="panel.counter_pos == 'above' && (panel.chart == 'bar')" id='{{$id}}-legend'>
     <!-- vertical legend above -->
     <table class="small" ng-show="panel.arrangement == 'vertical'">
       <tr ng-repeat="term in legend">
@@ -21,9 +18,9 @@
   <!-- keep legend from over lapping -->
   <div style="clear:both"></div>
 
-  <div ng-show="panel.chart == 'pie' || panel.chart == 'bar'" statisticstrend-chart params="{{panel}}" style="position:relative" class="pointer"></div>
+  <div ng-show="panel.chart == 'bar'" statisticstrend-chart params="{{panel}}" style="position:relative" class="pointer"></div>
 
-  <div ng-show="panel.counter_pos == 'below' && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend'>
+  <div ng-show="panel.counter_pos == 'below' && (panel.chart == 'bar')" id='{{$id}}-legend'>
     <!-- vertical legend below -->
     <table class="small" ng-show="panel.arrangement == 'vertical'">
       <tr ng-repeat="term in legend">

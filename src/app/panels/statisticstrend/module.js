@@ -2,7 +2,7 @@
  * == statisticstrend
  * Status: *Testing*
  *
- * A table, bar chart or pie chart based on the results of an Elasticsearch terms facet.
+ * A table, bar chart or table chart based on the results of an Elasticsearch terms facet.
  *
  */
 define([
@@ -70,23 +70,11 @@ function (angular, app, _, $, kbn) {
        */
       counter_pos       : 'above',
       /**
-       * donut:: In pie chart mode, draw a hole in the middle of the pie to make a tasty donut.
-       */
-      donut   : false,
-      /**
-       * tilt:: In pie chart mode, tilt the chart back to appear as more of an oval shape
-       */
-      tilt    : false,
-      /**
-       * lables:: In pie chart mode, draw labels in the pie slices
-       */
-      labels  : true,
-      /**
-       * arrangement:: In bar or pie mode, arrangement of the legend. horizontal or vertical
+       * arrangement:: Arrangement of the legend. horizontal or vertical
        */
       arrangement : 'horizontal',
       /**
-       * chart:: table, bar or pie
+       * chart:: table, bar
        */
       chart       : 'bar',
       /**
@@ -360,7 +348,7 @@ function (angular, app, _, $, kbn) {
           // Make a clone we can operate on.
           chartData = _.clone(scope.data);
           chartData = scope.panel.missing ? chartData :
-            _.without(chartData,_.findWhere(chartData,{meta:'missing'}));
+          _.without(chartData,_.findWhere(chartData,{meta:'missing'}));
           chartData = scope.panel.other ? chartData :
           _.without(chartData,_.findWhere(chartData,{meta:'other'}));
 
@@ -386,41 +374,6 @@ function (angular, app, _, $, kbn) {
                     hoverable: true,
                     clickable: true
                   },
-                  colors: querySrv.colors
-                });
-              }
-              if(scope.panel.chart === 'pie') {
-                var labelFormat = function(label, series){
-                  return '<div ng-click="build_search(panel.field,\''+label+'\')'+
-                    ' "style="font-size:8pt;text-align:center;padding:2px;color:white;">'+
-                    label+'<br/>'+Math.round(series.percent)+'%</div>';
-                };
-
-                plot = $.plot(elem, chartData, {
-                  legend: { show: false },
-                  series: {
-                    pie: {
-                      innerRadius: scope.panel.donut ? 0.4 : 0,
-                      tilt: scope.panel.tilt ? 0.45 : 1,
-                      radius: 1,
-                      show: true,
-                      combine: {
-                        color: '#999',
-                        label: 'The Rest'
-                      },
-                      stroke: {
-                        width: 0
-                      },
-                      label: {
-                        show: scope.panel.labels,
-                        radius: 2/3,
-                        formatter: labelFormat,
-                        threshold: 0.1
-                      }
-                    }
-                  },
-                  //grid: { hoverable: true, clickable: true },
-                  grid:   { hoverable: true, clickable: true },
                   colors: querySrv.colors
                 });
               }
