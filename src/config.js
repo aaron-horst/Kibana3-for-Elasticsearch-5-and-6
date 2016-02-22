@@ -83,6 +83,7 @@ function (Settings) {
      * dashboard, but this list is used in the "add panel" interface.
      */
     panel_names: [
+      'filtertable',
       'multiplechoice',
       'histogram',
       'map',
