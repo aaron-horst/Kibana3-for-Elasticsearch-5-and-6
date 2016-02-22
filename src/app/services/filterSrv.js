@@ -156,6 +156,78 @@ define([
       return bool;
     };
 
+    this.getBoolFilterWithoutField = function(ids, field) {
+      var bool = ejs.BoolFilter();
+      // there is no way to introspect the BoolFilter and find out if it has a filter. We must keep note.
+      var added_a_filter = false;
+      var parseQuerySting = function(str) {
+        var pattern1 = /^\s*([^\s]+)\s*\:\s*\(((?:\s*(?:\s+(?:NOT|OR|AND)\s+)?(\"?)[^\(\)\s\:\"]+\3\s*)+)\)\s*$/;
+        var pattern2 = /\s*(?:(NOT|OR|AND)\s+)?(\"?)([^\(\)\s\:\"]+)\2/g;
+        var pattern3 = /^\s*([^\s]+)\s*\:\s*((?:\s*(?:\s+(?:NOT|OR|AND)\s+)?(\"?)[^\(\)\s\:\"]+\3\s*)+)\s*$/;
+        var mts, vs;
+        mts = str.match(pattern1);
+        if (mts == null) {
+          mts = str.match(pattern3);
+          if (mts == null) {
+            return null;
+          }
+        }
+        vs = mts[2];
+        var res = {
+          field: mts[1],
+          value: {}
+        };
+        while (mts = pattern2.exec(vs)) {
+          if (mts != null) {
+            res.value[mts[3]] = mts[1] || 'OR';
+          }
+        }
+        return res;
+      };
+      var queryObj;
+      _.each(ids,function(id) {
+        if(dashboard.current.services.filter.list[id].active) {
+          added_a_filter = true;
+
+          switch(dashboard.current.services.filter.list[id].mandate)
+          {
+            case 'mustNot':
+            if(obj && obj.hasOwnProperty('field') && field == obj.field()) {
+              break;
+            }
+            bool.mustNot(self.getEjsObj(id));
+            break;
+            case 'either':
+            var obj = self.getEjsObj(id);
+            if(obj && obj.hasOwnProperty('field') && field == obj.field()) {
+              break;
+            }
+            bool.should(obj);
+            break;
+            default:
+            var obj = self.getEjsObj(id);
+            if (field) {
+              if (obj && obj.hasOwnProperty('field') && field == obj.field()) {
+                break;
+              }
+              if (obj && obj.hasOwnProperty('query')) {
+                queryObj = parseQuerySting(obj.query().query_string.query);
+                if (queryObj && queryObj.field == field) {
+                  break;
+                }
+              }
+            }
+            bool.must(obj);
+          }
+        }
+      });
+      // add a match filter so we'd get some data
+      if (!added_a_filter) {
+        bool.must(ejs.MatchAllFilter());
+      }
+      return bool;
+    };
+
     this.getEjsObj = function(id) {
       return self.toEjsObj(dashboard.current.services.filter.list[id]);
     };

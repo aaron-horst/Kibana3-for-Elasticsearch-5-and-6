@@ -1,0 +1,77 @@
+<div ng-controller='multiplechoice' ng-init="init()">
+  <style>
+    .pieLabel { pointer-events: none }
+    .terms-legend-term {
+      word-break: break-all;
+    }
+
+    .terms-remaining {
+      bottom:0;
+      top:0;
+      background-color: #f00;
+    }
+
+    .terms-wrapper {
+      display: table;
+      width: 100%;
+    }
+
+    .terms-legend {
+      display: table-row;
+      height: 0;
+    }
+
+    .terms-legend {
+      display: table-row;
+    }
+    .unselectable {
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
+    .terms-filter-item{
+      padding: 3px 10px;
+      margin-bottom: 5px;
+      margin-left: 5px;
+      cursor: pointer;
+      float:left;
+      background-color: rgb(126, 178, 109);
+    }
+    .terms-filter-item.active{
+      background-color: rgb(80, 116, 63);
+    }
+    .terms-filter-item.active.query-not{
+      background-color: rgb(116, 45, 47);
+    }
+  </style>
+
+  <div style="margin-bottom: 0;">
+    <div style="position: absolute; top:9px;right: 156px;">
+      <a href ng-click="clearAllFilter();" class="btn btn-mini" >清除全部</a><a href ng-click="applyFilter();"
+                                                                            ng-show="needApply"
+                                                                            class="btn btn-mini btn-success">Apply</a>
+    </div>
+  </div>
+  <div class="terms-wrapper">
+    <!-- LEGEND -->
+    <div class="terms-legend" id='{{$id}}-legend'>
+      <!-- horizontal legend above -->
+      <span class="small terms-filter-item unselectable"
+            ng-repeat="term in choiceData"
+            ng-click="build_search(term, true)"
+            ui-event="{'contextmenu': 'contextmenuCallback($event, term)'}"
+            ng-class="{'active': filter_mandata[term.label] && filter_mandata[term.label].active, 'query-not': filter_mandata[term.label] && filter_mandata[term.label].active &&  filter_mandata[term.label].isNot}">
+          <!--<i class="icon-circle"></i>-->
+          <span class="terms-legend-term">{{term.label}}</span> ({{term.data[0][1]}})
+      </span>
+
+      <span class="small pull-left" ng-show="panel.tmode == 'terms_stats'">
+        &nbsp | {{ panel.tstat }} of <strong>{{ panel.valuefield }}</strong>
+      </span>
+
+    </div>
+    <!-- keep legend from over lapping -->
+    <div style="clear:both"></div>
+    </div>
+  </div>
+</div>
