@@ -15,6 +15,7 @@ define([
   'angular-cookies',
   'angular-resource',
   'angular-route',
+  'ui-utils',
   'extend-jquery',
   'bindonce',
 ],
@@ -119,6 +120,7 @@ function (angular, $, _, appLevelRequire) {
     'ngCookies',
     'ngResource',
     'ngRoute',
+    'ui.event',
     'kibana',
     'pasvaz.bindonce'
   ];

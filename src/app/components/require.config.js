@@ -24,6 +24,7 @@ require.config({
     'angular-resource':       '../vendor/angular/angular-resource',
     'angular-route':          '../vendor/angular/angular-route',
     'angular-loader':         '../vendor/angular/angular-loader',
+    'ui-utils':               '../vendor/angular/ui-utils',
     timepicker:               '../vendor/angular/timepicker',
     datepicker:               '../vendor/angular/datepicker',
     bindonce:                 '../vendor/angular/bindonce',
@@ -103,6 +104,7 @@ require.config({
     'bindonce':             ['angular'],
     'angular-strap':        ['angular', 'bootstrap','timepicker', 'datepicker'],
 
+    'ui-utils':             ['angular'],
     timepicker:             ['jquery', 'bootstrap'],
     datepicker:             ['jquery', 'bootstrap'],
     elasticsearch:          ['angular'],
