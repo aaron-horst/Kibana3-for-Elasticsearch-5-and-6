@@ -126,31 +126,50 @@ function (angular, app, _, $) {
         boolQuery = boolQuery.should(querySrv.toEjsObj(q));
       });
 
+      request.query(
+        $scope.ejs.FilteredQuery(
+          boolQuery,
+          filterSrv.getBoolFilter(filterSrv.ids())
+        )
+      );
+
       // Then the insert into facet and make the request
       // Terms mode
       if($scope.panel.tmode === 'terms') {
         request = request
-          .facet($scope.ejs.TermsFacet('map')
+        .agg(
+          $scope.ejs.TermsAggregation('map')
           .field($scope.panel.field)
           .size($scope.panel.size)
           .exclude($scope.panel.exclude)
-          .facetFilter($scope.ejs.QueryFilter(
-            $scope.ejs.FilteredQuery(
-              boolQuery,
-              filterSrv.getBoolFilter(filterSrv.ids())
-            )))).size(0);
+        );
       }
       if($scope.panel.tmode === 'terms_stats') {
-        request = request
-          .facet($scope.ejs.TermStatsFacet('map')
-          .valueField($scope.panel.valuefield)
-          .keyField($scope.panel.field)
+        var sub_aggs;
+        switch($scope.panel.tstat) {
+          case 'min':
+          sub_aggs = $scope.ejs.MinAggregation('subaggs')
+          .field($scope.panel.valuefield);
+          break;
+          case 'max':
+          sub_aggs = $scope.ejs.MaxAggregation('subaggs')
+          .field($scope.panel.valuefield);
+          break;
+          case 'total':
+          sub_aggs = $scope.ejs.SumAggregation('subaggs')
+          .field($scope.panel.valuefield);
+          break;
+          case 'mean':
+          sub_aggs = $scope.ejs.AvgAggregation('subaggs')
+          .field($scope.panel.valuefield);
+          break;
+        }
+        request = request.agg(
+          $scope.ejs.TermsAggregation('map')
+          .field($scope.panel.field)
           .size($scope.panel.size)
-          .facetFilter($scope.ejs.QueryFilter(
-            $scope.ejs.FilteredQuery(
-              boolQuery,
-              filterSrv.getBoolFilter(filterSrv.ids())
-            )))).size(0);
+          .agg(sub_aggs)
+        );
       }
 
 
@@ -163,13 +182,13 @@ function (angular, app, _, $) {
         $scope.panelMeta.loading = false;
         $scope.hits = results.hits.total;
         $scope.data = {};
-        _.each(results.facets.map.terms, function(v) {
+        _.each(results.aggregations.map.buckets, function(v) {
           if($scope.panel.tmode === 'terms') {
             //slice = { label : v.term, data : [[k,v.count]], actions: true};
-            $scope.data[v.term.toUpperCase()] = v.count;
+            $scope.data[v.key] = v.doc_count;
           }
           if($scope.panel.tmode === 'terms_stats') {
-            $scope.data[v.term.toUpperCase()] = v[$scope.panel.tstat];
+            $scope.data[v.key] = v.subaggs.value;
 
             //slice = { label : v.term, data : [[k,v[scope.panel.tstat]]], actions: true};
           }
