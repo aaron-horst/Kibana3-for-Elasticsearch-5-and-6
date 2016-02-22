@@ -160,7 +160,7 @@ function (angular, app, _, L, localRequire) {
 
         $scope.populate_modal(request);
 
-        var results = $scope.ejs.doSearch(dashboard.indices[_segment], request);
+        var results = $scope.ejs.doSearch(dashboard.indices[_segment], request, $scope.panel.size);
 
         // Populate scope when we have results
         results.then(function(results) {
