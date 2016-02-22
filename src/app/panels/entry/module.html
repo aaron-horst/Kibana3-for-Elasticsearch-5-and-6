@@ -1,0 +1,24 @@
+<div ng-controller='entry' ng-init="init()">
+  <div style="margin-bottom:10px;">
+    <input ng-model="query" placeholder="Search" class="input-medium search-query">
+    <a class="well" ng-click="change_mainclass_query('{{mainclass.title}}')"
+    ng-style="{padding:'10px', margin:'0px 10px 0px 10px',color:get_color('{{mainclass.title}}')}"
+    ng-repeat="mainclass in entriesList">{{mainclass.title}} </a>
+    <a class="well" ng-click="change_mainclass_query('')" style="padding:10px; margin:0px 10px 0px 10px">显示全部</a>
+  </div>
+  <div>
+    <div class="well" style="padding:10px" ng-repeat="mainclass in entriesList | filter:query | filter_mainclass:mainclass_query">
+      <H3 style="margin-top:0px;">{{mainclass.title}}</H3>
+      <div style="margin-left:10px;">
+        <div ng-repeat="subclass in mainclass.data | filter:query">
+          <h5 ng-show="subclass.title!=''"><a class="btn btn-info">{{subclass.title}}</a></h5>
+          <span ng-repeat="innerentry in subclass.data | filter:query">
+            <a class="btn" style="margin-bottom:5px;" href="/#/dashboard/elasticsearch/{{innerentry.title}}">
+              {{innerentry.title}}
+            </a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
