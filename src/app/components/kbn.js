@@ -113,7 +113,8 @@ function($, _, moment) {
     if(_.isObject(to)) {
       to = to.valueOf();
     }
-    return user_interval === 0 ? kbn.round_interval((to - from)/size) : user_interval;
+    var rst =  user_interval === 0 ? kbn.round_interval((to - from)/size) : user_interval;
+    return rst < 1000 ? 1000:rst;
   };
 
   kbn.round_interval = function(interval) {
