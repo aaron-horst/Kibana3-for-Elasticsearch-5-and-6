@@ -391,37 +391,8 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           querySrv.toEjsObj(q)
         );
 
-        var aggr = $scope.ejs.DateHistogramAggregation(q.id).field($scope.panel.time_field);
-        if($scope.panel.mode === 'count') {
-          // pass
-        } else {
-          if(_.isNull($scope.panel.value_field)) {
-            $scope.panel.error = "In " + $scope.panel.mode + " mode a field must be specified";
-            return;
-          }
-          if($scope.panel.mode === 'uniq') {
-            aggr = aggr.agg($scope.ejs.CardinalityAggregation('0').field($scope.panel.value_field));
-          } else {
-            aggr = aggr.agg($scope.ejs.StatsAggregation('0').field($scope.panel.value_field));
-          }
-        }
+        var aggr = buildAggs(q.id);
 
-        if($scope.panel.arithmetic !== 'none'){
-          if($scope.panel.mode === 'count') {
-            $scope.panel.error = "Could not support Count arithmetic";
-            return;
-          } else {
-            if(_.isNull($scope.panel.value_field2)) {
-              $scope.panel.error = "In " + $scope.panel.mode + " mode a field2 must be specified";
-              return;
-            }
-            if($scope.panel.mode === 'uniq')  {
-              aggr = aggr.agg($scope.ejs.CardinalityAggregation('1').field($scope.panel.value_field2));
-            }else{
-              aggr = aggr.agg($scope.ejs.StatsAggregation('1').field($scope.panel.value_field2));
-            }
-          }
-        }
         request = request.agg(
             $scope.ejs.FilterAggregation(q.id).filter(query).agg(
               aggr.interval(_interval)
@@ -489,28 +460,30 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
                 if ($scope.panel.mode === 'count') {
                   value = (time_series._data[entry.key] || 0) + entry.doc_count;
                 } else if ($scope.panel.mode === 'uniq') {
-                  value = (time_series._data[entry.key] || 0) + entry['0'].value;
+                  value = (time_series._data[entry.key] || 0) + entry.subaggs.value;
                 } else if ($scope.panel.mode === 'mean') {
                   // Compute the ongoing mean by
                   // multiplying the existing mean by the existing hits
                   // plus the new mean multiplied by the new hits
                   // divided by the total hits
                   value = (((time_series._data[entry.key] || 0) * (counters[entry.key] - entry.doc_count)) +
-                  entry['0'].avg * entry.doc_count) / (counters[entry.key]);
+                  entry.subaggs.value * entry.doc_count) / (counters[entry.key]);
                 } else if ($scope.panel.mode === 'min') {
                   if (_.isUndefined(time_series._data[entry.key])) {
-                    value = entry['0'].min;
+                    value = entry.subaggs.value;
                   } else {
-                    value = time_series._data[entry.key] < entry['0'].min ? time_series._data[entry.key] : entry['0'].min;
+                    value = time_series._data[entry.key] < entry.subaggs.value
+                      ? time_series._data[entry.key] : entry.subaggs.value;
                   }
                 } else if ($scope.panel.mode === 'max') {
                   if (_.isUndefined(time_series._data[entry.key])) {
-                    value = entry['0'].max;
+                    value = entry.subaggs.value;
                   } else {
-                    value = time_series._data[entry.key] > entry['0'].max ? time_series._data[entry.key] : entry['0'].max;
+                    value = time_series._data[entry.key] > entry.subaggs.value
+                      ? time_series._data[entry.key] : entry.subaggs.value;
                   }
                 } else if ($scope.panel.mode === 'total') {
-                  value = (time_series._data[entry.key] || 0) + entry['0'].sum;
+                  value = (time_series._data[entry.key] || 0) + entry.subaggs.value;
                 }
                 time_series.addValue(entry.key+$scope.timeshift, value);
               });
@@ -616,36 +589,8 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           querySrv.toEjsObj(q)
         );
 
-        var aggr = $scope.ejs.DateHistogramAggregation(q.id).field($scope.panel.time_field);
+        var aggr = buildAggs(q.id);
 
-        if($scope.panel.mode === 'count') {
-          //pass
-        } else if($scope.panel.mode === 'uniq') {
-          aggr = aggr.agg($scope.ejs.CardinalityAggregation('0').field($scope.panel.value_field));
-        } else {
-          if(_.isNull($scope.panel.value_field)) {
-            $scope.panel.error = "In " + $scope.panel.mode + " mode a field must be specified";
-            return;
-          }
-          aggr = aggr.agg($scope.ejs.StatsAggregation('0').field($scope.panel.value_field));
-        }
-
-        if($scope.panel.arithmetic !== 'none'){
-          if($scope.panel.mode === 'count') {
-            $scope.panel.error = "Could not support Count arithmetic";
-            return;
-          } else {
-            if(_.isNull($scope.panel.value_field2)) {
-              $scope.panel.error = "In " + $scope.panel.mode + " mode a field2 must be specified";
-              return;
-            }
-            if($scope.panel.mode === 'uniq')  {
-              aggr = aggr.agg($scope.ejs.CardinalityAggregation('1').field($scope.panel.value_field2));
-            }else{
-              aggr = aggr.agg($scope.ejs.StatsAggregation('1').field($scope.panel.value_field2));
-            }
-          }
-        }
         request = request.agg(
           $scope.ejs.FilterAggregation(q.id).filter(query).agg(
             aggr.interval(_interval)
@@ -731,28 +676,30 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
                 if ($scope.panel.mode === 'count') {
                   value = (time_series._data[entry.key] || 0) + entry.doc_count;
                 } else if ($scope.panel.mode === 'uniq') {
-                  value = (time_series._data[entry.key] || 0) + entry['0'].value;
+                  value = entry.subaggs.value;
                 } else if ($scope.panel.mode === 'mean') {
                   // Compute the ongoing mean by
                   // multiplying the existing mean by the existing hits
                   // plus the new mean multiplied by the new hits
                   // divided by the total hits
                   value = (((time_series._data[entry.key] || 0) * (counters[entry.key] - entry.doc_count)) +
-                  entry['0'].avg * entry.doc_count) / (counters[entry.key]);
+                  entry.subaggs.value * entry.doc_count) / (counters[entry.key]);
                 } else if ($scope.panel.mode === 'min') {
                   if (_.isUndefined(time_series._data[entry.key])) {
-                    value = entry['0'].min;
+                    value = entry.subaggs.value;
                   } else {
-                    value = time_series._data[entry.key] < entry['0'].min ? time_series._data[entry.key] : entry['0'].min;
+                    value = time_series._data[entry.key] < entry.subaggs.value
+                      ? time_series._data[entry.key] : entry.subaggs.value;
                   }
                 } else if ($scope.panel.mode === 'max') {
                   if (_.isUndefined(time_series._data[entry.key])) {
-                    value = entry['0'].max;
+                    value = entry.subaggs.value;
                   } else {
-                    value = time_series._data[entry.key] > entry['0'].max ? time_series._data[entry.key] : entry['0'].max;
+                    value = time_series._data[entry.key] > entry.subaggs.value
+                      ? time_series._data[entry.key] : entry.subaggs.value;
                   }
                 } else if ($scope.panel.mode === 'total') {
-                  value = (time_series._data[entry.key] || 0) + entry['0'].sum;
+                  value = (time_series._data[entry.key] || 0) + entry.subaggs.value;
                 }
                 time_series.addValue(entry.key, value);
               });
@@ -807,28 +754,91 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       });
     };
 
+    function buildAggs(query_id){
+        var aggr = $scope.ejs.DateHistogramAggregation(query_id).field($scope.panel.time_field);
+
+        if($scope.panel.mode === 'count') {
+          //pass
+        } else {
+          if(_.isNull($scope.panel.value_field)) {
+            $scope.panel.error = "In " + $scope.panel.mode + " mode a field2 must be specified";
+            return;
+          }
+          var sub_aggs;
+          switch($scope.panel.mode) {
+            case 'uniq':
+            sub_aggs = $scope.ejs.CardinalityAggregation('subaggs')
+            .field($scope.panel.value_field);
+            break;
+            case 'min':
+            sub_aggs = $scope.ejs.MinAggregation('subaggs')
+            .field($scope.panel.value_field);
+            break;
+            case 'max':
+            sub_aggs = $scope.ejs.MaxAggregation('subaggs')
+            .field($scope.panel.value_field);
+            break;
+            case 'total':
+            sub_aggs = $scope.ejs.SumAggregation('subaggs')
+            .field($scope.panel.value_field);
+            break;
+            case 'mean':
+            sub_aggs = $scope.ejs.AvgAggregation('subaggs')
+            .field($scope.panel.value_field);
+            break;
+          }
+          aggr = aggr.agg(sub_aggs);
+        }
+
+        if($scope.panel.arithmetic !== 'none'){
+          if($scope.panel.mode === 'count') {
+            $scope.panel.error = "Could not support Count arithmetic";
+            return;
+          } else {
+            if(_.isNull($scope.panel.value_field2)) {
+              $scope.panel.error = "In " + $scope.panel.mode + " mode a field2 must be specified";
+              return;
+            }
+            var sub_aggs;
+            switch($scope.panel.mode) {
+              case 'uniq':
+              sub_aggs = $scope.ejs.CardinalityAggregation('subaggs')
+                .field($scope.panel.value_field2);
+              break;
+              case 'min':
+              sub_aggs = $scope.ejs.MinAggregation('subaggs')
+                .field($scope.panel.value_field2);
+              break;
+              case 'max':
+              sub_aggs = $scope.ejs.MaxAggregation('subaggs')
+                .field($scope.panel.value_field2);
+              break;
+              case 'total':
+              sub_aggs = $scope.ejs.SumAggregation('subaggs')
+                .field($scope.panel.value_field2);
+              break;
+              case 'mean':
+              sub_aggs = $scope.ejs.AvgAggregation('subaggs')
+                .field($scope.panel.value_field2);
+              break;
+            }
+            aggr = aggr.agg(sub_aggs);
+          }
+        }
+        return aggr;
+    };
+
     function doArithmetic(hits, time_series, counters, query_results, query_results2, mode, arithmetic,timeshift){
-      //forward_compatible_map
-      var _fcm = {
-        "sum":"sum",
-        "total":"sum",
-        "mean":"avg",
-        "avg":"avg",
-        "min":"min",
-        "max":"max",
-        "count":"count"
-      };
       function getValue(a, b, key) {
-        key = _fcm[key];
         switch (arithmetic){
           case 'add':
-            return a['0'][key] + b['1'][key];
+            return a.subaggs.value + b.subaggs.value;
           case 'subtract':
-            return a['0'][key] - b['1'][key];
+            return a.subaggs.value - b.subaggs.value;
           case 'multiply':
-            return a['0'][key] * b['1'][key];
+            return a.subaggs.value * b.subaggs.value;
           case 'divide':
-            return a['0'][key] / b['1'][key];
+            return a.subaggs.value / b.subaggs.value;
         }
       }
 
@@ -841,7 +851,10 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
         $scope.hits += aEntry.doc_count; // Entire dataset level hits counter
         counters[aEntry.key] = (counters[aEntry.key] || 0) + aEntry.doc_count;
 
-        if (mode === 'mean') {
+        if (mode === 'uniq') {
+          value = getValue(aEntry, bEntry, 'total');
+        }
+        else if (mode === 'mean') {
           // Compute the ongoing mean by
           // multiplying the existing mean by the existing hits
           // plus the new mean multiplied by the new hits
