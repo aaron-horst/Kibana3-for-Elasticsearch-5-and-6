@@ -21,11 +21,7 @@ define([
   var module = angular.module('kibana.panels.force', []);
   app.useModule(module);
 
-  console.log('force module loaded');
-
   module.controller('force', function($scope, $rootScope, querySrv, dashboard, filterSrv) {
-
-    console.log('force controller loaded');
 
     $scope.panelMeta = {
       editorTabs : [
@@ -69,14 +65,11 @@ define([
     _.defaults($scope.panel,_d);
 
     $scope.init = function() {
-      console.log('force scope init');
       $scope.$on('refresh', function(){$scope.get_data();});
       $scope.get_data();
     };
 
     $scope.get_data = function() {
-      console.log('force scope get_data');
-
       $scope.panelMeta.loading = true;
 
       var request,
@@ -94,27 +87,29 @@ define([
 
 
       request = $scope.ejs.Request();
+
+      $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
+      queries = querySrv.getQueryObjs($scope.panel.queries.ids);
+
+      // This could probably be changed to a BoolFilter
+      boolQuery = $scope.ejs.BoolQuery();
+      _.each(queries,function(q) {
+        boolQuery = boolQuery.should(querySrv.toEjsObj(q));
+      });
+
+      var query = $scope.ejs.FilteredQuery(
+        boolQuery,
+        filterSrv.getBoolFilter(filterSrv.ids())
+      );
+      request = request.query(query);
+
       request = request
-        .facet($scope.ejs.TermsFacet('src_terms')
+        .agg($scope.ejs.TermsAggregation('src_terms')
           .field($scope.panel.src_field)
-          .size($scope.panel.size)
-          .facetFilter($scope.ejs.QueryFilter(
-            $scope.ejs.FilteredQuery(
-              boolQuery,
-              filterSrv.getBoolFilter(filterSrv.ids)
-            )
-          ))
-        )
-        .facet($scope.ejs.TermsFacet('dst_terms')
+          .size($scope.panel.size))
+        .agg($scope.ejs.TermsAggregation('dst_terms')
           .field($scope.panel.dst_field)
-          .size($scope.panel.size)
-          .facetFilter($scope.ejs.QueryFilter(
-            $scope.ejs.FilteredQuery(
-              boolQuery,
-              filterSrv.getBoolFilter(filterSrv.ids)
-            )
-          ))
-        )
+          .size($scope.panel.size))
         .size(0);
 
       $scope.populate_modal(request);
@@ -124,46 +119,38 @@ define([
       $scope.ejs.doSearch(dashboard.indices, request).then(function(results) {
 
         $scope.data.src_terms = [];
-        _.each(results.facets.src_terms.terms, function(v) {
-          $scope.data.src_terms.push(v.term);
+        _.each(results.aggregations.src_terms.buckets, function(v) {
+          $scope.data.src_terms.push(v.key);
         });
         $scope.data.dst_terms = [];
-        _.each(results.facets.dst_terms.terms, function(v) {
-          $scope.data.dst_terms.push(v.term);
+        _.each(results.aggregations.dst_terms.buckets, function(v) {
+          $scope.data.dst_terms.push(v.key);
         });
-
-        console.log("Src terms", $scope.data.src_terms);
-        console.log("Dst terms", $scope.data.dst_terms);
 
         // build a new request to compute the connections between the nodes
         request = $scope.ejs.Request();
+        request = request.query(query);
+
         _.each($scope.data.src_terms, function(src) {
           _.each($scope.data.dst_terms, function(dst) {
 
-            request = request
-              .facet(ejs.FilterFacet(src + '->' + dst)
-              .filter(ejs.AndFilter([
-                ejs.TermFilter($scope.panel.src_field, src),
-                ejs.TermFilter($scope.panel.dst_field, dst)
-              ]))
-              .facetFilter($scope.ejs.QueryFilter(
-                $scope.ejs.FilteredQuery(
-                  boolQuery,
-                  filterSrv.getBoolFilter(filterSrv.ids)
-                )
-              ))
-              ).size(0);
+            var boolFilter = $scope.ejs.BoolFilter();
+            boolFilter = boolFilter.must($scope.ejs.TermFilter($scope.panel.src_field, src));
+            boolFilter = boolFilter.must($scope.ejs.TermFilter($scope.panel.dst_field, dst));
 
-          });
+            request = request
+            .agg(
+              ejs.FilterAggregation(src + '--' + dst).filter(boolFilter)
+            )
+            .size(0);
+        });
         });
 
         $scope.ejs.doSearch(dashboard.indices, request).then(function(results) {
           $scope.data.connections = {};
-          _.each(results.facets, function(v, name) {
-            $scope.data.connections[name] = v.count;
+          _.each(results.aggregations, function(v, name) {
+            $scope.data.connections[name] = v.doc_count;
           });
-
-          console.log('Connections: ', $scope.data.connections);
 
           $scope.panelMeta.loading = false;
           $scope.$emit('render');
@@ -185,8 +172,6 @@ define([
     return {
       restrict: 'A',
       link: function(scope, elem) {
-        console.log('link function called');
-
         elem.html('<center><img src="img/load_big.gif"></center>');
 
 
@@ -201,7 +186,6 @@ define([
         });
 
         function render_panel() {
-          console.log('force render event received');
           elem.css({height:scope.panel.height||scope.row.height});
           elem.text('');
           scope.panelMeta.loading = false;
@@ -227,9 +211,6 @@ define([
 
             links.push(link);
           });
-
-          console.log("Links", links);
-          console.log("Nodes", d3.values(nodes));
 
           // add the curvy lines
           function tick() {
@@ -308,7 +289,6 @@ define([
               .attr("r", 25)
               .style('fill', '#2980b9')
               .on('mouseover', function(d) {
-                console.log('Node: ', d);
                 d3.select(this).style('fill', '#7ab6b6');
                 svg.selectAll('.link-path')
                   .filter(function(link) {
