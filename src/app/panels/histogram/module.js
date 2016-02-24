@@ -446,8 +446,10 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
               counters = data[queries.length + i].counters;
             }
 
+            buildResult();
+
             if($scope.panel.mode !== 'count' && $scope.panel.arithmetic !== 'none'){
-              hits = doArithmetic(hits, time_series, counters, query_results, results.aggregations[q.id][q.id], $scope.panel.mode, $scope.panel.arithmetic,$scope.timeshift);
+              hits = doArithmetic(hits, time_series, counters, query_results, $scope.panel.mode, $scope.panel.arithmetic,$scope.timeshift);
             } else {
               // push each entry into the time series, while incrementing counters
               _.each(query_results.buckets, function (entry) {
@@ -502,29 +504,6 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           });
 
           // DO NOT need annotate in shifted_time data
-          // if($scope.panel.annotate.enable) {
-          //   $scope.annotations = $scope.annotations.concat(_.map(results.hits.hits, function(hit) {
-          //     var _p = _.omit(hit,'_source','sort','_score');
-          //     var _h = _.extend(kbn.flatten_json(hit._source),_p);
-          //     return  {
-          //       min: hit.sort[1],
-          //       max: hit.sort[1],
-          //       eventType: "annotation",
-          //       title: null,
-          //       description: "<small><i class='icon-tag icon-flip-vertical'></i> "+
-          //         _h[$scope.panel.annotate.field]+"</small><br>"+
-          //         moment(hit.sort[1]).format('YYYY-MM-DD HH:mm:ss'),
-          //       score: hit.sort[0]
-          //     };
-          //   }));
-          //   // Sort the data
-          //   $scope.annotations = _.sortBy($scope.annotations, function(v){
-          //     // Sort in reverse
-          //     return v.score*($scope.panel.annotate.sort[1] === 'desc' ? -1 : 1);
-          //   });
-          //   // And slice to the right size
-          //   $scope.annotations = $scope.annotations.slice(0,$scope.panel.annotate.size);
-          // }
         }
 
         // Tell the histogram directive to render.
@@ -663,7 +642,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
             }
 
             if($scope.panel.mode !== 'count' && $scope.panel.arithmetic !== 'none'){
-              hits = doArithmetic(hits, time_series, counters, query_results, results.aggregations[q.id][q.id], $scope.panel.mode, $scope.panel.arithmetic,0);
+              hits = doArithmetic(hits, time_series, counters, query_results, $scope.panel.mode, $scope.panel.arithmetic,0);
             } else {
               // push each entry into the time series, while incrementing counters
               _.each(query_results.buckets, function (entry) {
@@ -754,6 +733,10 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       });
     };
 
+    function buildResult(){
+
+    }
+
     function buildAggs(query_id){
         var aggr = $scope.ejs.DateHistogramAggregation(query_id).field($scope.panel.time_field);
 
@@ -802,23 +785,23 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
             var sub_aggs;
             switch($scope.panel.mode) {
               case 'uniq':
-              sub_aggs = $scope.ejs.CardinalityAggregation('subaggs')
+              sub_aggs = $scope.ejs.CardinalityAggregation('subaggs2')
                 .field($scope.panel.value_field2);
               break;
               case 'min':
-              sub_aggs = $scope.ejs.MinAggregation('subaggs')
+              sub_aggs = $scope.ejs.MinAggregation('subaggs2')
                 .field($scope.panel.value_field2);
               break;
               case 'max':
-              sub_aggs = $scope.ejs.MaxAggregation('subaggs')
+              sub_aggs = $scope.ejs.MaxAggregation('subaggs2')
                 .field($scope.panel.value_field2);
               break;
               case 'total':
-              sub_aggs = $scope.ejs.SumAggregation('subaggs')
+              sub_aggs = $scope.ejs.SumAggregation('subaggs2')
                 .field($scope.panel.value_field2);
               break;
               case 'mean':
-              sub_aggs = $scope.ejs.AvgAggregation('subaggs')
+              sub_aggs = $scope.ejs.AvgAggregation('subaggs2')
                 .field($scope.panel.value_field2);
               break;
             }
@@ -828,55 +811,54 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
         return aggr;
     };
 
-    function doArithmetic(hits, time_series, counters, query_results, query_results2, mode, arithmetic,timeshift){
-      function getValue(a, b, key) {
+    function doArithmetic(hits, time_series, counters, query_results, mode, arithmetic,timeshift){
+      function getValue(a) {
         switch (arithmetic){
           case 'add':
-            return a.subaggs.value + b.subaggs.value;
+            return a.subaggs.value + a.subaggs2.value;
           case 'subtract':
-            return a.subaggs.value - b.subaggs.value;
+            return a.subaggs.value - a.subaggs2.value;
           case 'multiply':
-            return a.subaggs.value * b.subaggs.value;
+            return a.subaggs.value * a.subaggs2.value;
           case 'divide':
-            return a.subaggs.value / b.subaggs.value;
+            return a.subaggs.value / a.subaggs2.value;
         }
       }
 
-      var aEntries = query_results.buckets, bEntries = query_results2.buckets, i, ln, aEntry, bEntry, value;
-      for(i=0,ln=aEntries.length; i<ln; ++i){
-        aEntry = aEntries[i];
-        bEntry = bEntries[i];
+      var Entries = query_results.buckets, i, ln, entry, value;
+      for(i=0,ln=Entries.length; i<ln; ++i){
+        entry = Entries[i];
 
-        hits += aEntry.doc_count; // The series level hits counter
-        $scope.hits += aEntry.doc_count; // Entire dataset level hits counter
-        counters[aEntry.key] = (counters[aEntry.key] || 0) + aEntry.doc_count;
+        hits += entry.doc_count; // The series level hits counter
+        $scope.hits += entry.doc_count; // Entire dataset level hits counter
+        counters[entry.key] = (counters[entry.key] || 0) + entry.doc_count;
 
         if (mode === 'uniq') {
-          value = getValue(aEntry, bEntry, 'total');
+          value = getValue(entry);
         }
         else if (mode === 'mean') {
           // Compute the ongoing mean by
           // multiplying the existing mean by the existing hits
           // plus the new mean multiplied by the new hits
           // divided by the total hits
-          value = (((time_series._data[aEntry.key] || 0) * (counters[aEntry.key] - aEntry.doc_count)) +
-          getValue(aEntry, bEntry, 'mean') *  aEntry.doc_count) / (counters[aEntry.key]);
+          value = (((time_series._data[entry.key] || 0) * (counters[entry.key] - entry.doc_count)) +
+          getValue(entry) *  entry.doc_count) / (counters[entry.key]);
         } else if (mode === 'min') {
-          if (_.isUndefined(time_series._data[aEntry.key])) {
-            value = getValue(aEntry, bEntry, 'min');
+          if (_.isUndefined(time_series._data[entry.key])) {
+            value = getValue(entry);
           } else {
-            value = time_series._data[aEntry.key] < getValue(aEntry, bEntry, 'min') ? time_series._data[aEntry.key] : getValue(aEntry, bEntry, 'min');
+            value = time_series._data[entry.key] < getValue(entry) ? time_series._data[entry.key] : getValue(entry);
           }
         } else if (mode === 'max') {
-          if (_.isUndefined(time_series._data[aEntry.time])) {
-            value = getValue(aEntry, bEntry, 'max');
+          if (_.isUndefined(time_series._data[entry.time])) {
+            value = getValue(entry);
           } else {
-            value = time_series._data[aEntry.key] > getValue(aEntry, bEntry, 'max') ? time_series._data[aEntry.key] : getValue(aEntry, bEntry, 'max');
+            value = time_series._data[entry.key] > getValue(entry) ? time_series._data[entry.key] : getValue(entry);
           }
         } else if (mode === 'total') {
-          value = (time_series._data[aEntry.key] || 0) + getValue(aEntry, bEntry, 'total');
+          value = (time_series._data[entry.key] || 0) + getValue(entry);
         }
-        time_series.addValue(aEntry.key+timeshift, value);
+        time_series.addValue(entry.key+timeshift, value);
       }
       return hits;
     }
