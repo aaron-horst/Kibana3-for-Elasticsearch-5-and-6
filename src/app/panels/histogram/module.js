@@ -447,7 +447,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
             }
 
             var query_results = results.aggregations[q.id][q.id];
-            buildResult(query_results, hits, time_series, counters);
+            hits = buildResult(query_results, hits, time_series, counters);
 
             $scope.legend[queries.length + i] = {query:q,hits:hits};
 
@@ -599,7 +599,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
             }
 
             var query_results = results.aggregations[q.id][q.id];
-            buildResult(query_results, hits, time_series, counters);
+            hits = buildResult(query_results, hits, time_series, counters);
 
             $scope.legend[i] = {query:q,hits:hits};
 
@@ -652,7 +652,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
 
     function buildResult(query_results, hits, time_series, counters){
       var timeshift = $scope.panel.timeshift;
-      if (!_.isUndefined($scope.panel.timeshift) && $scope.panel.timeshift != "") {
+      if (_.isUndefined($scope.panel.timeshift) || $scope.panel.timeshift != "") {
         timeshift = 0;
       }
 
@@ -699,6 +699,8 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           time_series.addValue(entry.key + timeshift, value);
         });
       }
+
+      return hits;
     }
 
     function buildAggs(query_id){
