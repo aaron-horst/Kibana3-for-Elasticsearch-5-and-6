@@ -427,7 +427,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
             var q = _.clone(q);
             q.query = q.query+"[-"+$scope.panel.timeshift+"]";
             q.color = "#abc";
-            var query_results = results.aggregations[q.id][q.id];
+
             // we need to initialize the data variable on the first run,
             // and when we are working on the first segment of the data.
             if(_.isUndefined(data[queries.length + i]) || segment === 0) {
@@ -446,50 +446,8 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
               counters = data[queries.length + i].counters;
             }
 
-            buildResult();
-
-            if($scope.panel.mode !== 'count' && $scope.panel.arithmetic !== 'none'){
-              hits = doArithmetic(hits, time_series, counters, query_results, $scope.panel.mode, $scope.panel.arithmetic,$scope.timeshift);
-            } else {
-              // push each entry into the time series, while incrementing counters
-              _.each(query_results.buckets, function (entry) {
-                var value;
-
-                hits += entry.doc_count; // The series level hits counter
-                $scope.hits += entry.doc_count; // Entire dataset level hits counter
-                counters[entry.key] = (counters[entry.key] || 0) + entry.doc_count;
-
-                if ($scope.panel.mode === 'count') {
-                  value = (time_series._data[entry.key] || 0) + entry.doc_count;
-                } else if ($scope.panel.mode === 'uniq') {
-                  value = (time_series._data[entry.key] || 0) + entry.subaggs.value;
-                } else if ($scope.panel.mode === 'mean') {
-                  // Compute the ongoing mean by
-                  // multiplying the existing mean by the existing hits
-                  // plus the new mean multiplied by the new hits
-                  // divided by the total hits
-                  value = (((time_series._data[entry.key] || 0) * (counters[entry.key] - entry.doc_count)) +
-                  entry.subaggs.value * entry.doc_count) / (counters[entry.key]);
-                } else if ($scope.panel.mode === 'min') {
-                  if (_.isUndefined(time_series._data[entry.key])) {
-                    value = entry.subaggs.value;
-                  } else {
-                    value = time_series._data[entry.key] < entry.subaggs.value
-                      ? time_series._data[entry.key] : entry.subaggs.value;
-                  }
-                } else if ($scope.panel.mode === 'max') {
-                  if (_.isUndefined(time_series._data[entry.key])) {
-                    value = entry.subaggs.value;
-                  } else {
-                    value = time_series._data[entry.key] > entry.subaggs.value
-                      ? time_series._data[entry.key] : entry.subaggs.value;
-                  }
-                } else if ($scope.panel.mode === 'total') {
-                  value = (time_series._data[entry.key] || 0) + entry.subaggs.value;
-                }
-                time_series.addValue(entry.key+$scope.timeshift, value);
-              });
-            }
+            var query_results = results.aggregations[q.id][q.id];
+            buildResult(query_results, hits, time_series, counters);
 
             $scope.legend[queries.length + i] = {query:q,hits:hits};
 
@@ -622,7 +580,6 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
             counters; // Stores the bucketed hit counts.
 
           _.each(queries, function(q) {
-            var query_results = results.aggregations[q.id][q.id];
             // we need to initialize the data variable on the first run,
             // and when we are working on the first segment of the data.
             if(_.isUndefined(data[i]) || segment === 0) {
@@ -641,48 +598,8 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
               counters = data[i].counters;
             }
 
-            if($scope.panel.mode !== 'count' && $scope.panel.arithmetic !== 'none'){
-              hits = doArithmetic(hits, time_series, counters, query_results, $scope.panel.mode, $scope.panel.arithmetic,0);
-            } else {
-              // push each entry into the time series, while incrementing counters
-              _.each(query_results.buckets, function (entry) {
-                var value;
-
-                hits += entry.doc_count; // The series level hits counter
-                $scope.hits += entry.doc_count; // Entire dataset level hits counter
-                counters[entry.key] = (counters[entry.key] || 0) + entry.doc_count;
-
-                if ($scope.panel.mode === 'count') {
-                  value = (time_series._data[entry.key] || 0) + entry.doc_count;
-                } else if ($scope.panel.mode === 'uniq') {
-                  value = entry.subaggs.value;
-                } else if ($scope.panel.mode === 'mean') {
-                  // Compute the ongoing mean by
-                  // multiplying the existing mean by the existing hits
-                  // plus the new mean multiplied by the new hits
-                  // divided by the total hits
-                  value = (((time_series._data[entry.key] || 0) * (counters[entry.key] - entry.doc_count)) +
-                  entry.subaggs.value * entry.doc_count) / (counters[entry.key]);
-                } else if ($scope.panel.mode === 'min') {
-                  if (_.isUndefined(time_series._data[entry.key])) {
-                    value = entry.subaggs.value;
-                  } else {
-                    value = time_series._data[entry.key] < entry.subaggs.value
-                      ? time_series._data[entry.key] : entry.subaggs.value;
-                  }
-                } else if ($scope.panel.mode === 'max') {
-                  if (_.isUndefined(time_series._data[entry.key])) {
-                    value = entry.subaggs.value;
-                  } else {
-                    value = time_series._data[entry.key] > entry.subaggs.value
-                      ? time_series._data[entry.key] : entry.subaggs.value;
-                  }
-                } else if ($scope.panel.mode === 'total') {
-                  value = (time_series._data[entry.key] || 0) + entry.subaggs.value;
-                }
-                time_series.addValue(entry.key, value);
-              });
-            }
+            var query_results = results.aggregations[q.id][q.id];
+            buildResult(query_results, hits, time_series, counters);
 
             $scope.legend[i] = {query:q,hits:hits};
 
@@ -733,8 +650,55 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       });
     };
 
-    function buildResult(){
+    function buildResult(query_results, hits, time_series, counters){
+      var timeshift = $scope.panel.timeshift;
+      if (!_.isUndefined($scope.panel.timeshift) && $scope.panel.timeshift != "") {
+        timeshift = 0;
+      }
 
+      if($scope.panel.mode !== 'count' && $scope.panel.arithmetic !== 'none'){
+        hits = doArithmetic(hits, time_series, counters, query_results,
+          $scope.panel.mode, $scope.panel.arithmetic,timeshift);
+      } else {
+        // push each entry into the time series, while incrementing counters
+        _.each(query_results.buckets, function (entry) {
+          var value;
+
+          hits += entry.doc_count; // The series level hits counter
+          $scope.hits += entry.doc_count; // Entire dataset level hits counter
+          counters[entry.key] = (counters[entry.key] || 0) + entry.doc_count;
+
+          if ($scope.panel.mode === 'count') {
+            value = (time_series._data[entry.key] || 0) + entry.doc_count;
+          } else if ($scope.panel.mode === 'uniq') {
+            value = (time_series._data[entry.key] || 0) + entry.subaggs.value;
+          } else if ($scope.panel.mode === 'mean') {
+            // Compute the ongoing mean by
+            // multiplying the existing mean by the existing hits
+            // plus the new mean multiplied by the new hits
+            // divided by the total hits
+            value = (((time_series._data[entry.key] || 0) * (counters[entry.key] - entry.doc_count)) +
+            entry.subaggs.value * entry.doc_count) / (counters[entry.key]);
+          } else if ($scope.panel.mode === 'min') {
+            if (_.isUndefined(time_series._data[entry.key])) {
+              value = entry.subaggs.value;
+            } else {
+              value = time_series._data[entry.key] < entry.subaggs.value
+              ? time_series._data[entry.key] : entry.subaggs.value;
+            }
+          } else if ($scope.panel.mode === 'max') {
+            if (_.isUndefined(time_series._data[entry.key])) {
+              value = entry.subaggs.value;
+            } else {
+              value = time_series._data[entry.key] > entry.subaggs.value
+              ? time_series._data[entry.key] : entry.subaggs.value;
+            }
+          } else if ($scope.panel.mode === 'total') {
+            value = (time_series._data[entry.key] || 0) + entry.subaggs.value;
+          }
+          time_series.addValue(entry.key + timeshift, value);
+        });
+      }
     }
 
     function buildAggs(query_id){
