@@ -35,7 +35,7 @@ function (Settings) {
      * Valid version: 0.9, 1.0, 1.1, 1.2
      */
     api_version: "1.0",
-    
+
     /** @scratch /configuration/config.js/5
      *
      * ==== sniff
@@ -82,6 +82,13 @@ function (Settings) {
      * An array of panel modules available. Panels will only be loaded when they are defined in the
      * dashboard, but this list is used in the "add panel" interface.
      */
+     dashboard_class: [
+       {'MOBILE':["Client","Server"]},
+       {'Cloud':[]},
+       {'OPS':["network", "storage"]},
+       {'APP':["search","ad"]},
+       {'WEB':[]}
+     ],
     panel_names: [
       'entry',
       'filtertable',

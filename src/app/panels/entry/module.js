@@ -50,12 +50,10 @@ function (angular, app, _, $, kbn, config) {
 
     $scope.mainclass_query = "";
     $scope.change_mainclass_query = function(query) {
-      console.log(query);
         $scope.mainclass_query = query;
     }
 
     $scope.get_color = function(title){
-      console.log(title);
         return "";
     }
 
