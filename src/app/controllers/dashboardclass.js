@@ -18,7 +18,6 @@ function (angular, config, _) {
         $scope.dashboardmainclass.push(k);
         $scope.dashboardclass[k] = config.dashboard_class[i][k];
       }
-      console.log($scope.dashboardclass);
     };
 
     $scope.init();
