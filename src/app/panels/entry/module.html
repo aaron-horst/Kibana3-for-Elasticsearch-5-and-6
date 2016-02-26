@@ -1,8 +1,8 @@
 <div ng-controller='entry' ng-init="init()">
   <div style="margin-bottom:10px;">
     <input ng-model="query" placeholder="Search" class="input-medium search-query">
-    <a class="well" ng-click="change_mainclass_query('{{mainclass.title}}')"
-    ng-style="{padding:'10px', margin:'0px 10px 0px 10px',color:get_color('{{mainclass.title}}')}"
+    <a class="well" ng-click="change_mainclass_query(mainclass.title)"
+    ng-style="{padding:'10px', margin:'0px 10px 0px 10px',color:get_color(mainclass.title)}"
     ng-repeat="mainclass in entriesList">{{mainclass.title}} </a>
     <a class="well" ng-click="change_mainclass_query('')" style="padding:10px; margin:0px 10px 0px 10px">显示全部</a>
   </div>
