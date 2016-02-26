@@ -43,6 +43,10 @@
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/jquery.multiselect.css">
 
+    <div ng-cloak class="alert-info dashboard-notice" ng-show="config.notice">
+      <button type="button" class="close" ng-click="config.notice=null;" style="padding-right:50px">&times;</button>
+      <strong>{{config.notice.title}}</strong> <span ng-bind-html='config.notice.text'></span>
+    </div>
     <div ng-cloak ng-repeat='alert in dashAlerts.list' class="alert-{{alert.severity}} dashboard-notice" ng-show="$last">
       <button type="button" class="close" ng-click="dashAlerts.clear(alert)" style="padding-right:50px">&times;</button>
       <strong>{{alert.title}}</strong> <span ng-bind-html='alert.text'></span> <div style="padding-right:10px" class='pull-right small'> {{$index + 1}} alert(s) </div>

@@ -85,12 +85,18 @@ function (Settings) {
      */
     kibana_index: "kibana-int",
 
-    /** @scratch /configuration/config.js/5
-     *
-     * ==== panel_name
-     *
-     * An array of panel modules available. Panels will only be loaded when they are defined in the
-     * dashboard, but this list is used in the "add panel" interface.
+
+    /*
+     * display notice on top of the page. you could config it as below
+    notice: {
+      'title':'kibana3 update',
+      'text': 'now kibana3 support es2!',
+     },
+     */
+    notice: null,
+
+     /*
+     * choose which catetory the dashboard belong to when save dashboard
      */
      dashboard_class: [
        {'MOBILE':["Client","Server"]},
@@ -99,6 +105,13 @@ function (Settings) {
        {'APP':["search","ad"]},
        {'WEB':[]}
      ],
+    /** @scratch /configuration/config.js/5
+     *
+     * ==== panel_name
+     *
+     * An array of panel modules available. Panels will only be loaded when they are defined in the
+     * dashboard, but this list is used in the "add panel" interface.
+     */
     panel_names: [
       'entry',
       'filtertable',
