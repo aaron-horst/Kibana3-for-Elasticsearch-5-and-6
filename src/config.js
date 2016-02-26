@@ -26,6 +26,16 @@ function (Settings) {
      */
     elasticsearch: "http://"+window.location.hostname+":9200",
     
+
+    /*
+    * logout kibana
+    */
+    logout: "/logout",
+    /*
+    * show username and logout link on the right of the navbar
+    */
+    showuser: true,
+
     /** @scratch /configuration/config.js/5
      *
      * ==== api_version
