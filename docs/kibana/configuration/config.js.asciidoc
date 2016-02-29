@@ -19,6 +19,16 @@ The elasticsearch api version you want to use. This must match the version of yo
 
 Valid version: 0.9, 1.0, 1.1, 1.2
 
+==== sniff
+
+Whether to sniff elasticsearch nodes on kibana start. kibana would send queries to nodes by round-robin. You may want to set
+
+Valid value: true, false
+
+==== request_timeout
+
+The timeout in milliseconds for requests to Elasticsearch
+
 ==== default_route
 
 This is the default landing page when you don't specify a dashboard to load. You can specify

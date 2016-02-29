@@ -5,6 +5,7 @@ Status: *Stable*
 The map panel translates 2 letter country or state codes into shaded regions on a map. Currently
 available maps are world, usa and europe.
 
+size:: Max number of nodes to draw
 
 === Parameters
 
@@ -14,6 +15,9 @@ between them will be used. For example [`#A0E2E2', `#265656']
 size:: Max number of regions to shade
 exclude:: exclude this array of regions. For example [`US',`BR',`IN']
 spyable:: Setting spyable to false disables the inspect icon.
+tmode:: Facet mode: terms or terms_stats
+tstat:: Terms_stats facet stats field
+valuefield:: Terms_stats facet value field
 
 ==== Queries
 queries object:: This object describes the queries to use on this panel.

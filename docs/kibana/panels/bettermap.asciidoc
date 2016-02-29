@@ -17,6 +17,7 @@ IMPORTANT: bettermap requires an internet connection to download its map panels.
 field:: The field that contains the coordinates, in geojson format. GeoJSON is
 +[longitude,latitude]+ in an array. This is different from most implementations, which use
 latitude, longitude.
+provider:: The map provider of leaflet.js
 size:: The number of documents to use when drawing the map
 spyable:: Should the `inspect` icon be shown?
 tooltip:: Which field to use for the tooltip when hovering over a marker

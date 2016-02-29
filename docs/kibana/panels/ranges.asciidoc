@@ -1,0 +1,24 @@
+
+== ranges
+Status: *Experimental*
+
+A table, bar chart or pie chart based on the results of an Elasticsearch ranges aggregation.
+
+=== Parameters
+
+values:: The range values add to the facet
+=== Parameters
+
+field:: The field on which to computer the facet
+donut:: In pie chart mode, draw a hole in the middle of the pie to make a tasty donut.
+tilt:: In pie chart mode, tilt the chart back to appear as more of an oval shape
+lables:: In pie chart mode, draw labels in the pie slices
+arrangement:: In bar or pie mode, arrangement of the legend. horizontal or vertical
+chart:: table, bar or pie
+counter_pos:: The location of the legend in respect to the chart, above, below, or none.
+spyable:: Set spyable to false to disable the inspect button
+
+==== Queries
+queries object:: This object describes the queries to use on this panel.
+queries.mode::: Of the queries available, which to use. Options: +all, pinned, unpinned, selected+
+queries.ids::: In +selected+ mode, which query ids are selected.

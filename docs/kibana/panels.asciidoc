@@ -24,6 +24,9 @@ include::panels/bettermap.asciidoc[]
 
 include::panels/column.asciidoc[]
 
+include::panels/table.asciidoc[]
+include::panels/force.asciidoc[]
+
 include::panels/goal.asciidoc[]
 
 include::panels/histogram.asciidoc[]
@@ -31,6 +34,12 @@ include::panels/histogram.asciidoc[]
 include::panels/hits.asciidoc[]
 
 include::panels/map.asciidoc[]
+
+include::panels/multifieldhistogram.asciidoc[]
+
+include::panels/terms.asciidoc[]
+
+include::panels/ranges.asciidoc[]
 
 include::panels/sparklines.asciidoc[]
 
