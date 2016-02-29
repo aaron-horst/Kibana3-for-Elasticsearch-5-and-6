@@ -75,15 +75,13 @@ module.exports = function(config,grunt) {
   fs.readdirSync(panelPath).forEach(function (panelName) {
     if(!grunt.file.exists(panelPath+'/'+panelName+'/module.js')) {
       fs.readdirSync(panelPath+"/"+panelName).forEach(function (subName) {
-        requireModules.push({
-          name: 'panels/'+panelName+'/'+subName+'/module',
-          exclude: ['app']
-        });      })
+        requireModules[0].include.push(
+          'panels/'+panelName+'/'+subName+'/module'
+        );      })
     } else {
-      requireModules.push({
-        name: 'panels/'+panelName+'/module',
-        exclude: ['app']
-      });
+      requireModules[0].include.push(
+        'panels/'+panelName+'/module'
+      );
     }
   });
 
