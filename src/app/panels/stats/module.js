@@ -97,6 +97,9 @@ define([
         $scope.panel.sort_reverse = false;
       }
     };
+    $scope.nullsToBottom = function(obj) {
+      return (null === obj.value[$scope.panel.sort_field] ? 0 : 1);
+    };
 
     $scope.add_dash_to_modes = function(modes){
       var newmodes = modes.slice();
