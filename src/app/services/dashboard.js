@@ -395,7 +395,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       });
     };
 
-    this.elasticsearch_save = function(type,title,ttl) {
+    this.elasticsearch_save = function(type,title,ttl,mainclass,subclass,user) {
       // Clone object so we can modify it without influencing the existing obejct
       var save = _.clone(self.current);
       var id;
@@ -410,6 +410,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         user: 'guest',
         group: 'guest',
         title: save.title,
+        mainclass: _.isUndefined(mainclass) ? null : mainclass,
+        subclass: _.isUndefined(subclass) ? null : subclass,
+        user: _.isUndefined(user) ? null : user,
         dashboard: angular.toJson(save)
       };
 
@@ -443,13 +446,13 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
     this.elasticsearch_list = function(query,count) {
       var request = ejs.Request();
-      
+
       var ejsQuery = ejs.BoolQuery();
       if(query) {
         ejsQuery = ejsQuery.must(ejs.QueryStringQuery(query).defaultField('title'));
       }
       ejsQuery = ejsQuery.must(ejs.MatchQuery('_type', 'dashboard'));
-        
+
       request = request.query(ejsQuery);
 
       return ejs.doSearch(config.kibana_index, request, count).then(

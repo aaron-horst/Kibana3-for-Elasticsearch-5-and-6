@@ -7,7 +7,7 @@ function (angular, _) {
 
   var module = angular.module('kibana.controllers');
 
-  module.controller('dashLoader', function($scope, $http, timer, dashboard, alertSrv, $location) {
+  module.controller('dashLoader', function($scope, $rootScope, $http, timer, dashboard, alertSrv, $location) {
     $scope.loader = dashboard.current.loader;
 
     $scope.init = function() {
@@ -55,7 +55,10 @@ function (angular, _) {
       dashboard.elasticsearch_save(
         type,
         ($scope.elasticsearch.title || dashboard.current.title),
-        ($scope.loader.save_temp_ttl_enable ? ttl : false)
+        ($scope.loader.save_temp_ttl_enable ? ttl : false),
+        dashboard.current.mainclass,
+        dashboard.current.subclass,
+        $rootScope.user
       ).then(
         function(result) {
         if(!_.isUndefined(result._id)) {
