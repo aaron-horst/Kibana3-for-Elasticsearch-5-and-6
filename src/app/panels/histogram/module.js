@@ -447,7 +447,13 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
             }
 
             var query_results = results.aggregations[q.id][q.id];
-            hits = buildResult(query_results, hits, time_series, counters);
+            var timeshift;
+            if (_.isUndefined($scope.panel.timeshift) || $scope.panel.timeshift === "") {
+              timeshift = 0;
+            }else{
+              timeshift = kbn.interval_to_ms($scope.panel.timeshift);
+            }
+            hits = buildResult(query_results, hits, time_series, counters, timeshift);
 
             $scope.legend[queries.length + i] = {query:q,hits:hits};
 
@@ -650,11 +656,9 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       });
     };
 
-    function buildResult(query_results, hits, time_series, counters){
-      var timeshift = $scope.panel.timeshift;
-      if (_.isUndefined($scope.panel.timeshift) || $scope.panel.timeshift != "") {
-        timeshift = 0;
-      }
+    function buildResult(query_results, hits, time_series, counters, timeshift){
+      
+      timeshift = _.isUndefined(timeshift) ? 0 : timeshift;
 
       if($scope.panel.mode !== 'count' && $scope.panel.arithmetic !== 'none'){
         hits = doArithmetic(hits, time_series, counters, query_results,
