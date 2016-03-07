@@ -176,7 +176,7 @@ function (angular, app, _, $, kbn) {
       var filter_aggs =
       $scope.ejs.FilterAggregation('now').filter(filterSrv.getBoolFilter(filterSrv.ids()));
 
-      var _ids_without_time = _.difference(filterSrv.ids,filterSrv.idsByType('time'));
+      var _ids_without_time = _.difference(filterSrv.ids(),filterSrv.idsByType('time'));
       var old_filter_aggs =
       $scope.ejs.FilterAggregation('old').filter(
         filterSrv.getBoolFilter(_ids_without_time).must(
