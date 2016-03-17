@@ -159,7 +159,16 @@ define([
       results.then(function(results) {
         $scope.panelMeta.loading = false;
         if ($scope.panel.mode !== '-'){
-          var value = results.aggregations.stats['0'][$scope.panel.mode];
+          var _fcm = {
+            "sum":"sum",
+            "total":"sum",
+            "mean":"avg",
+            "avg":"avg",
+            "min":"min",
+            "max":"max",
+            "count":"count"
+          };
+          var value = results.aggregations.stats['0'][_fcm[$scope.panel.mode]];
         }
 
         //forward_compatible_map
