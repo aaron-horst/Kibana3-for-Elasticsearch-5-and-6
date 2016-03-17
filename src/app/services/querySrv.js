@@ -95,27 +95,28 @@ function (angular, _, config, kbn) {
           }
 
           var request = ejs.Request();
-          // Terms mode
-          request = request
-            .facet(ejs.TermsFacet('query')
-              .field(q.field)
-              .size(q.size)
-              .facetFilter(ejs.QueryFilter(
-                ejs.FilteredQuery(
-                  ejs.QueryStringQuery(q.query || '*'),
-                  filterSrv.getBoolFilter(filterSrv.ids())
-                  )))).size(0);
 
+          var query = ejs.FilteredQuery(
+            ejs.QueryStringQuery(q.query || '*'),
+            filterSrv.getBoolFilter(filterSrv.ids())
+          );
+
+          var terms_aggs = ejs.TermsAggregation('terms')
+            .field(q.field)
+            .size(q.size);
+
+          request = request.query(query).agg(terms_aggs).size(0);
           var results = ejs.doSearch(dashboard.indices, request);
+
           // Like the regex and lucene queries, this returns a promise
           return results.then(function(data) {
-            var _colors = kbn.colorSteps(q.color,data.facets.query.terms.length);
+            var _colors = kbn.colorSteps(q.color,data.aggregations.terms.buckets.length);
             var i = -1;
-            return _.map(data.facets.query.terms,function(t) {
+            return _.map(data.aggregations.terms.buckets,function(t) {
               ++i;
               return self.defaults({
-                query  : q.field+':"'+kbn.addslashes('' + t.term)+'"'+suffix,
-                alias  : t.term + (q.alias ? " ("+q.alias+")" : ""),
+                query  : q.field+':"'+kbn.addslashes('' + t.key)+'"'+suffix,
+                alias  : t.key + (q.alias ? " ("+q.alias+")" : ""),
                 type   : 'lucene',
                 color  : _colors[i],
                 parent : q.id
