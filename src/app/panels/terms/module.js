@@ -44,12 +44,7 @@ function (angular, app, _, $, kbn) {
         "min and order by max/avg/total. So we have to use stats aggregate, " +
         "But I think single min/max/avg/sum aggregation performs better.<br>" +
         "And also we remove total_count option in editor.html<br>" +
-        "We do not support missing/other, but i will add them later<br>" +
-        "为了向前兼容, 我们选择了用stats aggregations, " +
-        "但考虑到性能以及可能不会有人按max排序,但展示的是最小值, " +
-        "换用单一的min/max/avg/sum aggregation, 可能会更好.<br>" +
-        "同时aggs里面不再有total_count的返回值,在配置界面中也拿掉了.<br>" +
-        "暂时没有missing/other功能,以后会补上.<br>"
+        "We do not support missing/other currently."
     };
 
     // Set and populate defaults
