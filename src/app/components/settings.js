@@ -10,18 +10,18 @@ function (_) {
      * @type {Object}
      */
     var defaults = {
-      dashboard_class   : [],
-      sniff             : true,
-      elasticsearch     : "http://"+window.location.hostname+":9200",
-      logout            : "/logout",
-      showuser          : false,
-      notice            : null,
-      api_version       : "1.0",
-      sniff             : true,
-      request_timeout   : 30000,
-      panel_names       : [],
-      kibana_index      : 'kibana-int',
-      default_route     : '/dashboard/file/default.json'
+      dashboard_class     : [],
+      sniff               : true,
+      elasticsearch       : "http://"+window.location.hostname+":9200",
+      logout              : "/logout",
+      showuser            : false,
+      notice              : null,
+      api_version         : "1.0",
+      showquerygenerator  : false,
+      request_timeout     : 30000,
+      panel_names         : [],
+      kibana_index        : 'kibana-int',
+      default_route       : '/dashboard/file/default.json'
     };
 
     // This initializes a new hash on purpose, to avoid adding parameters to
