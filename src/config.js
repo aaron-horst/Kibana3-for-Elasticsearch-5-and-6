@@ -137,6 +137,13 @@ function (Settings) {
       'statisticstrend',
       'multifieldhistogram',
       'valuehistogram'
-    ]
+    ],
+
+    /*
+    * whether or not to display the query generator option
+    */
+    showquerygenerator: false,
+
+
   });
 });

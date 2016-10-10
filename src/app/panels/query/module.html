@@ -27,7 +27,7 @@
     <i class="icon-search pointer" ng-click="refresh()"></i>
     <i class="icon-plus pointer" ng-click="querySrv.set({})"></i>
   </span>
-  <div>
+  <div ng-show="config.showquerygenerator">
     <a class="link small" ng-click="panel.generate=!panel.generate">
       Query Generator: <i ng-show="!panel.generate" class="icon-caret-right"></i><i ng-show="panel.generate" class="icon-caret-down"></i>
     </a>
