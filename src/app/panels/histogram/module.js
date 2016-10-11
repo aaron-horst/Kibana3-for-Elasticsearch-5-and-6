@@ -392,7 +392,8 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           querySrv.toEjsObj(q)
         );
 
-        var aggr = buildAggs(q.id, _interval, query);
+        var filter = filterSrv.getBoolFilter(filterSrv.ids());
+        var aggr = buildAggs(q.id, _interval, query, filter);
 
         request = request.agg(aggr)
           .size($scope.panel.annotate.enable ? $scope.panel.annotate.size : 0);
@@ -531,7 +532,8 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           querySrv.toEjsObj(q)
         );
 
-        var aggr = buildAggs(q.id, _interval, query);
+        var filter = filterSrv.getBoolFilter(filterSrv.ids());
+        var aggr = buildAggs(q.id, _interval, query, filter);
 
         request = request.agg(aggr)
           .size($scope.panel.annotate.enable ? $scope.panel.annotate.size : 0);
@@ -705,7 +707,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       return hits;
     }
 
-    function buildAggs(query_id, interval, query){
+    function buildAggs(query_id, interval, query, query_filter){
         var global_agg = $scope.ejs.GlobalAggregation('globalagg');
         
         var aggr = $scope.ejs.DateHistogramAggregation(query_id)
@@ -782,7 +784,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
         }
 
         // add the aggregation calculated with subaggregations to the global_agg
-        var filter_agg = $scope.ejs.FilterAggregation(query_id).filter(query).agg(aggr);
+        var filter_agg = $scope.ejs.FilterAggregation(query_id).filter(query_filter).agg(aggr);
         global_agg = global_agg.agg(filter_agg);
         return global_agg;
 
