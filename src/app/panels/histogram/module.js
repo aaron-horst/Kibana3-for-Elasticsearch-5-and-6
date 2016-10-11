@@ -718,7 +718,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           //pass
         } else {
           if(_.isNull($scope.panel.value_field)) {
-            $scope.panel.error = "In " + $scope.panel.mode + " mode a field2 must be specified";
+            $scope.panel.error = "In " + $scope.panel.mode + " mode a field must be specified";
             return;
           }
           var sub_aggs;
@@ -747,42 +747,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           aggr = aggr.agg(sub_aggs);
         }
 
-        if($scope.panel.arithmetic !== 'none'){
-          if($scope.panel.mode === 'count') {
-            $scope.panel.error = "Could not support Count arithmetic";
-            return;
-          } else {
-            if(_.isNull($scope.panel.value_field2)) {
-              $scope.panel.error = "In " + $scope.panel.mode + " mode a field2 must be specified";
-              return;
-            }
-            var sub_aggs;
-            switch($scope.panel.mode) {
-              case 'uniq':
-              sub_aggs = $scope.ejs.CardinalityAggregation('subaggs2')
-                .field($scope.panel.value_field2);
-              break;
-              case 'min':
-              sub_aggs = $scope.ejs.MinAggregation('subaggs2')
-                .field($scope.panel.value_field2);
-              break;
-              case 'max':
-              sub_aggs = $scope.ejs.MaxAggregation('subaggs2')
-                .field($scope.panel.value_field2);
-              break;
-              case 'total':
-              sub_aggs = $scope.ejs.SumAggregation('subaggs2')
-                .field($scope.panel.value_field2);
-              break;
-              case 'mean':
-              sub_aggs = $scope.ejs.AvgAggregation('subaggs2')
-                .field($scope.panel.value_field2);
-              break;
-            }
-            aggr = aggr.agg(sub_aggs);
-          }
-        }
-
+        
         // add the aggregation calculated with subaggregations to the global_agg
         var filter_agg = $scope.ejs.FilterAggregation(query_id).filter(filter).agg(aggr);
         global_agg = global_agg.agg(filter_agg);

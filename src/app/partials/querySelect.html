@@ -19,8 +19,6 @@
       <span ng-style="{'border-color': querySrv.list()[id].color}" ng-class="{selected:_.contains(panel.queries.ids,id),unselected:!_.contains(panel.queries.ids,id)}" ng-repeat="id in querySrv.ids()" ng-click="panel.queries.ids = _.toggleInOut(panel.queries.ids,id);set_refresh(true);" class="query pointer badge">
         <i class="icon-circle" ng-style="{color: querySrv.list()[id].color}"></i>
         <span> {{querySrv.list()[id].alias || querySrv.list()[id].query}}</span>
-        <br /><select class="input-small" ng-change="set_refresh(true);" ng-model="panel.queries.check[id]" ng-options="f for f in ['none','threshold','anomaly']"></select>
-        <input ng-change="set_refresh(true)" type="text" class="input-small" ng-show="panel.queries.check[id] == 'threshold'" ng-model="panel.queries.threshold[id]">
       </span>
     </div>
   </div>
