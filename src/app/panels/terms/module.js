@@ -8,7 +8,7 @@
  * == terms
  * Status: *Stable*
  *
- * A table, bar chart or pie chart based on the results of an Elasticsearch terms facet.
+ * A table, bar chart or pie chart based on the results of an Elasticsearch terms aggregation.
  *
  */
 define([
@@ -38,7 +38,7 @@ function (angular, app, _, $, kbn) {
         {title:'Queries', src:'app/partials/querySelect.html'}
       ],
       status  : "Stable",
-      description : "Displays the results of an elasticsearch facet as a pie " +
+      description : "Displays the results of an elasticsearch aggregation as a pie " +
         "chart, bar chart, or a table.<br>" +
         "In order to be forward compatible, we reserve the right to display " +
         "min and order by max/avg/total. So we have to use stats aggregate, " +
@@ -52,7 +52,7 @@ function (angular, app, _, $, kbn) {
       /** @scratch /panels/terms/5
        * === Parameters
        *
-       * field:: The field on which to computer the facet
+       * field:: The field on which to compute the aggregation
        */
       field   : '_type',
       /** @scratch /panels/terms/5
@@ -128,15 +128,15 @@ function (angular, app, _, $, kbn) {
        */
       fmode       : 'normal',
       /** @scratch /panels/terms/5
-       * tmode:: Facet mode: terms or terms_stats
+       * tmode:: Aggregation mode: terms or terms_stats
        */
       tmode       : 'terms',
       /** @scratch /panels/terms/5
-       * tstat:: Terms_stats facet stats field
+       * tstat:: Terms_stats aggregation stats field
        */
       tstat       : 'total',
       /** @scratch /panels/terms/5
-       * valuefield:: Terms_stats facet value field
+       * valuefield:: Terms_stats aggregation value field
        */
       valuefield  : ''
     };

@@ -42,7 +42,7 @@ function (angular, app, _, $) {
       status  : "Stable",
       description : "Displays a map of shaded regions using a field containing a 2 letter country "+
        ", or US state, code. Regions with more hit are shaded darker. Node that this does use the"+
-       " Elasticsearch terms facet, so it is important that you set it to the correct field."
+       " Elasticsearch terms aggregation, so it is important that you set it to the correct field."
     };
 
     // Set and populate defaults
@@ -83,15 +83,15 @@ function (angular, app, _, $) {
         ids         : []
       },
       /** @scratch /panels/map/3
-       * tmode:: Facet mode: terms or terms_stats
+       * tmode:: Aggregation mode: terms or terms_stats
        */
       tmode       : 'terms',
       /** @scratch /panels/map/3
-       * tstat:: Terms_stats facet stats field
+       * tstat:: Terms_stats aggregation stats field
        */
       tstat       : 'total',
       /** @scratch /panels/map/3
-       * valuefield:: Terms_stats facet value field
+       * valuefield:: Terms_stats aggregation value field
        */
       valuefield  : ''
     };
@@ -133,7 +133,7 @@ function (angular, app, _, $) {
         )
       );
 
-      // Then the insert into facet and make the request
+      // Then the insert into aggregation and make the request
       // Terms mode
       if($scope.panel.tmode === 'terms') {
         request = request

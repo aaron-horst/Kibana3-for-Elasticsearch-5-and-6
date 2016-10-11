@@ -9,11 +9,11 @@ click is must, right click is must_not
 == terms
 Status: *Stable*
 
-A table, bar chart or pie chart based on the results of an Elasticsearch terms facet.
+A table, bar chart or pie chart based on the results of an Elasticsearch terms aggregation.
 
 === Parameters
 
-field:: The field on which to computer the facet
+field:: The field on which to calculate the aggregation
 exclude:: terms to exclude from the results
 missing:: Set to false to disable the display of a counter showing how much results are
 missing the field
@@ -35,12 +35,12 @@ spyable:: Set spyable to false to disable the inspect button
 queries object:: This object describes the queries to use on this panel.
 queries.mode::: Of the queries available, which to use. Options: +all, pinned, unpinned, selected+
 queries.ids::: In +selected+ mode, which query ids are selected.
-tmode:: Facet mode: terms or terms_stats
-tstat:: Terms_stats facet stats field
-valuefield:: Terms_stats facet value field
+tmode:: Aggregation mode: terms or terms_stats
+tstat:: Terms_stats aggregation stats field
+valuefield:: Terms_stats aggregation value field
 === Parameters
 
-field:: The field on which to computer the facet
+field:: The field on which to compute the aggregation
 exclude:: terms to exclude from the results
 missing:: Set to false to disable the display of a counter showing how much results are
 missing the field
@@ -64,6 +64,6 @@ queries.mode::: Of the queries available, which to use. Options: +all, pinned, u
 queries.ids::: In +selected+ mode, which query ids are selected.
 multiterms:: Multi terms: used to either filterSrv
 fmode:: Field mode: normal or script
-tmode:: Facet mode: terms or terms_stats
-tstat:: Terms_stats facet stats field
-valuefield:: Terms_stats facet value field
+tmode:: Aggregation mode: terms or terms_stats
+tstat:: Terms_stats aggregation stats field
+valuefield:: Terms_stats aggregation value field

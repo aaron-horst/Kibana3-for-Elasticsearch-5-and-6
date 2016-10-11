@@ -3,8 +3,8 @@
 
   ### Parameters
   * label :: The label to stick over the field
-  * query :: A string to use as a filter for the terms facet
-  * field :: the field to facet on
+  * query :: A string to use as a filter for the terms aggregation
+  * field :: the field to aggregate on
   * rest  :: include a filter that matches all other terms,
   * size :: how many queries to generate
   * fields :: a list of fields known to us

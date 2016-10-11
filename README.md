@@ -98,7 +98,7 @@ Add compression options to control PercentileAggregation, because percentile may
 
 ## range panel
 
-I need a pie chart to show percentile of range sections(percentile rank wait for only one value). So I use RangeFacet to implement this.
+I need a pie chart to show percentile of range sections(percentile rank wait for only one value). So I use Range to implement this.
 
 Here is the rendering:
 
@@ -116,7 +116,7 @@ Note that I add the export icon in panelModal, so you may need add a `"exportabl
 
 ## uniq mode for histogram panel
 
-First, I re-implement histogram panel using the new aggregations api instead of facets api. The requst now is a nested aggregation with global/filter/date_histogram in turns. Then we can set stats aggregation as a sub aggr for "min/max/avg", and also cardinality aggregation for "uniq"! What ever you want could be added in the same way. Much thanks for aggr.
+First, I re-implement histogram panel using the new aggregations api instead of v1 api. The requst now is a nested aggregation with global/filter/date_histogram in turns. Then we can set stats aggregation as a sub aggr for "min/max/avg", and also cardinality aggregation for "uniq"! What ever you want could be added in the same way. Much thanks for aggr.
 
 **Attention: the cardinality aggregation was added in elasticsearch 1.1.0.**
 
@@ -235,7 +235,7 @@ See script dashboard at : <./src/app/dashboards/panel.js>
 
 ## scriptField for terms panel
 
-Support to define scripted field for terms/termstats facet. Just like what you can do in Kibana4.
+Support to define scripted field for terms/termstats aggregation. Just like what you can do in Kibana4.
 
 ![](docs/chenryn_img/script-field.png)
 

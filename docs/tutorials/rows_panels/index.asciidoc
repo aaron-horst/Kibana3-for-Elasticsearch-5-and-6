@@ -68,7 +68,7 @@ row*, but it's grey, and what fun is that?
 image:./tutorials/rows_panels/addpanel.png[Add panel]
 
 Let's add a *terms* panel. The *terms* panel allows us to make use of
-the Elasticsearch *terms facet* to find the most popular values in a
+the Elasticsearch *terms aggregation* to find the most popular values in a
 field.
 
 image:./tutorials/rows_panels/terms_settings.png[Add panel]

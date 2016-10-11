@@ -56,13 +56,13 @@ function (angular, app, _, $, kbn) {
       /** @scratch /panels/ranges/5
       * === Parameters
       *
-      * values:: The range values add to the facet
+      * values:: The range values add to the aggregation
       */
       values  : [angular.copy($scope.defaultValue)],
       /** @scratch /panels/ranges/5
       * === Parameters
       *
-      * field:: The field on which to computer the facet
+      * field:: The field on which to compute the aggregation
       */
       field   : '_type',
       style   : { "font-size": '10pt'},

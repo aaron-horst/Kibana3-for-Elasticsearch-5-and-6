@@ -1,7 +1,7 @@
 == statisticstrend
 Status: *Testing*
 
-A table, bar chart or table chart based on the results of an Elasticsearch terms facet.
+A table, bar chart or table chart based on the results of an Elasticsearch terms agg.
 
 ==== Queries
 queries object:: This object describes the queries to use on this panel.

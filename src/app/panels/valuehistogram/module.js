@@ -61,7 +61,7 @@ function (angular, app, $, _, kbn, moment) {
       ],
       status  : "Stable",
       description : "A bucketed histogram of the current query or queries. Uses the "+
-        "Elasticsearch histogram facet. If using time stamped indices this panel will query"+
+        "Elasticsearch histogram aggregation. If using time stamped indices this panel will query"+
         " them sequentially to attempt to apply the lighest possible load to your Elasticsearch cluster"
     };
 

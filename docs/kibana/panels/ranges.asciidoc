@@ -6,10 +6,10 @@ A table, bar chart or pie chart based on the results of an Elasticsearch ranges 
 
 === Parameters
 
-values:: The range values add to the facet
+values:: The range values add to the aggregation
 === Parameters
 
-field:: The field on which to computer the facet
+field:: The field on which to compute the aggregation
 donut:: In pie chart mode, draw a hole in the middle of the pie to make a tasty donut.
 tilt:: In pie chart mode, tilt the chart back to appear as more of an oval shape
 lables:: In pie chart mode, draw labels in the pie slices

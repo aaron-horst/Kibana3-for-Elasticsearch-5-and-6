@@ -2,7 +2,7 @@
  * == statisticstrend
  * Status: *Testing*
  *
- * A table, bar chart or table chart based on the results of an Elasticsearch terms facet.
+ * A table, bar chart or table chart based on the results of an Elasticsearch terms aggregation.
  *
  */
 define([
@@ -41,7 +41,7 @@ function (angular, app, _, $, kbn) {
       /**
        * === Parameters
        *
-       * field:: The field on which to computer the facet
+       * field:: The field on which to compute the aggregation
        */
       mode          : 'count',
       field   : '_type',

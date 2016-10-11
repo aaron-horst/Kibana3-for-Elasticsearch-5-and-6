@@ -45,7 +45,7 @@ define([
         {title:'Queries', src:'app/partials/querySelect.html'}
       ],
       status: 'Beta',
-      description: 'A statistical panel for displaying aggregations using the Elastic Search statistical facet query.'
+      description: 'A statistical panel for displaying aggregations using the Elastic Search statistical aggregation query.'
     };
 
     $scope.modes = ['count','min','max','mean','total','variance','std_deviation','sum_of_squares'];

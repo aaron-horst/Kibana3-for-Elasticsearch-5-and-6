@@ -48,7 +48,7 @@ function (angular, app, _, $, kbn) {
       /** @scratch /panels/terms/5
        * === Parameters
        *
-       * field:: The field on which to computer the facet
+       * field:: The field on which to compute the aggregation
        */
       field   : '_type',
       /** @scratch /panels/terms/5
@@ -116,15 +116,15 @@ function (angular, app, _, $, kbn) {
         ids         : []
       },
       /** @scratch /panels/terms/5
-       * tmode:: Facet mode: terms or terms_stats
+       * tmode:: Aggregation mode: terms or terms_stats
        */
       tmode       : 'terms',
       /** @scratch /panels/terms/5
-       * tstat:: Terms_stats facet stats field
+       * tstat:: Terms_stats aggregation stats field
        */
       tstat       : 'total',
       /** @scratch /panels/terms/5
-       * valuefield:: Terms_stats facet value field
+       * valuefield:: Terms_stats aggregation value field
        */
       valuefield  : ''
     };
@@ -281,17 +281,6 @@ function (angular, app, _, $, kbn) {
         data.push(slice);
         k = k + 1;
       });
-
-      // TODO
-      // data.push({label: 'Missing field',
-      //   data: [[k, $scope.results.facets.terms.missing]],
-      //   meta: "missing", color: '#aaa', opacity: 0});
-      //
-      // if ($scope.panel.tmode === 'terms') {
-      //   data.push({label: 'Other values',
-      //     data: [[k + 1, $scope.results.facets.terms.other]],
-      //     meta: "other", color: '#444'});
-      // }
 
       // Make a clone we can operate on.
       var ChoiceData = _.clone(data);
