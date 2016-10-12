@@ -397,7 +397,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           filterSrv.getBoolFilter(filterSrv.ids())
         );
 
-        var aggr = buildAggs(q.id, _interval, q, filteredQuery);
+        var aggr = buildAggs(q.id, _interval, filteredQuery);
         global_agg = global_agg.agg(aggr);
 
         request = request.agg(global_agg)
@@ -544,7 +544,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           filterSrv.getBoolFilter(filterSrv.ids())
         );
 
-        var aggr = buildAggs(q.id, _interval, q, filteredQuery);
+        var aggr = buildAggs(q.id, _interval, filteredQuery);
         global_agg = global_agg.agg(aggr);
 
         request = request.agg(global_agg)
@@ -719,7 +719,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       return hits;
     }
 
-    function buildAggs(query_id, interval, query, filteredQuery){
+    function buildAggs(query_id, interval, filteredQuery){
         // define the date histogram aggregation
         var aggr = $scope.ejs.DateHistogramAggregation(query_id)
                     .field($scope.panel.time_field)
