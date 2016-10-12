@@ -396,9 +396,8 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           querySrv.toEjsObj(q),
           filterSrv.getBoolFilter(filterSrv.ids())
         );
-        var filter = filterSrv.getBoolFilter(filterSrv.ids());
-        var aggr = buildAggs(q.id, _interval, filter, q, filteredQuery);
 
+        var aggr = buildAggs(q.id, _interval, q, filteredQuery);
         global_agg = global_agg.agg(aggr);
 
         request = request.agg(global_agg)
@@ -540,13 +539,12 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           querySrv.toEjsObj(q)
         );
 
-        var filter = filterSrv.getBoolFilter(filterSrv.ids());
         var filteredQuery = $scope.ejs.FilteredQuery(
           querySrv.toEjsObj(q),
           filterSrv.getBoolFilter(filterSrv.ids())
         );
 
-        var aggr = buildAggs(q.id, _interval, filter, q, filteredQuery);
+        var aggr = buildAggs(q.id, _interval, q, filteredQuery);
         global_agg = global_agg.agg(aggr);
 
         request = request.agg(global_agg)
@@ -721,7 +719,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       return hits;
     }
 
-    function buildAggs(query_id, interval, filter, query, filteredQuery){
+    function buildAggs(query_id, interval, query, filteredQuery){
         // define the date histogram aggregation
         var aggr = $scope.ejs.DateHistogramAggregation(query_id)
                     .field($scope.panel.time_field)
@@ -761,15 +759,12 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
         }
 
         // add the aggregation calculated with subaggregations to the global_agg
-        var filterAggregation = $scope.ejs.FilterAggregation(query_id).filter(filter).agg(aggr);
-
-        if (query.query != "*")
-        {
-          // if there is a query to restrict results, make sure it gets added also
-          filterAggregation = filterAggregation.filter(
-            $scope.ejs.QueryFilter(filteredQuery)
-            );
-        }
+        var filterAggregation = $scope.ejs.FilterAggregation(query_id).agg(aggr);
+        
+        // add the filtered query back in
+        filterAggregation = filterAggregation.filter(
+          $scope.ejs.QueryFilter(filteredQuery)
+        );
 
         return filterAggregation;
     };
