@@ -385,6 +385,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
 
       queries = querySrv.getQueryObjs($scope.panel.queries.ids);
+      var global_agg = $scope.ejs.GlobalAggregation('globalagg');
 
       _.each(queries, function(q) {
 
@@ -398,8 +399,11 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
         var filter = filterSrv.getBoolFilter(filterSrv.ids());
         var aggr = buildAggs(q.id, _interval, filter, q, filteredQuery);
 
-        request = request.agg(aggr)
+        global_agg = global_agg.agg(aggr);
+
+        request = request.agg(global_agg)
           .size($scope.panel.annotate.enable ? $scope.panel.annotate.size : 0);
+
       });
 
       // DO NOT need annotate in shifted_time data
@@ -527,6 +531,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
 
       queries = querySrv.getQueryObjs($scope.panel.queries.ids);
+      var global_agg = $scope.ejs.GlobalAggregation('globalagg');
 
       // Build the query
       _.each(queries, function(q) {
@@ -542,8 +547,9 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
         );
 
         var aggr = buildAggs(q.id, _interval, filter, q, filteredQuery);
-    
-        request = request.agg(aggr)
+        global_agg = global_agg.agg(aggr);
+
+        request = request.agg(global_agg)
           .size($scope.panel.annotate.enable ? $scope.panel.annotate.size : 0);
 
       });
@@ -716,8 +722,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
     }
 
     function buildAggs(query_id, interval, filter, query, filteredQuery){
-        var global_agg = $scope.ejs.GlobalAggregation('globalagg');
-        
+        // define the date histogram aggregation
         var aggr = $scope.ejs.DateHistogramAggregation(query_id)
                     .field($scope.panel.time_field)
                     .interval(interval);
@@ -755,21 +760,18 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           aggr = aggr.agg(sub_aggs);
         }
 
-        
         // add the aggregation calculated with subaggregations to the global_agg
-        var filter_agg = $scope.ejs.FilterAggregation(query_id).filter(filter).agg(aggr);
+        var filterAggregation = $scope.ejs.FilterAggregation(query_id).filter(filter).agg(aggr);
 
         if (query.query != "*")
         {
           // if there is a query to restrict results, make sure it gets added also
-          filter_agg = filter_agg.filter(
+          filterAggregation = filterAggregation.filter(
             $scope.ejs.QueryFilter(filteredQuery)
             );
         }
 
-        global_agg = global_agg.agg(filter_agg);
-        return global_agg;
-
+        return filterAggregation;
     };
 
     function doArithmetic(hits, time_series, counters, query_results, mode, arithmetic,timeshift){
