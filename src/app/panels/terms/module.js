@@ -413,7 +413,11 @@ function (angular, app, _, $, kbn) {
             k = k + 1;
           });
 
-          
+          scope.data.push({
+              label: 'Missing field',
+              data: [[k, 'unknown']], meta: "missing", color: '#aaa', opacity: 0
+          });
+
           if (scope.panel.tmode === 'terms') {
               scope.data.push({
                   label: 'Other values',
