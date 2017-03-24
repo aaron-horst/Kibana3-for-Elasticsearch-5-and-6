@@ -24,7 +24,7 @@ function (Settings) {
      * kibana installed on. You probably want to set it to the FQDN of your
      * elasticsearch host
      */
-    elasticsearch: "http://"+window.location.hostname+":9200",
+    elasticsearch: "http://bi-eslb.ihire.local:9200",
     
 
     /*
@@ -34,7 +34,7 @@ function (Settings) {
     /*
     * show username and logout link on the right of the navbar
     */
-    showuser: true,
+    showuser: false,
 
     /** @scratch /configuration/config.js/5
      *
@@ -83,7 +83,7 @@ function (Settings) {
      * The default ES index to use for storing Kibana specific object
      * such as stored dashboards
      */
-    kibana_index: "kibana-int",
+    kibana_index: "kibana-int3",
 
 
     /*
@@ -91,20 +91,14 @@ function (Settings) {
     notice: {
       'title':'kibana3 update',
       'text': 'now kibana3 support es2!',
-     },
-     */
-    notice: null,
+     },*/
+     
+     notice: null,
 
      /*
      * choose which catetory the dashboard belong to when save dashboard
      */
-     dashboard_class: [
-       {'MOBILE':["Client","Server"]},
-       {'Cloud':[]},
-       {'OPS':["network", "storage"]},
-       {'APP':["search","ad"]},
-       {'WEB':[]}
-     ],
+     dashboard_class: null,
     /** @scratch /configuration/config.js/5
      *
      * ==== panel_name
@@ -113,30 +107,33 @@ function (Settings) {
      * dashboard, but this list is used in the "add panel" interface.
      */
     panel_names: [
-      'entry',
-      'filtertable',
-      'multiplechoice',
-      'histogram',
-      'map',
-      'goal',
-      'table',
+      
+      'histogram',  // k3 version
+      'map', // k3 version
+      'goal',  // k3 version
+      'table', // k3 version
       'filtering',
       'timepicker',
-      'text',
-      'hits',
-      'column',
-      'trends',
-      'bettermap',
+      'text', // k3 version
+      'hits', // k3 version
+      'column',  // k3 version
+      'trends', // k3 version
+      'bettermap', // k3 version
       'query',
-      'terms',
-      'stats',
-      'sparklines',
-      'percentiles',
-      'ranges',
-      'force',
-      'statisticstrend',
-      'multifieldhistogram',
-      'valuehistogram'
+      'terms', // k3 version
+      'stats', // k3 version
+      'sparklines' // k3 version
+
+       // new visualizations introduced in the fork - removed for backward compatibility testing
+       // 'multiplechoice',
+       // 'entry', // this displays all dashboards - don't need it
+       // 'filtertable', // just like a table but shows all options instead
+       // 'percentiles', // new: used to show 25/50/75 percentiles
+       // 'ranges', // new: used to show predefined ranges
+       // 'force',
+       // 'statisticstrend',
+       // 'multifieldhistogram',
+       // 'valuehistogram'
     ],
 
     /*
