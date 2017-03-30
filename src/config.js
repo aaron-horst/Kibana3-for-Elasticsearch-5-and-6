@@ -34,7 +34,7 @@ function (Settings) {
     /*
     * show username and logout link on the right of the navbar
     */
-    showuser: true,
+    showuser: false,
 
     /** @scratch /configuration/config.js/5
      *
@@ -91,20 +91,14 @@ function (Settings) {
     notice: {
       'title':'kibana3 update',
       'text': 'now kibana3 support es2!',
-     },
-     */
-    notice: null,
+     },*/
+     
+     notice: null,
 
      /*
      * choose which catetory the dashboard belong to when save dashboard
      */
-     dashboard_class: [
-       {'MOBILE':["Client","Server"]},
-       {'Cloud':[]},
-       {'OPS':["network", "storage"]},
-       {'APP':["search","ad"]},
-       {'WEB':[]}
-     ],
+     dashboard_class: null,
     /** @scratch /configuration/config.js/5
      *
      * ==== panel_name
@@ -113,9 +107,6 @@ function (Settings) {
      * dashboard, but this list is used in the "add panel" interface.
      */
     panel_names: [
-      'entry',
-      'filtertable',
-      'multiplechoice',
       'histogram',
       'map',
       'goal',
@@ -130,13 +121,19 @@ function (Settings) {
       'query',
       'terms',
       'stats',
-      'sparklines',
-      'percentiles',
-      'ranges',
-      'force',
-      'statisticstrend',
-      'multifieldhistogram',
-      'valuehistogram'
+      'sparklines'
+      
+       // new visualizations introduced in the fork - removed for backward compatibility testing
+       // 'multiplechoice',
+       // 'entry', // this displays all dashboards - don't need it
+       // 'filtertable', // just like a table but shows all options instead
+       // 'percentiles', // new: used to show 25/50/75 percentiles
+       // 'ranges', // new: used to show predefined ranges
+       // 'force',
+       // 'statisticstrend',
+       // 'multifieldhistogram',
+       // 'valuehistogram'
+
     ],
 
     /*
