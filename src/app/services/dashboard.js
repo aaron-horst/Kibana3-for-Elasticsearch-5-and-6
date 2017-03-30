@@ -407,7 +407,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
       // Create request with id as title. Rethink this.
       var indexSource = {
-        user: 'guest',
+        //user: 'guest',
         group: 'guest',
         title: save.title,
         mainclass: _.isUndefined(mainclass) ? null : mainclass,
