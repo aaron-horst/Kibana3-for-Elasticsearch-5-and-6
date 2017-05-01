@@ -33727,9 +33727,11 @@ Console.prototype.onTrace = _.handler(function (msg) {
 
 },{"../logger":203,"../utils":213}],206:[function(require,module,exports){
 var _ = require('./utils');
-var extractHostPartsRE = /\[\/*([^:]+):(\d+)\]/;
+var extractHostPartsRE = /^([\.:0-9a-f]*):([0-9]+)?$/;;
 
-function makeNodeParser(hostProp) {
+function makeNodeParser(isHostRequest) {
+  var hostProp = 'transport_address';
+
   return function (nodes) {
     return _.transform(nodes, function (hosts, node, id) {
       if (!node[hostProp]) {
@@ -33742,9 +33744,18 @@ function makeNodeParser(hostProp) {
           ') does not match the expected pattern ' + extractHostPartsRE + '.');
       }
 
+      var hostName = hostnameMatches[1];
+      var hostPort = parseInt(hostnameMatches[2], 10);
+      if (isHostRequest)
+      {
+          // if it's a host request 'http_address' is now missing from es node cluster api, set port to 9200
+          // to work around we are using 'transport_address' which defaults to port 9300
+          hostPort = 9200;
+      }
+
       hosts.push({
-        host: hostnameMatches[1],
-        port: parseInt(hostnameMatches[2], 10),
+        host: hostName,
+        port: hostPort,
         _meta: {
           id: id,
           name: node.name,
@@ -33752,12 +33763,13 @@ function makeNodeParser(hostProp) {
           version: node.version
         }
       });
+
     }, []);
   };
 }
 
-module.exports = makeNodeParser('http_address');
-module.exports.thrift = makeNodeParser('transport_address');
+module.exports = makeNodeParser(true);
+module.exports.thrift = makeNodeParser(false);
 
 },{"./utils":213}],207:[function(require,module,exports){
 module.exports = {
