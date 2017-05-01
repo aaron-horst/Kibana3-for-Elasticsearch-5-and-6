@@ -50,10 +50,11 @@ angular.module('elasticjs.service', ['elasticsearch'])
             size: size
             });
         } else {
+            // should leverage the default searchType: "query_then_fetch" when not specified
             return esClient.search({
             index: indices,
-            searchType: "count",
-            body: searchBody
+            body: searchBody,
+            size: 0
             });
         }
 
