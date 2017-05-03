@@ -348,7 +348,6 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           querySrv.toEjsObj(q)
         );
 
-console.log(filterSrv.ids())
         var filteredQuery = $scope.ejs.FilteredQuery(
           querySrv.toEjsObj(q),
           filterSrv.getBoolFilter(filterSrv.ids())
