@@ -102,7 +102,6 @@ function (angular, app, _, moment, kbn) {
       var _from = datepickerToLocal(time.from.date),
         _to = datepickerToLocal(time.to.date),
         _t = time;
-
       if($scope.input.$valid) {
 
         _from.setHours(_t.from.hour,_t.from.minute,_t.from.second,_t.from.millisecond);
