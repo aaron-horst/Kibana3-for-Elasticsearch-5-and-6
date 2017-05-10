@@ -220,27 +220,7 @@ function (angular, app, _, $, kbn) {
           .size($scope.panel.size);
 
           var sub_aggs = $scope.ejs.StatsAggregation('subaggs')
-            .field($scope.panel.valuefield);;
-          // switch($scope.panel.tstat) {
-          //   case 'count':
-          //   break;
-          //   case 'min':
-          //   sub_aggs = $scope.ejs.MinAggregation('subaggs')
-          //     .field($scope.panel.valuefield);
-          //   break;
-          //   case 'max':
-          //   sub_aggs = $scope.ejs.MaxAggregation('subaggs')
-          //     .field($scope.panel.valuefield);
-          //   break;
-          //   case 'total':
-          //   sub_aggs = $scope.ejs.SumAggregation('subaggs')
-          //     .field($scope.panel.valuefield);
-          //   break;
-          //   case 'mean':
-          //   sub_aggs = $scope.ejs.AvgAggregation('subaggs')
-          //     .field($scope.panel.valuefield);
-          //   break;
-          // }
+            .field($scope.panel.valuefield);
 
           switch($scope.panel.order) {
             case 'term':
