@@ -5529,6 +5529,9 @@
       @returns {Object} returns <code>this</code> so that calls can be chained.
       */
       exclude: function (exclude, flags) {
+        if (exclude == null || exclude.length == 0) {
+          return this;
+        }
         if (agg[name].terms.exclude == null) {
           agg[name].terms.exclude = {};
         }
