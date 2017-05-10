@@ -141,16 +141,14 @@ function (angular, app, _, L, localRequire) {
         $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
         var queries = querySrv.getQueryObjs($scope.panel.queries.ids);
 
-        var boolQuery = $scope.ejs.BoolQuery();
+        var boolQuery = filterSrv.getBoolQuery(filterSrv.ids());
         _.each(queries,function(q) {
           boolQuery = boolQuery.should(querySrv.toEjsObj(q));
         });
+        boolQuery.must($scope.ejs.ExistsQuery($scope.panel.field));
 
         var request = $scope.ejs.Request()
-          .query($scope.ejs.FilteredQuery(
-            boolQuery,
-            filterSrv.getBoolFilter(filterSrv.ids()).must($scope.ejs.ExistsFilter($scope.panel.field))
-          ))
+          .query(boolQuery)
           .fields([$scope.panel.field,$scope.panel.tooltip])
           .size($scope.panel.size);
 
