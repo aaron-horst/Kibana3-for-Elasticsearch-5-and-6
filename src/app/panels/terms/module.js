@@ -164,7 +164,7 @@ function (angular, app, _, $, kbn) {
         terms_facet,
         termstats_facet,
         results,
-        boolQuery,
+        query,
         queries;
 
       $scope.field = _.contains(fields.list,$scope.panel.field+'.raw') ?
@@ -175,17 +175,11 @@ function (angular, app, _, $, kbn) {
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
       queries = querySrv.getQueryObjs($scope.panel.queries.ids);
 
-      // This could probably be changed to a BoolFilter
-      boolQuery = $scope.ejs.BoolQuery();
+      // Construct base bool query from filters
+      query = filterSrv.getBoolQuery(filterSrv.ids());
       _.each(queries,function(q) {
-        boolQuery = boolQuery.should(querySrv.toEjsObj(q));
+        query = query.should(querySrv.toEjsObj(q));
       });
-
-      var query = $scope.ejs.FilteredQuery(
-        boolQuery,
-        filterSrv.getBoolFilter(filterSrv.ids())
-      );
-      // request = request.query(query);
 
       // Terms mode
       if($scope.panel.tmode === 'terms') {
