@@ -344,20 +344,10 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       _.each(queries, function(q) {
         //console.log(querySrv.toEjsObj(q).toJSON());
         var scopedQuery = query.must(querySrv.toEjsObj(q));
-        console.log(scopedQuery.toJSON())
-
-        var aggFilter = $scope.ejs.FilteredQuery(
-          querySrv.toEjsObj(q),
-          filterSrv.getBoolFilter(filterSrv.ids())
-        );
-
-
-        var aggr = buildAggs(q.id, _interval, aggFilter, scopedQuery);
+        var aggr = buildAggs(q.id, _interval, scopedQuery);
         global_agg = global_agg.agg(aggr);
-
         request = request.agg(global_agg)
                          .size($scope.panel.annotate.enable ? $scope.panel.annotate.size : 0);
-
 
       });
 
@@ -520,7 +510,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       return hits;
     }
 
-    function buildAggs(query_id, interval, filteredQuery, scopedQuery){
+    function buildAggs(query_id, interval, scopedQuery){
         // define the date histogram aggregation
         var aggr = $scope.ejs.DateHistogramAggregation(query_id)
                     .field($scope.panel.time_field)
@@ -562,6 +552,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
         // add the aggregation calculated with subaggregations to the global_agg
         var filterAggregation = $scope.ejs.FilterAggregation(query_id).agg(aggr);
         
+        console.log(scopedQuery)
         // add the filtered query back in
         filterAggregation = filterAggregation.filterQuery(scopedQuery);
 
