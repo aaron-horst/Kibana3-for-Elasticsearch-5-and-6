@@ -342,7 +342,6 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
 
       // Build the query
       _.each(queries, function(q) {
-        //console.log(querySrv.toEjsObj(q).toJSON());
         var scopedQuery = query.must(querySrv.toEjsObj(q));
         var aggr = buildAggs(q.id, _interval, scopedQuery);
         global_agg = global_agg.agg(aggr);
@@ -352,17 +351,14 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       });
 
       if($scope.panel.annotate.enable) {
-        var query = $scope.ejs.FilteredQuery(
-          $scope.ejs.QueryStringQuery($scope.panel.annotate.query || '*'),
-          filterSrv.getBoolFilter(filterSrv.idsByType('time'))
-        );
-        request = request.query(query);
+        var markerQuery = $scope.ejs.QueryStringQuery($scope.panel.annotate.query || '*');
+        request = request.query(markerQuery);
 
         // This is a hack proposed by @boaz to work around the fact that we can't get
         // to field data values directly, and we need timestamps as normalized longs
         request = request.sort([
-          $scope.ejs.Sort($scope.panel.annotate.sort[0]).order($scope.panel.annotate.sort[1]).ignoreUnmapped(true),
-          $scope.ejs.Sort($scope.panel.time_field).desc().ignoreUnmapped(true)
+          $scope.ejs.Sort($scope.panel.annotate.sort[0]).order($scope.panel.annotate.sort[1]),
+          $scope.ejs.Sort($scope.panel.time_field).desc()
         ]);
       }
 
@@ -552,7 +548,6 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
         // add the aggregation calculated with subaggregations to the global_agg
         var filterAggregation = $scope.ejs.FilterAggregation(query_id).agg(aggr);
         
-        console.log(scopedQuery)
         // add the filtered query back in
         filterAggregation = filterAggregation.filterQuery(scopedQuery);
 
