@@ -330,10 +330,9 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
 
       $scope.panelMeta.loading = true;
       request = $scope.ejs.Request();
-      var query = $scope.ejs.FilteredQuery(
-        $scope.ejs.BoolQuery(),
-        filterSrv.getBoolFilter(filterSrv.ids())
-      );
+      
+      // get the standard bool query
+      var query = filterSrv.getBoolQuery(filterSrv.ids())
       request = request.query(query);
 
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
@@ -343,23 +342,21 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
 
       // Build the query
       _.each(queries, function(q) {
+        //console.log(querySrv.toEjsObj(q).toJSON());
+        var scopedQuery = query.must(querySrv.toEjsObj(q));
+        console.log(scopedQuery.toJSON())
 
-        var query = $scope.ejs.QueryFilter(
-          querySrv.toEjsObj(q)
-        );
-
-        var filteredQuery = $scope.ejs.FilteredQuery(
+        var aggFilter = $scope.ejs.FilteredQuery(
           querySrv.toEjsObj(q),
           filterSrv.getBoolFilter(filterSrv.ids())
         );
 
-        console.log(filteredQuery.toJSON())
 
-        var aggr = buildAggs(q.id, _interval, filteredQuery);
+        var aggr = buildAggs(q.id, _interval, aggFilter, scopedQuery);
         global_agg = global_agg.agg(aggr);
 
         request = request.agg(global_agg)
-          .size($scope.panel.annotate.enable ? $scope.panel.annotate.size : 0);
+                         .size($scope.panel.annotate.enable ? $scope.panel.annotate.size : 0);
 
 
       });
@@ -523,7 +520,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       return hits;
     }
 
-    function buildAggs(query_id, interval, filteredQuery){
+    function buildAggs(query_id, interval, filteredQuery, scopedQuery){
         // define the date histogram aggregation
         var aggr = $scope.ejs.DateHistogramAggregation(query_id)
                     .field($scope.panel.time_field)
@@ -566,9 +563,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
         var filterAggregation = $scope.ejs.FilterAggregation(query_id).agg(aggr);
         
         // add the filtered query back in
-        filterAggregation = filterAggregation.filter(
-          $scope.ejs.QueryFilter(filteredQuery)
-        );
+        filterAggregation = filterAggregation.filterQuery(scopedQuery);
 
         return filterAggregation;
     };
