@@ -127,6 +127,75 @@ define([
       return ids;
     };
 
+    this.getBoolQuery = function(ids) {
+      var bool = ejs.BoolQuery();
+      // there is no way to introspect the BoolFilter and find out if it has a filter. We must keep note.
+      var added_a_filter = false;
+
+      _.each(ids,function(id) {
+        if(dashboard.current.services.filter.list[id].active) {
+          added_a_filter = true;
+
+          switch(dashboard.current.services.filter.list[id].mandate)
+          {
+          case 'mustNot':
+            bool.mustNot(self.getEjsQuery(id));
+            break;
+          case 'either':
+            bool.should(self.getEjsQuery(id));
+            break;
+          default:
+            bool.must(self.getEjsQuery(id));
+          }
+        }
+      });
+      // add a match filter so we'd get some data
+      if (!added_a_filter) {
+        bool.must(ejs.MatchAllQuery());
+      }
+      //console.log(bool.toJSON())
+      return bool;
+    };
+
+
+    this.getEjsQuery = function(id) {
+      return self.toEjsQueryObj(dashboard.current.services.filter.list[id]);
+    };
+
+    this.toEjsQueryObj = function (filter) {
+      if(!filter.active) {
+        return false;
+      }
+
+      switch(filter.type)
+      {
+      case 'time':
+        var _f = ejs.RangeQuery(filter.field).from(kbn.parseDate(filter.from).valueOf());
+        if(!_.isUndefined(filter.to)) {
+          _f = _f.to(kbn.parseDate(filter.to).valueOf());
+        }
+        return _f;
+      case 'range':
+        return ejs.RangeQuery(filter.field)
+          .from(filter.from)
+          .to(filter.to);
+      case 'querystring':
+        return ejs.QueryFilter(ejs.QueryStringQuery(filter.query).lowercaseExpandedTerms(false)).cache(true);
+      case 'field':
+        return ejs.QueryFilter(ejs.QueryStringQuery(filter.field+":("+filter.query+")")).cache(true);
+      case 'terms':
+        return ejs.TermsFilter(filter.field,filter.value);
+      case 'exists':
+        return ejs.ExistsFilter(filter.field);
+      case 'missing':
+        return ejs.MissingFilter(filter.field);
+      case 'script':
+        return ejs.ScriptFilter(filter.script);
+      default:
+        return false;
+      }
+    };
+
     this.getBoolFilter = function(ids) {
       var bool = ejs.BoolFilter();
       // there is no way to introspect the BoolFilter and find out if it has a filter. We must keep note.
@@ -146,78 +215,6 @@ define([
             break;
           default:
             bool.must(self.getEjsObj(id));
-          }
-        }
-      });
-      // add a match filter so we'd get some data
-      if (!added_a_filter) {
-        bool.must(ejs.MatchAllFilter());
-      }
-      return bool;
-    };
-
-    this.getBoolFilterWithoutField = function(ids, field) {
-      var bool = ejs.BoolFilter();
-      // there is no way to introspect the BoolFilter and find out if it has a filter. We must keep note.
-      var added_a_filter = false;
-      var parseQuerySting = function(str) {
-        var pattern1 = /^\s*([^\s]+)\s*\:\s*\(((?:\s*(?:\s+(?:NOT|OR|AND)\s+)?(\"?)[^\(\)\s\:\"]+\3\s*)+)\)\s*$/;
-        var pattern2 = /\s*(?:(NOT|OR|AND)\s+)?(\"?)([^\(\)\s\:\"]+)\2/g;
-        var pattern3 = /^\s*([^\s]+)\s*\:\s*((?:\s*(?:\s+(?:NOT|OR|AND)\s+)?(\"?)[^\(\)\s\:\"]+\3\s*)+)\s*$/;
-        var mts, vs;
-        mts = str.match(pattern1);
-        if (mts == null) {
-          mts = str.match(pattern3);
-          if (mts == null) {
-            return null;
-          }
-        }
-        vs = mts[2];
-        var res = {
-          field: mts[1],
-          value: {}
-        };
-        while (mts = pattern2.exec(vs)) {
-          if (mts != null) {
-            res.value[mts[3]] = mts[1] || 'OR';
-          }
-        }
-        return res;
-      };
-      var queryObj;
-      _.each(ids,function(id) {
-        if(dashboard.current.services.filter.list[id].active) {
-          added_a_filter = true;
-
-          switch(dashboard.current.services.filter.list[id].mandate)
-          {
-            case 'mustNot':
-            if(obj && obj.hasOwnProperty('field') && field == obj.field()) {
-              break;
-            }
-            bool.mustNot(self.getEjsObj(id));
-            break;
-            case 'either':
-            var obj = self.getEjsObj(id);
-            if(obj && obj.hasOwnProperty('field') && field == obj.field()) {
-              break;
-            }
-            bool.should(obj);
-            break;
-            default:
-            var obj = self.getEjsObj(id);
-            if (field) {
-              if (obj && obj.hasOwnProperty('field') && field == obj.field()) {
-                break;
-              }
-              if (obj && obj.hasOwnProperty('query')) {
-                queryObj = parseQuerySting(obj.query().query_string.query);
-                if (queryObj && queryObj.field == field) {
-                  break;
-                }
-              }
-            }
-            bool.must(obj);
           }
         }
       });
@@ -264,6 +261,7 @@ define([
         return false;
       }
     };
+
 
     this.getByType = function(type,inactive) {
       return _.pick(dashboard.current.services.filter.list,self.idsByType(type,inactive));
