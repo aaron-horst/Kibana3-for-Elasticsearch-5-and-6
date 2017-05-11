@@ -120,12 +120,10 @@ define([
         
       // Build the question part of the query
       _.each(queries, function(q) {
-        var _q = $scope.ejs.FilteredQuery(
-          querySrv.toEjsObj(q),
-          filterSrv.getBoolFilter(filterSrv.ids()));
-
+        var boolQuery = filterSrv.getBoolQuery(filterSrv.ids());
+        var _q = boolQuery.must(querySrv.toEjsObj(q));
         request = request.agg(
-          $scope.ejs.FilterAggregation(q.id).filter($scope.ejs.QueryFilter(_q))
+          $scope.ejs.FilterAggregation(q.id).filterQuery(_q)
         ).size(0);
       });
 
