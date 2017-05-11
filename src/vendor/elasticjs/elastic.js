@@ -16976,6 +16976,38 @@
         return this;
       },
 
+            /**
+            By default, searches return full documents, meaning every property or field.
+            This method allows you to specify which fields you want returned.
+
+            Pass a single field name and it is appended to the current list of
+            fields.  Pass an array of fields and it replaces all existing
+            fields.
+
+            @member ejs.Request
+            @param {(String|String[])} s The field as a string or fields as array
+            @returns {Object} returns <code>this</code> so that calls can be chained.
+            */
+      stored_fields: function (fieldList) {
+        if (fieldList == null) {
+          return query.stored_fields;
+        }
+
+        if (query.stored_fields == null) {
+          query.stored_fields = [];
+        }
+
+        if (isString(fieldList)) {
+          query.stored_fields.push(fieldList);
+        } else if (isArray(fieldList)) {
+          query.stored_fields = fieldList;
+        } else {
+          throw new TypeError('Argument must be a string or an array');
+        }
+
+        return this;
+      },
+
       /**
             Allows to control how the _source field is returned with every hit.
             By default operations return the contents of the _source field
