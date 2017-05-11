@@ -121,17 +121,12 @@ function (angular, app, _, $) {
       request = $scope.ejs.Request();
       queries = querySrv.getQueryObjs($scope.panel.queries.ids);
 
-      boolQuery = $scope.ejs.BoolQuery();
+      var boolQuery = filterSrv.getBoolQuery(filterSrv.ids());
       _.each(queries,function(q) {
         boolQuery = boolQuery.should(querySrv.toEjsObj(q));
       });
 
-      request.query(
-        $scope.ejs.FilteredQuery(
-          boolQuery,
-          filterSrv.getBoolFilter(filterSrv.ids())
-        )
-      );
+      request.query(boolQuery);
 
       // Then the insert into aggregation and make the request
       // Terms mode
