@@ -122,23 +122,17 @@ define([
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
       queries = querySrv.getQueryObjs($scope.panel.queries.ids);
 
-      boolQuery = $scope.ejs.BoolQuery();
+      boolQuery = filterSrv.getBoolQuery(filterSrv.ids());
       _.each(queries,function(q) {
         boolQuery = boolQuery.should(querySrv.toEjsObj(q));
       });
-
-      var query = $scope.ejs.FilteredQuery(
-        $scope.ejs.BoolQuery(),
-        filterSrv.getBoolFilter(filterSrv.ids())
-      );
-      request = $scope.ejs.Request().query(query);
+     
+      request = $scope.ejs.Request().query(boolQuery);
 
       if ($scope.panel.mode !== '-'){
         request = request
         .agg($scope.ejs.FilterAggregation('stats')
-        .filter($scope.ejs.QueryFilter(
-            boolQuery
-          )).agg($scope.ejs.ExtendedStatsAggregation("0").field($scope.panel.field))
+        .filterQuery(boolQuery).agg($scope.ejs.ExtendedStatsAggregation("0").field($scope.panel.field))
         );
       }
 
@@ -146,7 +140,7 @@ define([
       _.each(queries, function (q) {
         var alias = q.alias || q.query;
         request.agg($scope.ejs.FilterAggregation('stats_'+alias)
-          .filter($scope.ejs.QueryFilter(querySrv.toEjsObj(q)))
+          .filterQuery(boolQuery)
           .agg($scope.ejs.ExtendedStatsAggregation("0").field($scope.panel.field))
         );
       });
