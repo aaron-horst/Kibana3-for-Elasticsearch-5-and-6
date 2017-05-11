@@ -38,11 +38,11 @@ function (angular, app, _, $, kbn) {
         {title:'Queries', src:'app/partials/querySelect.html'}
       ],
       status  : "Stable",
-      description : "Displays the results of an elasticsearch aggregation " +
+      description : "ALPHA PANEL - Displays the results of an elasticsearch aggregation " +
       "as a pie chart, bar chart, or a table.<br>" +
-      "The filter built from bucket has an issue: " +
+      "The filter built from bucket has an open issue issue: " +
       "https://github.com/chenryn/kibana-authorization/issues/23<br>" +
-      "filterSvr does not supprt glt tl. I will fix it later."
+      "THIS IS EXPERIMENTAL AT THIS POINT."
     };
 
     // Set and populate defaults
@@ -141,16 +141,12 @@ function (angular, app, _, $, kbn) {
       queries = querySrv.getQueryObjs($scope.panel.queries.ids);
 
       // This could probably be changed to a BoolFilter
-      boolQuery = $scope.ejs.BoolQuery();
+      boolQuery = filterSrv.getBoolQuery(filterSrv.ids());
       _.each(queries,function(q) {
         boolQuery = boolQuery.should(querySrv.toEjsObj(q));
       });
-      var query = $scope.ejs.FilteredQuery(
-        boolQuery,
-        filterSrv.getBoolFilter(filterSrv.ids())
-      );
 
-      request = request.query(query);
+      request = request.query(boolQuery);
 
       rangeAgg = $scope.ejs.RangeAggregation('ranges');
       // AddRange
