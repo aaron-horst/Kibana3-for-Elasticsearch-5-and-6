@@ -149,7 +149,7 @@ function (angular, app, _, L, localRequire) {
 
         var request = $scope.ejs.Request()
           .query(boolQuery)
-          .fields([$scope.panel.field,$scope.panel.tooltip])
+          .stored_fields([$scope.panel.field,$scope.panel.tooltip])
           .size($scope.panel.size);
 
         if(!_.isNull(timeField)) {
