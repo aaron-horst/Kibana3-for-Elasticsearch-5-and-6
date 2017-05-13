@@ -17,17 +17,6 @@
     <script src="vendor/require/require.js"></script>
     <script src="app/components/require.config.js"></script>
     <script>require(['app'], function () {})</script>
-    <script>
-    /* it is an ugly hack.
-    * want to pass user from backend(django etc) to kibana,
-    * but do not know how to make it elegantly
-    * uglyuser is a global var which will be used in app.js later
-    */
-    uglyuser = "guest";
-    </script>
-    <style>
-    </style>
-
   </head>
 
   <body>
@@ -66,5 +55,3 @@
 
   </body>
 </html>
-<!-- backend could add this line here to pass the user-->
-<!-- <script> uglyuser = "test"; </script> -->

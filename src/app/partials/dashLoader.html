@@ -109,9 +109,3 @@
 <li ng-show="showDropdown('share')"><a bs-tooltip="'Share'" data-placement="bottom" ng-click="elasticsearch_save('temp',dashboard.current.loader.save_temp_ttl)" bs-modal="'app/partials/dashLoaderShare.html'"><i class='icon-share'></i></a></li>
 
 <li ng-show="dashboard.current.editable" bs-tooltip="'Configure dashboard'" data-placement="bottom"><a class="link" config-modal="app/partials/dasheditor.html" kbn-model="dashboard"><i class='icon-cog'></i></a></li>
-<li ng-show="config.showuser">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">{{user}}</a>
-  <ul class="dropdown-menu">
-    <li><a class="link" href="{{config.logout}}">Logout</a></li>
-  </ul>
-</li>

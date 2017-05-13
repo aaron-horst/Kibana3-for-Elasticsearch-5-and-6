@@ -160,7 +160,6 @@ function (angular, $, _, appLevelRequire) {
             pre_boot_modules = false;
 
             $rootScope.requireContext = appLevelRequire;
-            $rootScope.user = uglyuser;
             $rootScope.require = function (deps, fn) {
               var $scope = this;
               $scope.requireContext(deps, function () {

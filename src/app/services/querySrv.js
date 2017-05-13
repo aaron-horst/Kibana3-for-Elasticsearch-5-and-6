@@ -96,7 +96,7 @@ function (angular, _, config, kbn) {
 
           var request = ejs.Request();
 
-          var query = filterSrv.getBoolQuery(filterSrv.ids())
+          var query = filterSrv.getBoolQuery(filterSrv.ids());
           query.should(ejs.QueryStringQuery(q.query || '*'));
 
           var terms_aggs = ejs.TermsAggregation('terms')
