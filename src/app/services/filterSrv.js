@@ -129,7 +129,7 @@ define([
 
     this.getBoolQuery = function(ids) {
       var bool = ejs.BoolQuery();
-      // there is no way to introspect the BoolFilter and find out if it has a filter. We must keep note.
+      // there is no way to introspect the BoolQuery and find out if it has an applied filter. We must keep note.
       var added_a_filter = false;
 
       _.each(ids,function(id) {
@@ -149,14 +149,12 @@ define([
           }
         }
       });
-      // add a match filter so we'd get some data
+      // add a match all query so we'd get some data
       if (!added_a_filter) {
         bool.must(ejs.MatchAllQuery());
       }
-      //console.log(bool.toJSON())
       return bool;
     };
-
 
     this.getEjsQuery = function(id) {
       return self.toEjsQueryObj(dashboard.current.services.filter.list[id]);
