@@ -184,9 +184,11 @@ define([
       case 'terms':
         return ejs.TermsQuery(filter.field,filter.value);
       case 'exists':
-        return ejs.ExistsFilter(filter.field);
+        return ejs.ExistsQuery(filter.field);
       case 'missing':
-        return ejs.MissingFilter(filter.field);
+        var _b = ejs.BoolQuery();
+        _b.mustNot(ejs.ExistsQuery(filter.field));
+        return _b;
       default:
         return false;
       }
