@@ -123,13 +123,7 @@ function (angular, app, _, $, kbn) {
        * multiterms:: Multi terms: used to either filterSrv
        */
       multiterms  : [],
-      /** @scratch /panels/terms/5
-       * fmode:: Field mode: normal or script
-       */
-      fmode       : 'normal',
-      /** @scratch /panels/terms/5
-       * tmode:: Aggregation mode: terms or terms_stats
-       */
+      
       tmode       : 'terms',
       /** @scratch /panels/terms/5
        * tstat:: Terms_stats aggregation stats field
@@ -187,9 +181,6 @@ function (angular, app, _, $, kbn) {
           .field($scope.field)
           .size($scope.panel.size)
           .exclude($scope.panel.exclude);
-          if($scope.panel.fmode === 'script') {
-            terms_aggs.script($scope.panel.script);
-          }
           switch($scope.panel.order) {
             case 'term':
             terms_aggs.order('_term','asc');
@@ -276,10 +267,7 @@ function (angular, app, _, $, kbn) {
     };
 
     $scope.build_search = function(term,negate) {
-      if($scope.panel.fmode === 'script') {
-        filterSrv.set({type:'script',script:$scope.panel.script + ' == \"' + term.label + '\"',
-          mandate:(negate ? 'mustNot':'must')});
-      } else if(_.isUndefined(term.meta)) {
+      if(_.isUndefined(term.meta)) {
         filterSrv.set({type:'terms',field:$scope.field,value:term.label,
           mandate:(negate ? 'mustNot':'must')});
       } else if(term.meta === 'missing') {
@@ -291,10 +279,7 @@ function (angular, app, _, $, kbn) {
     };
 
     var build_multi_search = function(term) {
-      if($scope.panel.fmode === 'script') {
-        return({type:'script',script:$scope.panel.script + ' == \"' + term.label + '\"',
-          mandate:'either', alias: term.label});
-      } else if(_.isUndefined(term.meta)) {
+      if(_.isUndefined(term.meta)) {
         return({type:'terms',field:$scope.field,value:term.label, mandate:'either'});
       } else if(term.meta === 'missing') {
         return({type:'exists',field:$scope.field, mandate:'either'});
