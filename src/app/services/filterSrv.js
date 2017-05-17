@@ -145,7 +145,6 @@ define([
             bool.should(self.getEjsQuery(id));
             break;
           default:
-            console.log(self.getEjsQuery(id).toJSON())
             bool.must(self.getEjsQuery(id));
           }
         }
@@ -183,7 +182,7 @@ define([
       case 'field':
         return ejs.QueryStringQuery(filter.field+":("+filter.query+")");
       case 'terms':
-        return ejs.TermsFilter(filter.field,filter.value);
+        return ejs.TermsQuery(filter.field,filter.value);
       case 'exists':
         return ejs.ExistsFilter(filter.field);
       case 'missing':
