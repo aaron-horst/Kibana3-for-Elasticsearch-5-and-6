@@ -121,10 +121,13 @@ define([
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
       var queries = querySrv.getQueryObjs($scope.panel.queries.ids);
 
+      // Construct base bool query 
       var boolQuery = filterSrv.getBoolQuery(filterSrv.ids());
-      _.each(queries,function(q) {
-        boolQuery = boolQuery.should(querySrv.toEjsObj(q));
+      var _b = $scope.ejs.BoolQuery();
+        _.each(queries,function(q) {
+        _b = _b.should(querySrv.toEjsObj(q));
       });
+      boolQuery = boolQuery.must(_b);
 
       var results;
 
