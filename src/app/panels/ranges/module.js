@@ -140,11 +140,14 @@ function (angular, app, _, $, kbn) {
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
       queries = querySrv.getQueryObjs($scope.panel.queries.ids);
 
-      // This could probably be changed to a BoolFilter
+      // Construct base bool query 
       boolQuery = filterSrv.getBoolQuery(filterSrv.ids());
-      _.each(queries,function(q) {
-        boolQuery = boolQuery.should(querySrv.toEjsObj(q));
+      var _b = $scope.ejs.BoolQuery();
+        _.each(queries,function(q) {
+        _b = _b.should(querySrv.toEjsObj(q));
       });
+      boolQuery = boolQuery.must(_b);
+
 
       request = request.query(boolQuery);
 
