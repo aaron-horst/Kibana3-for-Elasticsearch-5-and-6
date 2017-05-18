@@ -342,7 +342,9 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
 
       // Build the query
       _.each(queries, function(q) {
-        var scopedQuery = query.must(querySrv.toEjsObj(q));
+        var scopedQuery = filterSrv.getBoolQuery(filterSrv.ids());
+        scopedQuery.must(querySrv.toEjsObj(q));
+
         var aggr = buildAggs(q.id, _interval, scopedQuery);
         global_agg = global_agg.agg(aggr);
         request = request.agg(global_agg)
@@ -367,7 +369,6 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
 
       // Then run it
       results = $scope.ejs.doSearch(dashboard.indices[segment], request, $scope.panel.annotate.enable ? $scope.panel.annotate.size : 0);
-
 
       // Populate scope when we have results
       return results.then(function(results) {
