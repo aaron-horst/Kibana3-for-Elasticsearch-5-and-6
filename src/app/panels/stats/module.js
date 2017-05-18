@@ -57,7 +57,7 @@ define([
       },
       style   : { "font-size": '24pt'},
       format: 'number',
-      mode: '-',
+      mode: 'count',
       display_breakdown: 'yes',
       sort_field: '',
       sort_reverse: false,
@@ -101,12 +101,6 @@ define([
       return (null === obj.value[$scope.panel.sort_field] ? 0 : 1);
     };
 
-    $scope.add_dash_to_modes = function(modes){
-      var newmodes = modes.slice();
-      newmodes.unshift('-');
-      return newmodes;
-    }
-
     $scope.get_data = function () {
       if(dashboard.indices.length === 0) {
         return;
@@ -122,25 +116,31 @@ define([
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
       queries = querySrv.getQueryObjs($scope.panel.queries.ids);
 
+      // Construct base bool query 
       boolQuery = filterSrv.getBoolQuery(filterSrv.ids());
+      var _b = $scope.ejs.BoolQuery();
       _.each(queries,function(q) {
-        boolQuery = boolQuery.should(querySrv.toEjsObj(q));
+        _b = _b.should(querySrv.toEjsObj(q));
       });
+      boolQuery = boolQuery.must(_b);
      
       request = $scope.ejs.Request().query(boolQuery);
 
-      if ($scope.panel.mode !== '-'){
-        request = request
+      request = request
         .agg($scope.ejs.FilterAggregation('stats')
         .filterQuery(boolQuery).agg($scope.ejs.ExtendedStatsAggregation("0").field($scope.panel.field))
         );
-      }
-
 
       _.each(queries, function (q) {
+        // construct a query for each individual stat query we want to calculate
+        var statQuery = filterSrv.getBoolQuery(filterSrv.ids());
+        var _s = $scope.ejs.BoolQuery();
+        _s = _s.should(querySrv.toEjsObj(q));
+        statQuery = statQuery.must(_s);
+     
         var alias = q.alias || q.query;
         request.agg($scope.ejs.FilterAggregation('stats_'+alias)
-          .filterQuery(boolQuery)
+          .filterQuery(statQuery)
           .agg($scope.ejs.ExtendedStatsAggregation("0").field($scope.panel.field))
         );
       });
@@ -152,18 +152,16 @@ define([
 
       results.then(function(results) {
         $scope.panelMeta.loading = false;
-        if ($scope.panel.mode !== '-'){
-          var _fcm = {
-            "sum":"sum",
-            "total":"sum",
-            "mean":"avg",
-            "avg":"avg",
-            "min":"min",
-            "max":"max",
-            "count":"count"
-          };
-          var value = results.aggregations.stats['0'][_fcm[$scope.panel.mode]];
-        }
+        var _fcm = {
+          "sum":"sum",
+          "total":"sum",
+          "mean":"avg",
+          "avg":"avg",
+          "min":"min",
+          "max":"max",
+          "count":"count"
+        };
+        var value = results.aggregations.stats['0'][_fcm[$scope.panel.mode]];
 
         //forward_compatible_map
         var _fcm = {
