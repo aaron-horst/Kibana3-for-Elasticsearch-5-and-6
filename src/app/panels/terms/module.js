@@ -155,8 +155,6 @@ function (angular, app, _, $, kbn) {
 
       $scope.panelMeta.loading = true;
       var request,
-        terms_facet,
-        termstats_facet,
         results,
         boolQuery,
         queries;
@@ -172,7 +170,7 @@ function (angular, app, _, $, kbn) {
       // Construct base bool query 
       boolQuery = filterSrv.getBoolQuery(filterSrv.ids());
       var _b = $scope.ejs.BoolQuery();
-        _.each(queries,function(q) {
+      _.each(queries,function(q) {
         _b = _b.should(querySrv.toEjsObj(q));
       });
       boolQuery = boolQuery.must(_b);
@@ -180,74 +178,74 @@ function (angular, app, _, $, kbn) {
 
       // Terms mode
       if($scope.panel.tmode === 'terms') {
-        var terms_aggs = $scope.ejs.TermsAggregation('terms')
+        var termsAggs = $scope.ejs.TermsAggregation('terms')
           .field($scope.field)
           .size($scope.panel.size)
           .exclude($scope.panel.exclude);
-          switch($scope.panel.order) {
-            case 'term':
-            terms_aggs.order('_term','asc');
-            break;
-            case 'count':
-            terms_aggs.order('_count');
-            break;
-            case 'reverse_count':
-            terms_aggs.order('_count','asc');
-            break;
-            case 'reverse_term':
-            terms_aggs.order('_term');
-            break;
-            default:
-            terms_aggs.order('_count');
-          }
-        request = request.query(query).agg(terms_aggs).size(0);
+        switch($scope.panel.order) {
+        case 'term':
+          terms_aggs.order('_term','asc');
+          break;
+        case 'count':
+          terms_aggs.order('_count');
+          break;
+        case 'reverse_count':
+          terms_aggs.order('_count','asc');
+          break;
+        case 'reverse_term':
+          terms_aggs.order('_term');
+          break;
+        default:
+          terms_aggs.order('_count');
+        }
+        request = request.query(query).agg(termsAggs).size(0);
       }
       else if($scope.panel.tmode === 'terms_stats') {
         var terms_aggs = $scope.ejs.TermsAggregation('terms')
           .field($scope.panel.field)
           .size($scope.panel.size);
 
-          var sub_aggs = $scope.ejs.StatsAggregation('subaggs')
+        var sub_aggs = $scope.ejs.StatsAggregation('subaggs')
             .field($scope.panel.valuefield);
 
-          switch($scope.panel.order) {
-            case 'term':
-              terms_aggs.order('_term','asc');
-              break;
-            case 'reverse_term':
-              terms_aggs.order('_term','desc');
-              break;
-            case 'count':
-              terms_aggs.order('_count','desc');
-              break;
-            case 'reverse_count':
-              terms_aggs.order('_count','asc');
-              break;
-            case 'total':
-              terms_aggs.order('subaggs.sum','desc');
-              break;
-            case 'reverse_total':
-              terms_aggs.order('subaggs.sum','asc');
-              break;
-            case 'min':
-              terms_aggs.order('subaggs.min','desc');
-              break;
-            case 'reverse_min':
-              terms_aggs.order('subterms.min','asc');
-              break;
-            case 'max':
-              terms_aggs.order('subaggs.max','desc');
-              break;
-            case 'reverse_max':
-              terms_aggs.order('subaggs.max','asc');
-              break;
-            case 'mean':
-              terms_aggs.order('subaggs.avg','desc');
-              break;
-            case 'reverse_mean':
-              terms_aggs.order('subaggs.avg','asc');
-              break;
-          }
+        switch($scope.panel.order) {
+        case 'term':
+          terms_aggs.order('_term','asc');
+          break;
+        case 'reverse_term':
+          terms_aggs.order('_term','desc');
+          break;
+        case 'count':
+          terms_aggs.order('_count','desc');
+          break;
+        case 'reverse_count':
+          terms_aggs.order('_count','asc');
+          break;
+        case 'total':
+          terms_aggs.order('subaggs.sum','desc');
+          break;
+        case 'reverse_total':
+          terms_aggs.order('subaggs.sum','asc');
+          break;
+        case 'min':
+          terms_aggs.order('subaggs.min','desc');
+          break;
+        case 'reverse_min':
+          terms_aggs.order('subterms.min','asc');
+          break;
+        case 'max':
+          terms_aggs.order('subaggs.max','desc');
+          break;
+        case 'reverse_max':
+          terms_aggs.order('subaggs.max','asc');
+          break;
+        case 'mean':
+          terms_aggs.order('subaggs.avg','desc');
+          break;
+        case 'reverse_mean':
+          terms_aggs.order('subaggs.avg','asc');
+          break;
+        }
 
         request = request.query(query)
         .agg(terms_aggs.agg(sub_aggs)).size(0);
@@ -294,7 +292,7 @@ function (angular, app, _, $, kbn) {
     $scope.multi_search = function() {
       _.each($scope.panel.multiterms, function(t) {
         var f = build_multi_search(t);
-        filterSrv.set(f, undefined, true)
+        filterSrv.set(f, undefined, true);
       });
       dashboard.refresh();
     };
@@ -382,11 +380,11 @@ function (angular, app, _, $, kbn) {
           // });
 
           if (scope.panel.tmode === 'terms') {
-              scope.data.push({
-                  label: 'Other values',
-                  data: [[k + 1, scope.results.aggregations.terms.sum_other_doc_count]],
-                  meta: "other",
-                  color: '#444'
+            scope.data.push({
+                label: 'Other values',
+                data: [[k + 1, scope.results.aggregations.terms.sum_other_doc_count]],
+                meta: "other",
+                color: '#444'
               });
           }
 

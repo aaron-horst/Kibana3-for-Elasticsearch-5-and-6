@@ -133,7 +133,7 @@ function (angular, app, _, kbn) {
       // Build the question part of the query
       _.each(queries, function(query) {
 
-        var q = filterSrv.getBoolQuery(filterSrv.ids());;
+        var q = filterSrv.getBoolQuery(filterSrv.ids());
         q = q.must(querySrv.toEjsObj(query));
 
         request = request
