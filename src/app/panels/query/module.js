@@ -84,7 +84,7 @@ define([
         }
       });
       return queryString;
-    }
+    };
 
     $scope.selected_sem = function() {
       var item = _.last($scope.panel.values);
@@ -100,10 +100,10 @@ define([
     };
  
     $scope.addCond = function(){
-      if ( $scope.add_cond == false ) {
+      if ( $scope.add_cond === false ) {
         $scope.add_cond = true;
         return;
-      };
+      }
       $scope.panel.values.push(angular.copy($scope.defaultValue));
     };
 
@@ -112,7 +112,7 @@ define([
         $("#sela").multiselect({
             selectedList:50,
             maxHeight:300
-        });
+          });
       },50);
     };
 

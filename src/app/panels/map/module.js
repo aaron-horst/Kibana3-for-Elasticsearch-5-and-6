@@ -114,7 +114,6 @@ function (angular, app, _, $) {
 
 
       var request,
-        boolQuery,
         queries;
 
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
@@ -142,19 +141,19 @@ function (angular, app, _, $) {
       if($scope.panel.tmode === 'terms_stats') {
         var sub_aggs;
         switch($scope.panel.tstat) {
-          case 'min':
+        case 'min':
           sub_aggs = $scope.ejs.MinAggregation('subaggs')
           .field($scope.panel.valuefield);
           break;
-          case 'max':
+        case 'max':
           sub_aggs = $scope.ejs.MaxAggregation('subaggs')
           .field($scope.panel.valuefield);
           break;
-          case 'total':
+        case 'total':
           sub_aggs = $scope.ejs.SumAggregation('subaggs')
           .field($scope.panel.valuefield);
           break;
-          case 'mean':
+        case 'mean':
           sub_aggs = $scope.ejs.AvgAggregation('subaggs')
           .field($scope.panel.valuefield);
           break;

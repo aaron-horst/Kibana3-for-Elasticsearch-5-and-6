@@ -143,7 +143,7 @@ function (angular, app, _, $, kbn) {
       // Construct base bool query 
       boolQuery = filterSrv.getBoolQuery(filterSrv.ids());
       var _b = $scope.ejs.BoolQuery();
-        _.each(queries,function(q) {
+      _.each(queries,function(q) {
         _b = _b.should(querySrv.toEjsObj(q));
       });
       boolQuery = boolQuery.must(_b);

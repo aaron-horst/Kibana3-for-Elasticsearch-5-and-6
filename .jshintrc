@@ -6,7 +6,7 @@
   "eqnull": true,
   "globalstrict": true,
   "devel": true,
-  "eqeqeq": true,
+  "eqeqeq": false,
   "forin": false,
   "immed": true,
   "supernew": true,

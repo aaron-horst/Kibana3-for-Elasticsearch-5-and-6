@@ -185,9 +185,10 @@ function (angular, app, _, kbn, moment) {
       filename: 'table.csv'
     };
     $scope.exportAsCsv = function() {
-      if (!$scope.data) return;
+      if (!$scope.data) {
+        return;
+      }
 
-      var text = '';
       var nonAlphaNumRE = /[^a-zA-Z0-9]/;
       var allDoubleQuoteRE = /"/g;
       var escape = function (val) {
@@ -420,7 +421,7 @@ function (angular, app, _, kbn, moment) {
       // Construct base bool query 
       boolQuery = filterSrv.getBoolQuery(filterSrv.ids());
       var _b = $scope.ejs.BoolQuery();
-        _.each(queries,function(q) {
+      _.each(queries,function(q) {
         _b = _b.should(querySrv.toEjsObj(q));
       });
       boolQuery = boolQuery.must(_b);

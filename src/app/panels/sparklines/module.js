@@ -171,7 +171,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       // Build the query
       _.each(queries, function(q) {
-        var query = filterSrv.getBoolQuery(filterSrv.ids())
+        var query = filterSrv.getBoolQuery(filterSrv.ids());
         var scopedQuery = $scope.ejs.BoolQuery();
         scopedQuery = query.should(querySrv.toEjsObj(q));
         var aggr = $scope.ejs.DateHistogramAggregation(q.id);

@@ -332,7 +332,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       request = $scope.ejs.Request();
       
       // get the standard bool query
-      var query = filterSrv.getBoolQuery(filterSrv.ids())
+      var query = filterSrv.getBoolQuery(filterSrv.ids());
       request = request.query(query);
 
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
@@ -522,23 +522,23 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           }
           var sub_aggs;
           switch($scope.panel.mode) {
-            case 'uniq':
+          case 'uniq':
             sub_aggs = $scope.ejs.CardinalityAggregation('subaggs')
             .field($scope.panel.value_field);
             break;
-            case 'min':
+          case 'min':
             sub_aggs = $scope.ejs.MinAggregation('subaggs')
             .field($scope.panel.value_field);
             break;
-            case 'max':
+          case 'max':
             sub_aggs = $scope.ejs.MaxAggregation('subaggs')
             .field($scope.panel.value_field);
             break;
-            case 'total':
+          case 'total':
             sub_aggs = $scope.ejs.SumAggregation('subaggs')
             .field($scope.panel.value_field);
             break;
-            case 'mean':
+          case 'mean':
             sub_aggs = $scope.ejs.AvgAggregation('subaggs')
             .field($scope.panel.value_field);
             break;
@@ -553,7 +553,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
         filterAggregation = filterAggregation.filterQuery(scopedQuery);
 
         return filterAggregation;
-    };
+      }
 
     // function $scope.zoom
     // factor :: Zoom factor, so 0.5 = cuts timespan in half, 2 doubles timespan

@@ -14,9 +14,11 @@ function (angular, config, _) {
       $scope.dashboardclass = {};
       $scope.dashboardmainclass = [];
       for (var i in config.dashboard_class){
-        for(var k in config.dashboard_class[i])
-        $scope.dashboardmainclass.push(k);
-        $scope.dashboardclass[k] = config.dashboard_class[i][k];
+        for(var k in config.dashboard_class[i]) {
+          $scope.dashboardmainclass.push(k);
+          $scope.dashboardclass[k] = config.dashboard_class[i][k];
+        }
+        
       }
     };
 
