@@ -112,7 +112,8 @@ function (Settings) {
       'terms',
       'stats',
       'sparklines',
-      'ranges'
+      'ranges',
+      'percentiles'
     ],
 
   });
