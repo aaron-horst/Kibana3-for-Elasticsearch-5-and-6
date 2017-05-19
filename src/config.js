@@ -25,16 +25,6 @@ function (Settings) {
      * elasticsearch host
      */
     elasticsearch: "http://"+window.location.hostname+":9200",
-    
-
-    /*
-    * logout kibana
-    */
-    logout: "/logout",
-    /*
-    * show username and logout link on the right of the navbar
-    */
-    showuser: false,
 
     /** @scratch /configuration/config.js/5
      *
@@ -88,9 +78,9 @@ function (Settings) {
 
     /*
      * display notice on top of the page. you could config it as below
-    notice: {
+      notice: {
       'title':'kibana3 update',
-      'text': 'now kibana3 support es2!',
+      'text': 'Now updated to support Elasticsearch version 5.x!',
      },*/
      
      notice: null,
@@ -121,26 +111,9 @@ function (Settings) {
       'query',
       'terms',
       'stats',
-      'sparklines'
-      
-       // new visualizations introduced in the fork - removed for backward compatibility testing
-       // 'multiplechoice',
-       // 'entry', // this displays all dashboards - don't need it
-       // 'filtertable', // just like a table but shows all options instead
-       // 'percentiles', // new: used to show 25/50/75 percentiles
-       // 'ranges', // new: used to show predefined ranges
-       // 'force',
-       // 'statisticstrend',
-       // 'multifieldhistogram',
-       // 'valuehistogram'
-
+      'sparklines',
+      'ranges'
     ],
-
-    /*
-    * whether or not to display the query generator option
-    */
-    showquerygenerator: false,
-
 
   });
 });
