@@ -164,7 +164,7 @@ define([
         var value = results.aggregations.stats['0'][_fcm[$scope.panel.mode]];
 
         //forward_compatible_map
-        var _fcm = {
+        _fcm = {
           "sum":"total",
           "avg":"mean"
         };

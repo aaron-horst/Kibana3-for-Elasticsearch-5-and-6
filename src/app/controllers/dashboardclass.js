@@ -3,7 +3,7 @@ define([
   'config',
   'lodash',
 ],
-function (angular, config, _) {
+function (angular, config) {
   'use strict';
 
   var module = angular.module('kibana.controllers');
