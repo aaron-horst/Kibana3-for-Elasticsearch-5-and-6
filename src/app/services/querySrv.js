@@ -205,9 +205,9 @@ function (angular, _, config, kbn) {
       switch(q.type)
       {
       case 'lucene':
-        var q = ejs.QueryStringQuery(q.query || '*');
-        q.lowercaseExpandedTerms(false);
-        return q;
+        var luceneQuery = ejs.QueryStringQuery(q.query || '*');
+        luceneQuery.lowercaseExpandedTerms(false);
+        return luceneQuery;
       case 'regex':
         return ejs.RegexpQuery('_all',q.query);
       default:
