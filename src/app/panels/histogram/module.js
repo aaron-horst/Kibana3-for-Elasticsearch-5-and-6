@@ -512,10 +512,8 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
         var aggr = $scope.ejs.DateHistogramAggregation(query_id)
                     .field($scope.panel.time_field)
                     .interval(interval);
-
-        if($scope.panel.mode === 'count') {
-          //pass
-        } else {
+        
+        if($scope.panel.mode !== 'count') {
           if(_.isNull($scope.panel.value_field)) {
             $scope.panel.error = "In " + $scope.panel.mode + " mode a field must be specified";
             return;
