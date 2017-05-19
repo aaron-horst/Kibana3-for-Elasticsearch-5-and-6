@@ -6,7 +6,6 @@ define([
   './kbnIndex',
   './querySrv',
   './timer',
-  './monitor',
   './panelMove',
   './esVersion'
 ],
