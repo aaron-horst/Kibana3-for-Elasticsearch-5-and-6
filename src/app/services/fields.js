@@ -17,7 +17,6 @@ function (angular, _, config) {
 
 
     this.list = ['_type'];
-    this.types = [];
     this.indices = [];
 
     // Stop tracking the full mapping, too expensive, instead we only remember the index names
@@ -31,20 +30,11 @@ function (angular, _, config) {
         if(indices.length > 0) {
           self.map(indices).then(function(result) {
             self.indices = _.union(self.indices,_.keys(result));
-            self.types = mapTypes(result);
             self.list = mapFields(result);
           });
         }
       }
     });
-
-    var mapTypes = function (m) {
-      var types = [];
-      _.each(m, function(t) {
-        types = _.union(types, _.keys(t));
-      });
-      return _.without(types, '_default_');
-    };
 
     var mapFields = function (m) {
       var fields = [];

@@ -184,19 +184,19 @@ function (angular, app, _, $, kbn) {
           .exclude($scope.panel.exclude);
         switch($scope.panel.order) {
         case 'term':
-          terms_aggs.order('_term','asc');
+          termsAggs.order('_term','asc');
           break;
         case 'count':
-          terms_aggs.order('_count');
+          termsAggs.order('_count');
           break;
         case 'reverse_count':
-          terms_aggs.order('_count','asc');
+          termsAggs.order('_count','asc');
           break;
         case 'reverse_term':
-          terms_aggs.order('_term');
+          termsAggs.order('_term');
           break;
         default:
-          terms_aggs.order('_count');
+          termsAggs.order('_count');
         }
         request = request.query(query).agg(termsAggs).size(0);
       }

@@ -49,8 +49,6 @@ require.config({
     'jquery.flot.time':       '../vendor/jquery/jquery.flot.time',
     'jquery.flot.byte':       '../vendor/jquery/jquery.flot.byte',
     'jquery.flot.threshold':  '../vendor/jquery/jquery.flot.threshold',
-    multiselect:             '../vendor/jquery/jquery.multiselect',
-
 
     modernizr:                '../vendor/modernizr-2.6.1',
     numeral:                  '../vendor/numeral',
