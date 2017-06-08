@@ -15,16 +15,14 @@ define([
   'lodash',
   'jquery',
   'kbn',
-  'numeral',
-  'config'
+  'numeral'
 ], function (
   angular,
   app,
   _,
   $,
   kbn,
-  numeral,
-  config
+  numeral
 ) {
 
   'use strict';
@@ -89,7 +87,7 @@ define([
       var newmodes = modes.slice();
       newmodes.unshift('-');
       return newmodes;
-    }
+    };
 
     $scope.set_sort = function(field) {
       if($scope.panel.sort_field === field && $scope.panel.sort_reverse === false) {
@@ -176,8 +174,9 @@ define([
         $scope.panelMeta.loading = false;
         esVersion.gte('1.3.0').then(function(is) {
           if (is) {
+            var value;
             if ($scope.panel.mode !== '-'){
-              var value = results.aggregations.stats['stats']['values'][$scope.panel.mode+'.0'];
+              value = results.aggregations.stats['stats']['values'][$scope.panel.mode+'.0'];
             }
             var rows = queries.map(function (q, i) {
               var alias = q.alias || q.query;
@@ -188,9 +187,9 @@ define([
               obj.Value = {};
               var data = results.aggregations['stats_'+i]['stats_'+i]['values'];
               for ( var keys in data ) {
-                obj.value[parseInt(keys)] = data[keys];
-                obj.Value[parseInt(keys)] = data[keys]; //sort field
-              };
+                obj.value[parseInt(keys, 10)] = data[keys];
+                obj.Value[parseInt(keys, 10)] = data[keys]; //sort field
+              }
               return obj;
             });
 
@@ -202,7 +201,7 @@ define([
             esVersion.gte('1.1.0').then(function(is) {
               if (is) {
                 if ($scope.panel.mode !== '-'){
-                  var value = results.aggregations.stats['stats'][$scope.panel.mode+'.0'];
+                  value = results.aggregations.stats['stats'][$scope.panel.mode+'.0'];
                 }
                 var rows = queries.map(function (q, i) {
                   var alias = q.alias || q.query;
@@ -213,9 +212,9 @@ define([
                   obj.Value = {};
                   var data = results.aggregations['stats_'+i]['stats_'+i];
                   for ( var keys in data ) {
-                    obj.value[parseInt(keys)] = data[keys];
-                    obj.Value[parseInt(keys)] = data[keys]; //sort field
-                  };
+                    obj.value[parseInt(keys, 10)] = data[keys];
+                    obj.Value[parseInt(keys, 10)] = data[keys]; //sort field
+                  }
                   return obj;
                 });
 
@@ -225,7 +224,7 @@ define([
                 };
               }
             });
-          };
+          }
         });
       });
     };
