@@ -11544,6 +11544,9 @@
     
     if (isString(terms)) {
       query.terms[field] = [terms];
+    } else if (isNumber(terms)) {
+      var termsAsString = terms.toString();
+      query.terms[field] = [termsAsString];
     } else if (isArray(terms)) {
       query.terms[field] = terms;
     } else {
