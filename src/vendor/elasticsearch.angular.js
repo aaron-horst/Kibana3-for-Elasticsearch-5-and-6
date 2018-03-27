@@ -18127,7 +18127,7 @@ api.indices.prototype.getAliases = ca({
   },
   urls: [
     {
-      fmt: '/<%=index%>/_aliases/<%=name%>',
+      fmt: '/<%=index%>/_alias/<%=name%>',
       req: {
         index: {
           type: 'list'
@@ -18138,7 +18138,7 @@ api.indices.prototype.getAliases = ca({
       }
     },
     {
-      fmt: '/<%=index%>/_aliases',
+      fmt: '/<%=index%>/_alias',
       req: {
         index: {
           type: 'list'
@@ -18146,7 +18146,7 @@ api.indices.prototype.getAliases = ca({
       }
     },
     {
-      fmt: '/_aliases/<%=name%>',
+      fmt: '/_alias/<%=name%>',
       req: {
         name: {
           type: 'list'
@@ -18154,7 +18154,7 @@ api.indices.prototype.getAliases = ca({
       }
     },
     {
-      fmt: '/_aliases'
+      fmt: '/_alias'
     }
   ]
 });
@@ -19254,7 +19254,7 @@ api.indices.prototype.updateAliases = ca({
     }
   },
   url: {
-    fmt: '/_aliases'
+    fmt: '/_alias'
   },
   needBody: true,
   method: 'POST'
@@ -23416,7 +23416,7 @@ api.indices.prototype.getAliases = ca({
   },
   urls: [
     {
-      fmt: '/<%=index%>/_aliases/<%=name%>',
+      fmt: '/<%=index%>/_alias/<%=name%>',
       req: {
         index: {
           type: 'list'
@@ -23427,7 +23427,7 @@ api.indices.prototype.getAliases = ca({
       }
     },
     {
-      fmt: '/<%=index%>/_aliases',
+      fmt: '/<%=index%>/_alias',
       req: {
         index: {
           type: 'list'
@@ -23435,7 +23435,7 @@ api.indices.prototype.getAliases = ca({
       }
     },
     {
-      fmt: '/_aliases/<%=name%>',
+      fmt: '/_alias/<%=name%>',
       req: {
         name: {
           type: 'list'
@@ -23443,7 +23443,7 @@ api.indices.prototype.getAliases = ca({
       }
     },
     {
-      fmt: '/_aliases'
+      fmt: '/_alias'
     }
   ]
 });
@@ -24587,7 +24587,7 @@ api.indices.prototype.updateAliases = ca({
     }
   },
   url: {
-    fmt: '/_aliases'
+    fmt: '/_alias'
   },
   needBody: true,
   method: 'POST'
@@ -28902,7 +28902,7 @@ api.indices.prototype.getAliases = ca({
   },
   urls: [
     {
-      fmt: '/<%=index%>/_aliases/<%=name%>',
+      fmt: '/<%=index%>/_alias/<%=name%>',
       req: {
         index: {
           type: 'list'
@@ -28913,7 +28913,7 @@ api.indices.prototype.getAliases = ca({
       }
     },
     {
-      fmt: '/<%=index%>/_aliases',
+      fmt: '/<%=index%>/_alias',
       req: {
         index: {
           type: 'list'
@@ -28921,7 +28921,7 @@ api.indices.prototype.getAliases = ca({
       }
     },
     {
-      fmt: '/_aliases/<%=name%>',
+      fmt: '/_alias/<%=name%>',
       req: {
         name: {
           type: 'list'
@@ -28929,7 +28929,7 @@ api.indices.prototype.getAliases = ca({
       }
     },
     {
-      fmt: '/_aliases'
+      fmt: '/_alias'
     }
   ]
 });
@@ -30030,7 +30030,7 @@ api.indices.prototype.updateAliases = ca({
     }
   },
   url: {
-    fmt: '/_aliases'
+    fmt: '/_alias'
   },
   needBody: true,
   method: 'POST'
