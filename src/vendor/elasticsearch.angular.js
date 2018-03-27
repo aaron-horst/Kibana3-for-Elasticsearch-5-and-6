@@ -17067,7 +17067,6 @@ api.exists = ca({
  * @param {String} params.df - The default field for query string query (default: _all)
  * @param {String, String[], Boolean} params.fields - A comma-separated list of fields to return in the response
  * @param {Boolean} params.lenient - Specify whether format-based query failures (such as providing text to a numeric field) should be ignored
- * @param {Boolean} params.lowercaseExpandedTerms - Specify whether query terms should be lowercased
  * @param {String} params.parent - The ID of the parent document
  * @param {String} params.preference - Specify the node or shard the operation should be performed on (default: random)
  * @param {String} params.q - Query in the Lucene query string syntax
@@ -17106,10 +17105,6 @@ api.explain = ca({
     },
     lenient: {
       type: 'boolean'
-    },
-    lowercaseExpandedTerms: {
-      type: 'boolean',
-      name: 'lowercase_expanded_terms'
     },
     parent: {
       type: 'string'
@@ -20247,7 +20242,6 @@ api.scroll = ca({
  * @param {String} [params.expandWildcards=open] - Whether to expand wildcard expression to concrete indices that are open, closed or both.
  * @param {String, String[], Boolean} params.indicesBoost - Comma-separated list of index boosts
  * @param {Boolean} params.lenient - Specify whether format-based query failures (such as providing text to a numeric field) should be ignored
- * @param {Boolean} params.lowercaseExpandedTerms - Specify whether query terms should be lowercased
  * @param {String} params.preference - Specify the node or shard the operation should be performed on (default: random)
  * @param {String} params.q - Query in the Lucene query string syntax
  * @param {String, String[], Boolean} params.routing - A comma-separated list of specific routing values
@@ -20323,10 +20317,6 @@ api.search = ca({
     },
     lenient: {
       type: 'boolean'
-    },
-    lowercaseExpandedTerms: {
-      type: 'boolean',
-      name: 'lowercase_expanded_terms'
     },
     preference: {
       type: 'string'
@@ -22349,7 +22339,6 @@ api.exists = ca({
  * @param {String} params.df - The default field for query string query (default: _all)
  * @param {String, String[], Boolean} params.fields - A comma-separated list of fields to return in the response
  * @param {Boolean} params.lenient - Specify whether format-based query failures (such as providing text to a numeric field) should be ignored
- * @param {Boolean} params.lowercaseExpandedTerms - Specify whether query terms should be lowercased
  * @param {String} params.parent - The ID of the parent document
  * @param {String} params.preference - Specify the node or shard the operation should be performed on (default: random)
  * @param {String} params.q - Query in the Lucene query string syntax
@@ -22388,10 +22377,6 @@ api.explain = ca({
     },
     lenient: {
       type: 'boolean'
-    },
-    lowercaseExpandedTerms: {
-      type: 'boolean',
-      name: 'lowercase_expanded_terms'
     },
     parent: {
       type: 'string'
@@ -25582,7 +25567,6 @@ api.scroll = ca({
  * @param {String} [params.expandWildcards=open] - Whether to expand wildcard expression to concrete indices that are open, closed or both.
  * @param {String, String[], Boolean} params.indicesBoost - Comma-separated list of index boosts
  * @param {Boolean} params.lenient - Specify whether format-based query failures (such as providing text to a numeric field) should be ignored
- * @param {Boolean} params.lowercaseExpandedTerms - Specify whether query terms should be lowercased
  * @param {String} params.preference - Specify the node or shard the operation should be performed on (default: random)
  * @param {String} params.q - Query in the Lucene query string syntax
  * @param {String, String[], Boolean} params.routing - A comma-separated list of specific routing values
@@ -25658,10 +25642,6 @@ api.search = ca({
     },
     lenient: {
       type: 'boolean'
-    },
-    lowercaseExpandedTerms: {
-      type: 'boolean',
-      name: 'lowercase_expanded_terms'
     },
     preference: {
       type: 'string'
@@ -27835,7 +27815,7 @@ api.exists = ca({
  * @param {String} params.df - The default field for query string query (default: _all)
  * @param {String, String[], Boolean} params.fields - A comma-separated list of fields to return in the response
  * @param {Boolean} params.lenient - Specify whether format-based query failures (such as providing text to a numeric field) should be ignored
- * @param {Boolean} params.lowercaseExpandedTerms - Specify whether query terms should be lowercased
+
  * @param {String} params.parent - The ID of the parent document
  * @param {String} params.preference - Specify the node or shard the operation should be performed on (default: random)
  * @param {String} params.q - Query in the Lucene query string syntax
@@ -27874,10 +27854,6 @@ api.explain = ca({
     },
     lenient: {
       type: 'boolean'
-    },
-    lowercaseExpandedTerms: {
-      type: 'boolean',
-      name: 'lowercase_expanded_terms'
     },
     parent: {
       type: 'string'
@@ -31061,7 +31037,6 @@ api.scroll = ca({
  * @param {String} [params.expandWildcards=open] - Whether to expand wildcard expression to concrete indices that are open, closed or both.
  * @param {String, String[], Boolean} params.indicesBoost - Comma-separated list of index boosts
  * @param {Boolean} params.lenient - Specify whether format-based query failures (such as providing text to a numeric field) should be ignored
- * @param {Boolean} params.lowercaseExpandedTerms - Specify whether query terms should be lowercased
  * @param {String} params.preference - Specify the node or shard the operation should be performed on (default: random)
  * @param {String} params.q - Query in the Lucene query string syntax
  * @param {String, String[], Boolean} params.routing - A comma-separated list of specific routing values
@@ -31137,10 +31112,6 @@ api.search = ca({
     },
     lenient: {
       type: 'boolean'
-    },
-    lowercaseExpandedTerms: {
-      type: 'boolean',
-      name: 'lowercase_expanded_terms'
     },
     preference: {
       type: 'string'
