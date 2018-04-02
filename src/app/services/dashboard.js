@@ -47,8 +47,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         save_local: true,
         save_default: true,
         save_temp: true,
-        save_temp_ttl_enable: true,
-        save_temp_ttl: '30d',
+        save_temp_ttl_enable: false,
+        save_temp_ttl: '365d',
         load_gist: false,
         load_elasticsearch: true,
         load_elasticsearch_size: 20,
@@ -105,7 +105,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
           self.elasticsearch_load('dashboard',_id);
           break;
         case ('temp'):
-          self.elasticsearch_load('temp',_id);
+          self.elasticsearch_load('dashboard',_id);
           break;
         case ('file'):
           self.file_load(_id);
@@ -413,10 +413,11 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         mainclass: _.isUndefined(mainclass) ? null : mainclass,
         subclass: _.isUndefined(subclass) ? null : subclass,
         user: _.isUndefined(user) ? null : user,
-        dashboard: angular.toJson(save)
+        dashboard: angular.toJson(save),
+        type: type
       };
 
-      return ejs.doIndex(config.kibana_index,type,id, indexSource, type === 'temp' && ttl ? ttl : undefined).then(
+      return ejs.doIndex(config.kibana_index,'dashboard',id, indexSource, type === 'temp' && ttl ? ttl : undefined).then(
         // Success
         function(result) {
           if(type === 'dashboard') {
