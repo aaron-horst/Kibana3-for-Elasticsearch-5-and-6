@@ -412,7 +412,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         subclass: _.isUndefined(subclass) ? null : subclass,
         user: _.isUndefined(user) ? null : user,
         dashboard: angular.toJson(save),
-        type: type
+        type: type,
+        lastmodifieddate: new Date().getTime()
       };
 
       return ejs.doIndex(config.kibana_index,'dashboard',id, indexSource).then(
