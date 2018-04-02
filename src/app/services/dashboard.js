@@ -393,7 +393,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       });
     };
 
-    this.elasticsearch_save = function(type,title,mainclass,subclass,user) {
+    this.elasticsearch_save = function(type,title,user) {
       // Clone object so we can modify it without influencing the existing obejct
       var save = _.clone(self.current);
       var id;
@@ -405,11 +405,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
       // Create request with id as title. Rethink this.
       var indexSource = {
-        //user: 'guest',
-        group: 'guest',
         title: save.title,
-        mainclass: _.isUndefined(mainclass) ? null : mainclass,
-        subclass: _.isUndefined(subclass) ? null : subclass,
         user: _.isUndefined(user) ? null : user,
         dashboard: angular.toJson(save),
         type: type,

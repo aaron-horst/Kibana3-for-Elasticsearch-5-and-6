@@ -55,8 +55,6 @@ function (angular, _) {
       dashboard.elasticsearch_save(
         type,
         ($scope.elasticsearch.title || dashboard.current.title),
-        dashboard.current.mainclass,
-        dashboard.current.subclass,
         $rootScope.user
       ).then(
         function(result) {
