@@ -67,16 +67,7 @@ angular.module('elasticjs.service', ['elasticsearch'])
         });
     };
       
-    ejs.doIndex = function(index, type, id, indexBody, ttl) {
-        if(ttl) {
-            return esClient.index({
-                index: index,
-                type: type,
-                id: id,
-                body: indexBody,
-                ttl: ttl
-            });
-        }
+    ejs.doIndex = function(index, type, id, indexBody) {
         return esClient.index({
             index: index,
             type: type,

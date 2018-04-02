@@ -47,8 +47,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         save_local: true,
         save_default: true,
         save_temp: true,
-        save_temp_ttl_enable: false,
-        save_temp_ttl: '365d',
         load_gist: false,
         load_elasticsearch: true,
         load_elasticsearch_size: 20,
@@ -395,7 +393,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       });
     };
 
-    this.elasticsearch_save = function(type,title,ttl,mainclass,subclass,user) {
+    this.elasticsearch_save = function(type,title,mainclass,subclass,user) {
       // Clone object so we can modify it without influencing the existing obejct
       var save = _.clone(self.current);
       var id;
@@ -417,7 +415,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         type: type
       };
 
-      return ejs.doIndex(config.kibana_index,'dashboard',id, indexSource, type === 'temp' && ttl ? ttl : undefined).then(
+      return ejs.doIndex(config.kibana_index,'dashboard',id, indexSource).then(
         // Success
         function(result) {
           if(type === 'dashboard') {

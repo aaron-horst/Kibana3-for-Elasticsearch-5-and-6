@@ -51,11 +51,10 @@ function (angular, _) {
       }
     };
 
-    $scope.elasticsearch_save = function(type,ttl) {
+    $scope.elasticsearch_save = function(type) {
       dashboard.elasticsearch_save(
         type,
         ($scope.elasticsearch.title || dashboard.current.title),
-        ($scope.loader.save_temp_ttl_enable ? ttl : false),
         dashboard.current.mainclass,
         dashboard.current.subclass,
         $rootScope.user
