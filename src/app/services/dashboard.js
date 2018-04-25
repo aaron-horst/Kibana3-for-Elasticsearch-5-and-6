@@ -447,7 +447,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       if(query) {
         ejsQuery = ejsQuery.must(ejs.QueryStringQuery(query).defaultField('title'));
       }
-      ejsQuery = ejsQuery.must(ejs.MatchQuery('_type', 'dashboard'));
+      ejsQuery = ejsQuery.must(ejs.MatchQuery('type', 'dashboard'));
 
       request = request.query(ejsQuery);
 
