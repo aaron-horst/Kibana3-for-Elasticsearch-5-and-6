@@ -246,7 +246,33 @@ function (angular, app, _, $, kbn) {
           terms_aggs.order('subaggs.avg','asc');
           break;
         }
+        request = request.query(query)
+        .agg(terms_aggs.agg(sub_aggs)).size(0);
+      }
+      else if($scope.panel.tmode === 'unique') {
+        var terms_aggs = $scope.ejs.TermsAggregation('terms')
+          .field($scope.panel.field)
+          .size($scope.panel.size);
 
+        var sub_aggs = $scope.ejs.CardinalityAggregation('subaggs')
+            .field($scope.panel.field);
+
+        switch($scope.panel.order) {
+          case 'term':
+            terms_aggs.order('_term','asc');
+            break;
+          case 'count':
+            terms_aggs.order('_count');
+            break;
+          case 'reverse_count':
+            terms_aggs.order('_count','asc');
+            break;
+          case 'reverse_term':
+            terms_aggs.order('_term');
+            break;
+          default:
+            terms_aggs.order('_count');
+          }
         request = request.query(query)
         .agg(terms_aggs.agg(sub_aggs)).size(0);
       }
@@ -353,7 +379,7 @@ function (angular, app, _, $, kbn) {
             "avg":"avg",
             "min":"min",
             "max":"max",
-            "count":"count"
+            "count":"count",
           };
           var k = 0;
           scope.data = [];
@@ -369,6 +395,14 @@ function (angular, app, _, $, kbn) {
                 actions: true
               };
             }
+            if(scope.panel.tmode === 'unique') {
+              slice = {
+                label : v.key,
+                data : [[k,v['subaggs']["value"]]],
+                actions: true
+              };
+            }
+            
             scope.data.push(slice);
             k = k + 1;
           });
