@@ -250,31 +250,31 @@ function (angular, app, _, $, kbn) {
         .agg(terms_aggs.agg(sub_aggs)).size(0);
       }
       else if($scope.panel.tmode === 'unique') {
-        var terms_aggs = $scope.ejs.TermsAggregation('terms')
+        var terms_aggs2 = $scope.ejs.TermsAggregation('terms')
           .field($scope.panel.field)
           .size($scope.panel.size);
 
-        var sub_aggs = $scope.ejs.CardinalityAggregation('subaggs')
+        var sub_aggs2 = $scope.ejs.CardinalityAggregation('subaggs')
             .field($scope.panel.field);
 
         switch($scope.panel.order) {
-          case 'term':
-            terms_aggs.order('_term','asc');
-            break;
-          case 'count':
-            terms_aggs.order('_count');
-            break;
-          case 'reverse_count':
-            terms_aggs.order('_count','asc');
-            break;
-          case 'reverse_term':
-            terms_aggs.order('_term');
-            break;
-          default:
-            terms_aggs.order('_count');
-          }
+        case 'term':
+          terms_aggs2.order('_term','asc');
+          break;
+        case 'count':
+          terms_aggs2.order('_count');
+          break;
+        case 'reverse_count':
+          terms_aggs2.order('_count','asc');
+          break;
+        case 'reverse_term':
+          terms_aggs2.order('_term');
+          break;
+        default:
+          terms_aggs2.order('_count');
+        }
         request = request.query(query)
-        .agg(terms_aggs.agg(sub_aggs)).size(0);
+        .agg(terms_aggs2.agg(sub_aggs2)).size(0);
       }
 
       // Populate the inspector panel
@@ -398,7 +398,7 @@ function (angular, app, _, $, kbn) {
             if(scope.panel.tmode === 'unique') {
               slice = {
                 label : v.key,
-                data : [[k,v['subaggs']["value"]]],
+                data : [[k,v['subaggs']['value']]],
                 actions: true
               };
             }
