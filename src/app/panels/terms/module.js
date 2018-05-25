@@ -382,6 +382,8 @@ function (angular, app, _, $, kbn) {
             "count":"count",
           };
           var k = 0;
+          var addSlice = true;
+
           scope.data = [];
           _.each(scope.results.aggregations.terms.buckets, function(v) {
             var slice;
@@ -396,15 +398,24 @@ function (angular, app, _, $, kbn) {
               };
             }
             if(scope.panel.tmode === 'unique') {
-              slice = {
-                label : v.key,
-                data : [[k,v['subaggs']['value']]],
-                actions: true
-              };
+              if (v['subaggs'] === undefined) {
+                addSlice = false;
+              }
+              else {
+                addSlice = true;
+                slice = {
+                  label : v.key,
+                  data : [[k,v['subaggs']['value']]],
+                  actions: true
+                };
+              }
             }
             
-            scope.data.push(slice);
-            k = k + 1;
+            if (addSlice) {
+              
+              scope.data.push(slice);
+              k = k + 1;
+            }
           });
 
           // todo: wireup missing terms data
@@ -421,8 +432,6 @@ function (angular, app, _, $, kbn) {
                 color: '#444'
               });
           }
-
-         
         }
 
         // Function for rendering panel
@@ -440,6 +449,10 @@ function (angular, app, _, $, kbn) {
             _.without(chartData,_.findWhere(chartData,{meta:'missing'}));
           chartData = scope.panel.other ? chartData :
           _.without(chartData,_.findWhere(chartData,{meta:'other'}));
+
+          if (chartData === undefined || chartData.length === 0) {
+            return;
+          }
 
           // Populate element.
           require(['jquery.flot.pie'], function(){
