@@ -246,9 +246,35 @@ function (angular, app, _, $, kbn) {
           terms_aggs.order('subaggs.avg','asc');
           break;
         }
-
         request = request.query(query)
         .agg(terms_aggs.agg(sub_aggs)).size(0);
+      }
+      else if($scope.panel.tmode === 'unique') {
+        var terms_aggs2 = $scope.ejs.TermsAggregation('terms')
+          .field($scope.panel.field)
+          .size($scope.panel.size);
+
+        var sub_aggs2 = $scope.ejs.CardinalityAggregation('subaggs')
+            .field($scope.panel.field);
+
+        switch($scope.panel.order) {
+        case 'term':
+          terms_aggs2.order('_term','asc');
+          break;
+        case 'count':
+          terms_aggs2.order('_count');
+          break;
+        case 'reverse_count':
+          terms_aggs2.order('_count','asc');
+          break;
+        case 'reverse_term':
+          terms_aggs2.order('_term');
+          break;
+        default:
+          terms_aggs2.order('_count');
+        }
+        request = request.query(query)
+        .agg(terms_aggs2.agg(sub_aggs2)).size(0);
       }
 
       // Populate the inspector panel
@@ -353,9 +379,11 @@ function (angular, app, _, $, kbn) {
             "avg":"avg",
             "min":"min",
             "max":"max",
-            "count":"count"
+            "count":"count",
           };
           var k = 0;
+          var addSlice = true;
+
           scope.data = [];
           _.each(scope.results.aggregations.terms.buckets, function(v) {
             var slice;
@@ -369,8 +397,25 @@ function (angular, app, _, $, kbn) {
                 actions: true
               };
             }
-            scope.data.push(slice);
-            k = k + 1;
+            if(scope.panel.tmode === 'unique') {
+              if (v['subaggs'] === undefined) {
+                addSlice = false;
+              }
+              else {
+                addSlice = true;
+                slice = {
+                  label : v.key,
+                  data : [[k,v['subaggs']['value']]],
+                  actions: true
+                };
+              }
+            }
+            
+            if (addSlice) {
+              
+              scope.data.push(slice);
+              k = k + 1;
+            }
           });
 
           // todo: wireup missing terms data
@@ -387,8 +432,6 @@ function (angular, app, _, $, kbn) {
                 color: '#444'
               });
           }
-
-         
         }
 
         // Function for rendering panel
@@ -406,6 +449,10 @@ function (angular, app, _, $, kbn) {
             _.without(chartData,_.findWhere(chartData,{meta:'missing'}));
           chartData = scope.panel.other ? chartData :
           _.without(chartData,_.findWhere(chartData,{meta:'other'}));
+
+          if (chartData === undefined || chartData.length === 0) {
+            return;
+          }
 
           // Populate element.
           require(['jquery.flot.pie'], function(){

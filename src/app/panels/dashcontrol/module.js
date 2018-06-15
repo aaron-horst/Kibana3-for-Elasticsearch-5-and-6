@@ -13,8 +13,6 @@
   * hide_control :: Upon save, hide this panel
   * elasticsearch_size :: show this many dashboards under the ES section in the load drop down
   * temp :: Allow saving of temp dashboards
-  * ttl :: Enable setting ttl.
-  * temp_ttl :: How long should temp dashboards persist
 */
 define([
   'angular',
@@ -50,8 +48,6 @@ function(angular, app, _) {
       hide_control: false,
       elasticsearch_size: 20,
       temp: true,
-      ttl_enable: true,
-      temp_ttl: '30d'
     };
     _.defaults($scope.panel,_d);
 
@@ -77,11 +73,10 @@ function(angular, app, _) {
       }
     };
 
-    $scope.elasticsearch_save = function(type,ttl) {
+    $scope.elasticsearch_save = function(type) {
       dashboard.elasticsearch_save(
         type,
-        ($scope.elasticsearch.title || dashboard.current.title),
-        ($scope.panel.ttl_enable ? ttl : false)
+        ($scope.elasticsearch.title || dashboard.current.title)
       ).then(
         function(result) {
         if(!_.isUndefined(result._id)) {

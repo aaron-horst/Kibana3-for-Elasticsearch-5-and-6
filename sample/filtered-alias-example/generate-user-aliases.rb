@@ -13,7 +13,7 @@ resp = Hashie::Mash.new client.search index: "logstash-*",
 users = resp.facets.users.terms.to_a.map { |f| f.term }
 
 # Get a list of all the indexes and aliases
-aliases = Hashie::Mash.new client.indices.get_aliases
+aliases = Hashie::Mash.new client.indices.get_alias
 aliases.each_pair do |index,aliases| 
   # Match the all the Logstash indexes and get the Logstash
   # date stamp from the index name.

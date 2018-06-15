@@ -55,7 +55,7 @@ function (angular, _, config, moment) {
             alertSrv.set('Error',"Could not contact Elasticsearch at "+ejs.config.host+
               ". Please ensure that Elasticsearch is reachable from your system." ,'error');
           } else {
-            alertSrv.set('Error',"Could not reach "+ejs.config.host+"/_aliases. If you"+
+            alertSrv.set('Error',"Could not reach "+ejs.config.host+"/_alias. If you"+
               " are using a proxy, ensure it is configured correctly",'error');
           }
           return [];

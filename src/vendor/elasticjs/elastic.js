@@ -10229,24 +10229,6 @@
       },
 
       /**
-            Sets whether or not terms from wildcard, prefix, fuzzy, and
-            range queries should automatically be lowercased in the <code>Query</code>
-            since they are not analyzed.  Default: true.
-
-            @member ejs.QueryStringQuery
-            @param {Boolean} trueFalse A <code>true/false</code> value.
-            @returns {Object} returns <code>this</code> so that calls can be chained.
-            */
-      lowercaseExpandedTerms: function (trueFalse) {
-        if (trueFalse == null) {
-          return query.query_string.lowercase_expanded_terms;
-        }
-
-        query.query_string.lowercase_expanded_terms = trueFalse;
-        return this;
-      },
-
-      /**
             Sets whether or not position increments will be used in the
             <code>Query</code>. Default: true.
 

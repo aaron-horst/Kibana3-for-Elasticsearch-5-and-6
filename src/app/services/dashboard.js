@@ -47,8 +47,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         save_local: true,
         save_default: true,
         save_temp: true,
-        save_temp_ttl_enable: true,
-        save_temp_ttl: '30d',
         load_gist: false,
         load_elasticsearch: true,
         load_elasticsearch_size: 20,
@@ -105,7 +103,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
           self.elasticsearch_load('dashboard',_id);
           break;
         case ('temp'):
-          self.elasticsearch_load('temp',_id);
+          self.elasticsearch_load('dashboard',_id);
           break;
         case ('file'):
           self.file_load(_id);
@@ -395,7 +393,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       });
     };
 
-    this.elasticsearch_save = function(type,title,ttl,mainclass,subclass,user) {
+    this.elasticsearch_save = function(type,title,user) {
       // Clone object so we can modify it without influencing the existing obejct
       var save = _.clone(self.current);
       var id;
@@ -407,16 +405,14 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
       // Create request with id as title. Rethink this.
       var indexSource = {
-        //user: 'guest',
-        group: 'guest',
         title: save.title,
-        mainclass: _.isUndefined(mainclass) ? null : mainclass,
-        subclass: _.isUndefined(subclass) ? null : subclass,
         user: _.isUndefined(user) ? null : user,
-        dashboard: angular.toJson(save)
+        dashboard: angular.toJson(save),
+        type: type,
+        lastmodifieddate: new Date().getTime()
       };
 
-      return ejs.doIndex(config.kibana_index,type,id, indexSource, type === 'temp' && ttl ? ttl : undefined).then(
+      return ejs.doIndex(config.kibana_index,'dashboard',id, indexSource).then(
         // Success
         function(result) {
           if(type === 'dashboard') {
@@ -451,7 +447,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       if(query) {
         ejsQuery = ejsQuery.must(ejs.QueryStringQuery(query).defaultField('title'));
       }
-      ejsQuery = ejsQuery.must(ejs.MatchQuery('_type', 'dashboard'));
+      ejsQuery = ejsQuery.must(ejs.MatchQuery('type', 'dashboard'));
 
       request = request.query(ejsQuery);
 

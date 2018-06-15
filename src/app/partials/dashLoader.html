@@ -66,15 +66,10 @@
 
   <ul class="dropdown-menu" style="padding:10px">
 
-    <li ng-controller="DashboardClassCtrl" ng-show="dashboard.current.loader.save_elasticsearch != false">
+    <li  ng-show="dashboard.current.loader.save_elasticsearch != false">
       <form class="input-prepend nomargin">
         <button class="btn" ng-click="elasticsearch_save('dashboard')"><i class="icon-save"></i></button>
         <input class='input-medium' ng-model="dashboard.current.title" type="text" ng-model="elasticsearch.title"/>
-        <div style="padding:5px 0px 0px 0px;" ng-show="dashboardmainclass.length>0">
-          <button style="margin-top:-1px" class="btn"><i class="icon-link"></i></button>
-          <select class='input-medium' ng-model="dashboard.current.mainclass" ng-model="dashboard.mainclass" ng-options="mainclass for mainclass in dashboardmainclass"></select>
-          <select ng-hide="dashboardclass[dashboard.current.mainclass].length==0" class='input-medium' ng-model="dashboard.current.subclass" ng-model="dashboard.subclass" ng-options='subclass for subclass in dashboardclass[dashboard.current.mainclass]'></select>
-        </div>
       </form>
     </li>
 
@@ -106,6 +101,6 @@
 
 
 </li>
-<li ng-show="showDropdown('share')"><a bs-tooltip="'Share'" data-placement="bottom" ng-click="elasticsearch_save('temp',dashboard.current.loader.save_temp_ttl)" bs-modal="'app/partials/dashLoaderShare.html'"><i class='icon-share'></i></a></li>
+<li ng-show="showDropdown('share')"><a bs-tooltip="'Share'" data-placement="bottom" ng-click="elasticsearch_save('temp')" bs-modal="'app/partials/dashLoaderShare.html'"><i class='icon-share'></i></a></li>
 
 <li ng-show="dashboard.current.editable" bs-tooltip="'Configure dashboard'" data-placement="bottom"><a class="link" config-modal="app/partials/dasheditor.html" kbn-model="dashboard"><i class='icon-cog'></i></a></li>

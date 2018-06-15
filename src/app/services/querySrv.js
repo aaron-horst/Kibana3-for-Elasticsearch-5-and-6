@@ -206,7 +206,6 @@ function (angular, _, config, kbn) {
       {
       case 'lucene':
         var luceneQuery = ejs.QueryStringQuery(q.query || '*');
-        luceneQuery.lowercaseExpandedTerms(false);
         return luceneQuery;
       case 'regex':
         return ejs.RegexpQuery('_all',q.query);

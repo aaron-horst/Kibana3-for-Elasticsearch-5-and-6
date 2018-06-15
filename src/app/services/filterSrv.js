@@ -178,7 +178,7 @@ define([
           .from(filter.from)
           .to(filter.to);
       case 'querystring':
-        return ejs.QueryStringQuery(filter.query).lowercaseExpandedTerms(false);
+        return ejs.QueryStringQuery(filter.query);
       case 'field':
         return ejs.QueryStringQuery(filter.field+":("+filter.query+")");
       case 'terms':
