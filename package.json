@@ -4,7 +4,7 @@
     "company": "Elasticsearch BV"
   },
   "name": "kibana",
-  "version": "5.0.2",
+  "version": "6.0.0",
   "repository": {
     "type": "git",
     "url": "http://github.com/elasticsearch/kibana.git"
