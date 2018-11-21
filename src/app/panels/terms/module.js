@@ -450,7 +450,7 @@ function (angular, app, _, $, kbn) {
           chartData = scope.panel.other ? chartData :
           _.without(chartData,_.findWhere(chartData,{meta:'other'}));
 
-          if (chartData === undefined || chartData.length === 0) {
+          if (chartData === undefined) {
             return;
           }
 
