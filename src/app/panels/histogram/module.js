@@ -135,7 +135,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
         enable      : false,
         query       : "*",
         size        : 20,
-        field       : '_type',
+        field       : '_index',
         sort        : ['_score','desc']
       },
       /** @scratch /panels/histogram/3

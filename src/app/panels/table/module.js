@@ -264,7 +264,7 @@ function (angular, app, _, kbn, moment) {
 
       for(i=0, len=$scope.panel.colorRules.length; i<len; i++){
         cr = $scope.panel.colorRules[i];
-        if(cr.field != '_index' && cr.field != '_type' && cr.field != '_id' && cr.field != '_score'){
+        if(cr.field != '_index' && cr.field != '_id' && cr.field != '_score'){
           data = event._source;
         } else{
           data = event;
