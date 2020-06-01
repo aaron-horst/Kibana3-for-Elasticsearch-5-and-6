@@ -475,7 +475,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
 
         if ($scope.panel.mode === 'count') {
           value = (time_series._data[entry.key] || 0) + entry.doc_count;
-        } else if ($scope.panel.mode === 'uniq') {
+        } else if ($scope.panel.mode === 'uniq' || $scope.panel.mode === 'distinct') {
           value = (time_series._data[entry.key] || 0) + entry.subaggs.value;
         } else if ($scope.panel.mode === 'mean') {
           // Compute the ongoing mean by
@@ -521,6 +521,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           var sub_aggs;
           switch($scope.panel.mode) {
           case 'uniq':
+          case 'distinct':
             sub_aggs = $scope.ejs.CardinalityAggregation('subaggs')
             .field($scope.panel.value_field);
             break;
