@@ -55,7 +55,7 @@ function (angular, _, config, kbn) {
       },
       "topN": {
         query: "*",
-        field: "_type",
+        field: "_index",
         size: 5,
         union: 'AND'
       }

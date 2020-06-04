@@ -21,7 +21,7 @@ function (angular, _) {
           // once we have the template, scan it for controllers and
           // load the module.js if we have any
 
-          // compile the module and uncloack. We're done
+          // compile the module and uncloak. We're done
           function loadModule($module) {
             $module.appendTo(elem);
             /* jshint indent:false */

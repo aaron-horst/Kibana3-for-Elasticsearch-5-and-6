@@ -233,6 +233,50 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       // Take out any that we're not allowed to add from the gui.
       self.availablePanels = _.difference(self.availablePanels,config.hidden_panels);
 
+      if(config.dashboard_metrics){
+        // if config is set to collect dashboard metrics, 
+        // increment or add view count, set last viewed to now
+        // copy the other fields in the dashboard's document in the kibana index
+        var id = self.current.title;
+        var type = 'dashboard';
+        // we need to get these values from the existing document for this dash
+        // this doesn't seem to work how I would expect
+        var existingdoc = ejs.getSource(config.kibana_index, type, id).then(
+          // Success - set as jsonified document
+          function(data) { 
+            // data exists here
+            //alert(angular.toJson(data));
+            return angular.toJson(data); 
+          },
+          // Failure
+          function() { return {}; }
+        );
+        // data does not exist here
+        //alert(existingdoc);
+        if(!_.isUndefined(existingdoc)){
+          var indexSource = {
+            title: self.current.title,
+            user: existingdoc.user,
+            dashboard: angular.toJson(self.current),
+            type: type,
+            lastmodifieddate: existingdoc.lastmodifieddate,
+            lastvieweddate: new Date().getTime(),
+            countofviews: _.isUndefined(existingdoc.countofviews) ? 1 : 1 + existingdoc.countofviews
+          };
+          // update by id
+          ejs.doIndex(config.kibana_index,type,id, indexSource).then(
+            // Success
+            function() {
+              return true;
+            },
+            // Failure
+            function() {
+              return false;
+            }
+          );
+        }
+      } // end config.dashboard_metrics
+
       return true;
     };
 
@@ -403,14 +447,44 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         id = save.title = _.isUndefined(title) ? self.current.title : title;
       }
 
-      // Create request with id as title. Rethink this.
-      var indexSource = {
-        title: save.title,
-        user: _.isUndefined(user) ? null : user,
-        dashboard: angular.toJson(save),
-        type: type,
-        lastmodifieddate: new Date().getTime()
-      };
+      var indexSource = {};
+
+      if(config.dashboard_metrics){
+        var existingdoc = ejs.getSource(config.kibana_index, type, id).then(
+          // Success - return jsonified document
+          function(data) { return angular.toJson(data); },
+          // Failure
+          function() { return false; }
+        );
+        var lastvieweddate = new Date().getTime();  
+        var countofviews = 1;
+        if(!_.isUndefined(existingdoc)){
+          // if it exists, we're saving a change to the current dash, so do not increment
+          lastvieweddate = _.isUndefined(existingdoc.lastvieweddate) ? new Date().getTime() : existingdoc.lastvieweddate;
+          countofviews = _.isUndefined(existingdoc.countofviews) ? 1 : existingdoc.countofviews;
+        }
+  
+        // Create request with id as title. Rethink this.
+        indexSource = {
+          title: save.title,
+          user: _.isUndefined(user) ? null : user,
+          dashboard: angular.toJson(save),
+          type: type,
+          lastmodifieddate: new Date().getTime(),
+          lastvieweddate: lastvieweddate,
+          countofviews: countofviews
+        };
+        // end config.dashboard_metrics
+      } else {  
+        // Create request with id as title. Rethink this.
+        indexSource = {
+          title: save.title,
+          user: _.isUndefined(user) ? null : user,
+          dashboard: angular.toJson(save),
+          type: type,
+          lastmodifieddate: new Date().getTime()
+        };
+      }
 
       return ejs.doIndex(config.kibana_index,'dashboard',id, indexSource).then(
         // Success
