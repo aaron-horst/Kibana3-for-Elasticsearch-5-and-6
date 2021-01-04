@@ -87,6 +87,14 @@ function (angular, app, _) {
       }
     };
 
+    $scope.getFilterBackgroundClass = function(filter) {
+      if(filter.istemp) {
+        return 'filter-panel-filter-temp';
+      } else {
+        return '';
+      }
+    };
+    
     $scope.isEditable = function(filter) {
       var uneditable = ['time'];
       if(_.contains(uneditable,filter.type)) {
