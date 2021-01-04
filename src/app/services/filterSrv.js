@@ -29,7 +29,9 @@ define([
 
       var resultObj = { hasFilters: false };
   
-      if (!fullQueryString) return resultObj;
+      if (!fullQueryString) { 
+        return resultObj;
+      }
   
       // make sure query string does not contain any encoded characters
       fullQueryString = decodeURIComponent(fullQueryString);
@@ -39,25 +41,27 @@ define([
           .replace('params:', '')                 // remove leading identifier
           .replace('),(', ') , (').split(' , ');  // expand item delimeter and split
   
-      if (filters.length === 0) return resultObj;
+      if (filters.length === 0) {
+        return resultObj;
+      }
   
       resultObj.hasFilters = true;
       resultObj.queryValue = fullQueryString.substring(1);
       resultObj.filters = [];
   
-      for (let i = 0; i < filters.length; i++) {
-        const item = filters[i];
+      for (var i = 0; i < filters.length; i++) {
+        var item = filters[i];
 
-        const rawQuery = item.substring(0, item.length - 1).replace('(query:', '');
+        var rawQuery = item.substring(0, item.length - 1).replace('(query:', '');
 
-        const queryParts = rawQuery.split(',');
+        var queryParts = rawQuery.split(',');
 
-        const itemQuery = queryParts[0];
-        const queryType = queryParts[1];
+        var itemQuery = queryParts[0];
+        var queryType = queryParts[1];
 
-        const mandate = queryType.replace('type:', '');
-        const field = itemQuery.split(':')[0];
-        const query = itemQuery.split(':')[1];
+        var mandate = queryType.replace('type:', '');
+        var field = itemQuery.split(':')[0];
+        var query = itemQuery.split(':')[1];
           
         resultObj.filters.push({
             //id: nextId(),
@@ -68,7 +72,7 @@ define([
             type: 'field',
             mandate: mandate,
             istemp: true
-        });
+          });
       }
   
       return resultObj;
