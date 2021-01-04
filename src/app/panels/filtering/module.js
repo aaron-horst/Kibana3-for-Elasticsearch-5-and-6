@@ -66,7 +66,7 @@ function (angular, app, _) {
     };
 
     $scope.show_key = function(key) {
-      return !_.contains(['type','id','alias','mandate','active','editing'],key);
+      return !_.contains(['type','id','alias','mandate','active','editing','istemp'],key);
     };
 
     $scope.getFilterClass = function(filter) {

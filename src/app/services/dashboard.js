@@ -442,6 +442,16 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       var save = _.clone(self.current);
       var id;
 
+      // do not persist temp filters when saving
+      _.each(save.services.filter.list, function(f, idx){
+              
+        if (f.istemp){
+          delete save.services.filter.list[idx];
+          // This must happen on the full path also since _.without returns a copy
+          save.services.filter.ids = save.services.filter.ids = _.without(save.services.filter.ids,f.id);
+        }
+      });
+
       // Change title on object clone
       if (type === 'dashboard') {
         id = save.title = _.isUndefined(title) ? self.current.title : title;
