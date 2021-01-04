@@ -64,7 +64,7 @@ function (angular, app, _, $, kbn) {
       *
       * field:: The field on which to compute the aggregation
       */
-      field   : '_type',
+      field   : '_index',
       style   : { "font-size": '10pt'},
       /** @scratch /panels/ranges/5
       * donut:: In pie chart mode, draw a hole in the middle of the pie to make a tasty donut.

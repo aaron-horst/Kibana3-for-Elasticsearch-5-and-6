@@ -116,5 +116,15 @@ function (Settings) {
       'percentiles'
     ],
 
+    /** @scratch /configuration/config.js/5
+     *
+     * ==== dashboard_metrics
+     *
+     * Whether to update kibana_index dashboard docs with view metrics
+     *
+     * Valid value: true, false
+     */
+    dashboard_metrics: false
+
   });
 });

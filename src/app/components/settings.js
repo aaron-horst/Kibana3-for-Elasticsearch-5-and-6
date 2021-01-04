@@ -19,7 +19,8 @@ function (_) {
       request_timeout     : 30000,
       panel_names         : [],
       kibana_index        : 'kibana-int',
-      default_route       : '/dashboard/file/default.json'
+      default_route       : '/dashboard/file/default.json',
+      dashboard_metrics  : false
     };
 
     // This initializes a new hash on purpose, to avoid adding parameters to

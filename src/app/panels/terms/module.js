@@ -54,7 +54,7 @@ function (angular, app, _, $, kbn) {
        *
        * field:: The field on which to compute the aggregation
        */
-      field   : '_type',
+      field   : '_index',
       /** @scratch /panels/terms/5
        * exclude:: terms to exclude from the results
        */

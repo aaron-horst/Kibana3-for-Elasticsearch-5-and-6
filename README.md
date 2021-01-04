@@ -2,7 +2,7 @@
 
 ## Notes
 
-This project preserves original Kibana 3 funtionality to work in Elasticsearch version 5.x and 6.x. Presently it's built and tested against Elasticsearch version 6.3. Note that this project contains some experimental panel visualizations not part of the original Kibana 3 project. Note that it was derived from and paired down from [the following repo](https://github.com/childe/kibana-authorization/tree/dev).
+This project preserves original Kibana 3 funtionality to work in Elasticsearch version 5.x, 6.x, and 7.x. Presently it's built and tested against Elasticsearch version 7.x. Note that this project contains some experimental panel visualizations not part of the original Kibana 3 project. It was derived and pared down from [the following repo](https://libraries.io/github/childe/kibana-authorization) (updated link from repo no longer on github).
 
 ## Running the project locally
 

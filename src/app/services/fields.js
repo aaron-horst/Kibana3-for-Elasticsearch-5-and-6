@@ -16,7 +16,7 @@ function (angular, _, config) {
     var ejs = ejsResource(config);
 
 
-    this.list = ['_type'];
+    this.list = ['_index'];
     this.indices = [];
 
     // Stop tracking the full mapping, too expensive, instead we only remember the index names
