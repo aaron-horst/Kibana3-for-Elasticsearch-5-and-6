@@ -56,8 +56,11 @@ define([
 
         var queryParts = rawQuery.split(',');
 
-        var itemQuery = queryParts[0];
-        var queryType = queryParts[1];
+        // grab the last itme in the array split on commans for the query type in case the actual query contains a comma
+        const queryType = queryParts[queryParts.length - 1];
+
+        // remove the query type segement from the raw query
+        const itemQuery = rawQuery.replace(',' + queryType, '');
 
         var mandate = queryType.replace('type:', '');
         var field = itemQuery.split(':')[0];
