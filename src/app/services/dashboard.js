@@ -100,10 +100,10 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
         switch(_type) {
         case ('elasticsearch'):
-          self.elasticsearch_load('dashboard',_id);
+          self.elasticsearch_load('_doc',_id);
           break;
         case ('temp'):
-          self.elasticsearch_load('dashboard',_id);
+          self.elasticsearch_load('_doc',_id);
           break;
         case ('file'):
           self.file_load(_id);

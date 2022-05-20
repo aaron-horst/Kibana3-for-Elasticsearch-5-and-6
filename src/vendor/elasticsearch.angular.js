@@ -16887,7 +16887,7 @@ api['delete'] = ca({
     }
   },
   url: {
-    fmt: '/<%=index%>/<%=type%>/<%=id%>',
+    fmt: '/<%=index%>/_doc/<%=id%>',
     req: {
       index: {
         type: 'string'
@@ -17041,7 +17041,7 @@ api.exists = ca({
     }
   },
   url: {
-    fmt: '/<%=index%>/<%=type%>/<%=id%>',
+    fmt: '/<%=index%>/_doc/<%=id%>',
     req: {
       index: {
         type: 'string'
@@ -17213,7 +17213,7 @@ api.get = ca({
     }
   },
   url: {
-    fmt: '/<%=index%>/<%=type%>/<%=id%>',
+    fmt: '/<%=index%>/_doc/<%=id%>',
     req: {
       index: {
         type: 'string'
@@ -17287,7 +17287,7 @@ api.getSource = ca({
     }
   },
   url: {
-    fmt: '/<%=index%>/<%=type%>/<%=id%>/_source',
+    fmt: '/<%=index%>/_source/<%=id%>',
     req: {
       index: {
         type: 'string'
@@ -17379,7 +17379,7 @@ api.index = ca({
   },
   urls: [
     {
-      fmt: '/<%=index%>/<%=type%>/<%=id%>',
+      fmt: '/<%=index%>/_doc/<%=id%>',
       req: {
         index: {
           type: 'string'
@@ -17393,7 +17393,7 @@ api.index = ca({
       }
     },
     {
-      fmt: '/<%=index%>/<%=type%>',
+      fmt: '/<%=index%>/_doc',
       req: {
         index: {
           type: 'string'
@@ -17964,7 +17964,7 @@ api.indices.prototype.existsType = ca({
     }
   },
   url: {
-    fmt: '/<%=index%>/<%=type%>',
+    fmt: '/<%=index%>/_doc',
     req: {
       index: {
         type: 'list'
@@ -22159,7 +22159,7 @@ api['delete'] = ca({
     }
   },
   url: {
-    fmt: '/<%=index%>/<%=type%>/<%=id%>',
+    fmt: '/<%=index%>/_doc/<%=id%>',
     req: {
       index: {
         type: 'string'
@@ -22313,7 +22313,7 @@ api.exists = ca({
     }
   },
   url: {
-    fmt: '/<%=index%>/<%=type%>/<%=id%>',
+    fmt: '/<%=index%>/_doc/<%=id%>',
     req: {
       index: {
         type: 'string'
@@ -22487,7 +22487,7 @@ api.get = ca({
     }
   },
   url: {
-    fmt: '/<%=index%>/<%=type%>/<%=id%>',
+    fmt: '/<%=index%>/_doc/<%=id%>',
     req: {
       index: {
         type: 'string'
@@ -22563,7 +22563,7 @@ api.getSource = ca({
     }
   },
   url: {
-    fmt: '/<%=index%>/<%=type%>/<%=id%>/_source',
+    fmt: '/<%=index%>/_source/<%=id%>',
     req: {
       index: {
         type: 'string'
@@ -22657,7 +22657,7 @@ api.index = ca({
   },
   urls: [
     {
-      fmt: '/<%=index%>/<%=type%>/<%=id%>',
+      fmt: '/<%=index%>/_doc/<%=id%>',
       req: {
         index: {
           type: 'string'
@@ -22671,7 +22671,7 @@ api.index = ca({
       }
     },
     {
-      fmt: '/<%=index%>/<%=type%>',
+      fmt: '/<%=index%>/_doc',
       req: {
         index: {
           type: 'string'
@@ -23247,7 +23247,7 @@ api.indices.prototype.existsType = ca({
     }
   },
   url: {
-    fmt: '/<%=index%>/<%=type%>',
+    fmt: '/<%=index%>/_doc',
     req: {
       index: {
         type: 'list'
@@ -27635,7 +27635,7 @@ api['delete'] = ca({
     }
   },
   url: {
-    fmt: '/<%=index%>/<%=type%>/<%=id%>',
+    fmt: '/<%=index%>/_doc/<%=id%>',
     req: {
       index: {
         type: 'string'
@@ -27789,7 +27789,7 @@ api.exists = ca({
     }
   },
   url: {
-    fmt: '/<%=index%>/<%=type%>/<%=id%>',
+    fmt: '/<%=index%>/_doc/<%=id%>',
     req: {
       index: {
         type: 'string'
@@ -27964,7 +27964,7 @@ api.get = ca({
     }
   },
   url: {
-    fmt: '/<%=index%>/<%=type%>/<%=id%>',
+    fmt: '/<%=index%>/_doc/<%=id%>',
     req: {
       index: {
         type: 'string'
@@ -28040,7 +28040,7 @@ api.getSource = ca({
     }
   },
   url: {
-    fmt: '/<%=index%>/<%=type%>/<%=id%>/_source',
+    fmt: '/<%=index%>/_source/<%=id%>',
     req: {
       index: {
         type: 'string'
@@ -28134,7 +28134,7 @@ api.index = ca({
   },
   urls: [
     {
-      fmt: '/<%=index%>/<%=type%>/<%=id%>',
+      fmt: '/<%=index%>/_doc/<%=id%>',
       req: {
         index: {
           type: 'string'
@@ -28148,7 +28148,7 @@ api.index = ca({
       }
     },
     {
-      fmt: '/<%=index%>/<%=type%>',
+      fmt: '/<%=index%>/_doc',
       req: {
         index: {
           type: 'string'
@@ -28724,7 +28724,7 @@ api.indices.prototype.existsType = ca({
     }
   },
   url: {
-    fmt: '/<%=index%>/<%=type%>',
+    fmt: '/<%=index%>/_doc',
     req: {
       index: {
         type: 'list'
