@@ -89,7 +89,13 @@ function (angular, _) {
       );
     };
 
+    /**
+     * List the kibana dashes based on a search query
+     * @param {String} query 
+     */
     $scope.elasticsearch_dblist = function(query) {
+      //don't allow brackets in the query
+      query = query.replaceAll("[", "").replaceAll("]", "");
       dashboard.elasticsearch_list(query,$scope.loader.load_elasticsearch_size).then(
         function(result) {
         if(!_.isUndefined(result.hits)) {
