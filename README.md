@@ -12,3 +12,6 @@ This project preserves original Kibana 3 funtionality to work in Elasticsearch v
 * npm install in kibana folder 
 * to run the project: grunt server
 * to build the project: grunt build
+
+## Build Issues
+* If errors occur installing scratchy run: git config --global url.https://github.com/.insteadOf git://github.com/
