@@ -154,7 +154,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       /** @scratch /panels/histogram/3
        * interval:: Array of possible intervals in the *View* selector. Example [`auto',`1s',`5m',`3h']
        */
-      intervals     : ['auto','1s','1m','5m','10m','30m','1h','3h','12h','1d','1w','1y'],
+      intervals     : ['auto','1s','1m','5m','10m','30m','1h','3h','12h','1d','1w', '1M,', '1y'],
       /** @scratch /panels/histogram/3
        * ==== Drawing options
        * lines:: Show line chart
