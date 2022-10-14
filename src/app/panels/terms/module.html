@@ -28,6 +28,9 @@
     .terms-legend .icon-circle, .terms-legend-term {
       cursor: pointer;
     }
+    .text-right {
+      text-align: right !important;
+    }
   </style>
 
 
@@ -101,7 +104,7 @@
     </thead>
     <tr ng-repeat="term in data" ng-show="showMeta(term)">
       <td class="terms-legend-term" ng-click="add_multi_search(term)">{{term.label}}</td>
-      <td>{{term.data[0][1]}}</td>
+      <td class="text-right">{{term.data[0][1]}}</td>
       <td>
         <span ng-hide="term.meta == 'other'">
           <i class='icon-search pointer' ng-click="build_search(term)"></i>
