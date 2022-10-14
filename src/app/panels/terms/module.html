@@ -25,7 +25,7 @@
       display: table-row;
     }
 
-    .terms-legend .icon-circle {
+    .terms-legend .icon-circle, .terms-legend-term {
       cursor: pointer;
     }
   </style>
@@ -38,15 +38,15 @@
       <table class="small" ng-show="panel.arrangement == 'vertical'">
         <tr ng-repeat="term in legend">
           <td><i class="icon-circle" ng-style="{color:term.color}" ng-click="build_search(term)"></i></td>
-          <td class="terms-legend-term" style="padding-right:10px;padding-left:10px;">{{term.label}}</td>
+          <td class="terms-legend-term" style="padding-right:10px;padding-left:10px;" ng-click="build_search(term)">{{term.label}}</td>
           <td>{{term.data[0][1]}}</td>
         </tr>
       </table>
 
       <!-- horizontal legend above -->
       <span class="small" ng-show="panel.arrangement == 'horizontal'" ng-repeat="term in legend" style="float:left;padding-left: 10px;">
-        <span>
-          <i class="icon-circle" ng-style="{color:term.color}" ng-click="build_search(term)"></i>
+        <span ng-click="build_search(term)">
+          <i class="icon-circle" ng-style="{color:term.color}" ></i>
           <span class="terms-legend-term">{{term.label}}</span> ({{term.data[0][1]}})
         </span>
       </span>
@@ -70,15 +70,15 @@
       <table class="small" ng-show="panel.arrangement == 'vertical'">
         <tr ng-repeat="term in legend">
           <td><i class="icon-circle" ng-style="{color:term.color}" ng-click="build_search(term)"></i></i></td>
-          <td class="terms-legend-term" style="padding-right:10px;padding-left:10px;">{{term.label}}</td>
+          <td class="terms-legend-term" style="padding-right:10px;padding-left:10px;" ng-click="build_search(term)">{{term.label}}</td>
           <td>{{term.data[0][1]}}</td>
         </tr>
       </table>
 
       <!-- horizontal legend below -->
       <span class="small" ng-show="panel.arrangement == 'horizontal'" ng-repeat="term in legend" style="float:left;padding-left: 10px;">
-        <span>
-          <i class="icon-circle" ng-style="{color:term.color}" ng-click="build_search(term)"></i>
+        <span ng-click="build_search(term)">
+          <i class="icon-circle" ng-style="{color:term.color}"></i>
           <span class="terms-legend-term">{{term.label}}</span> ({{term.data[0][1]}})
         </span>
       </span>
