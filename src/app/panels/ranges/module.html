@@ -24,6 +24,9 @@
     .ranges-legend {
       display: table-row;
     }
+    .text-right {
+      text-align: right !important;
+    }
   </style>
 
 
@@ -35,7 +38,7 @@
         <tr ng-repeat="range in legend">
           <td><i class="icon-circle" ng-style="{color:range.color}"></i></td>
           <td class="ranges-legend-range" style="padding-right:10px;padding-left:10px;">{{range.label}}</td>
-          <td>{{range.data[0][1]}}</td>
+          <td>{{range.data[0][1].toLocaleString('en-US')}}</td>
         </tr>
       </table>
 
@@ -43,7 +46,7 @@
       <span class="small" ng-show="panel.arrangement == 'horizontal'" ng-repeat="range in legend" style="float:left;padding-left: 10px;">
         <span>
           <i class="icon-circle" ng-style="{color:range.color}"></i>
-          <span class="ranges-legend-range">{{range.label}}</span> ({{range.data[0][1]}})
+          <span class="ranges-legend-range">{{range.label}}</span> ({{range.data[0][1].toLocaleString('en-US')}})
         </span>
       </span>
 
@@ -67,7 +70,7 @@
         <tr ng-repeat="range in legend">
           <td><i class="icon-circle" ng-style="{color:range.color}"></i></i></td>
           <td class="ranges-legend-range" style="padding-right:10px;padding-left:10px;">{{range.label}}</td>
-          <td>{{range.data[0][1]}}</td>
+          <td>{{range.data[0][1].toLocaleString('en-US')}}</td>
         </tr>
       </table>
 
@@ -75,7 +78,7 @@
       <span class="small" ng-show="panel.arrangement == 'horizontal'" ng-repeat="range in legend" style="float:left;padding-left: 10px;">
         <span>
           <i class="icon-circle" ng-style="{color:range.color}"></i>
-          <span class="ranges-legend-range">{{range.label}}</span> ({{range.data[0][1]}})
+          <span class="ranges-legend-range">{{range.label}}</span> ({{range.data[0][1].toLocaleString('en-US')}})
         </span>
       </span>
 
@@ -95,7 +98,7 @@
     </thead>
     <tr ng-repeat="range in data" ng-show="showMeta(range)">
       <td class="ranges-legend-range">{{range.label}}</td>
-      <td>{{range.data[0][1]}}</td>
+      <td class="text-right">{{range.data[0][1].toLocaleString('en-US')}}</td>
       <td>
         <span ng-hide="range.meta == 'other'">
           <i class='icon-search pointer' ng-click="build_search(range)"></i>
