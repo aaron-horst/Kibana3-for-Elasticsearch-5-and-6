@@ -55,6 +55,11 @@ function (angular, app, _, $, kbn) {
        * field:: The field on which to compute the aggregation
        */
       field   : '_index',
+      /**
+       * 
+       * alternate field to aggregate upon for 'unique' filtering
+       */
+      value_field: '',
       /** @scratch /panels/terms/5
        * exclude:: terms to exclude from the results
        */
@@ -255,7 +260,7 @@ function (angular, app, _, $, kbn) {
           .size($scope.panel.size);
 
         var sub_aggs2 = $scope.ejs.CardinalityAggregation('subaggs')
-            .field($scope.panel.field);
+            .field($scope.panel.value_field);
 
         switch($scope.panel.order) {
         case 'term':
