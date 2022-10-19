@@ -393,7 +393,7 @@ function (angular, app, _, $, kbn) {
           _.each(scope.results.aggregations.terms.buckets, function(v) {
             var slice;
             //if the value is 1/0 but is meant to be true/false, update the key value
-            if (v.key_as_string != undefined) {
+            if (v.key_as_string !== undefined) {
               v.key = v.key_as_string;
             }
             if(scope.panel.tmode === 'terms') {
