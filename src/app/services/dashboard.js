@@ -234,9 +234,18 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       self.availablePanels = _.difference(self.availablePanels,config.hidden_panels);
 
       if(config.enable_webhooks) {
+        var identity = "Anonymous";
         if (config.dashboard_view_webhook_url == null) {
           console.error("Error: enable_webhooks is enabled in config.js however no dashboard_view_webhook_url is specified, webhook will not be triggered");
         } else {
+          // call the identity provider when present to return the current authenticated user information
+          if (config.identity_provider_api_url != null) {
+            var info = $http({
+              url: config.identity_provider_api_url,
+              method: "GET"
+            });
+            console.log(info);
+          }
           // trigger the webhook
           return $http({
             url: config.dashboard_view_webhook_url,

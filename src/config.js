@@ -142,7 +142,16 @@ function (Settings) {
      *
      * Optional webhook URL triggered when viewing a dashboard
      */
-     dashboard_view_webhook_url: "http://127.0.0.1:5601/webhook",
+     dashboard_view_webhook_url: "https://localhost:44369/kibana/post",
+
+    /** @scratch /configuration/config.js/5
+     *
+     * ==== dashboard_view_webhook_url
+     *
+     * URL that returns an object referencing the current autheed user name accessed via HTTP GET
+     */
+     identity_provider_api_url: "http://127.0.0.1:5601/identityprovider",
+
 
   });
 });

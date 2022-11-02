@@ -22,7 +22,8 @@ function (_) {
       default_route       : '/dashboard/file/default.json',
       dashboard_metrics   : false,
       enable_webhooks     : false,
-      dashboard_view_webhook_url  : null
+      dashboard_view_webhook_url  : null,
+      identity_provider_api_url : null,
     };
 
     // This initializes a new hash on purpose, to avoid adding parameters to
