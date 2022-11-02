@@ -241,6 +241,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
           return $http({
             url: config.dashboard_view_webhook_url,
             method: "POST",
+            headers: {
+              'Content-Type': 'application/json',
+            },
             data: {
               "identity": "k3-user",
               "title": self.current.title
