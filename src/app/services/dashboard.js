@@ -240,7 +240,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         } else {
           // call the identity provider when present to return the current authenticated user information
           if (config.identity_provider_api_url != null) {
-            var info = $http({
+            return $http({
               url: config.identity_provider_api_url,
               method: "GET"
             }).then(function(data) {
