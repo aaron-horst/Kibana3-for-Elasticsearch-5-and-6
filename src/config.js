@@ -73,7 +73,7 @@ function (Settings) {
      * The default ES index to use for storing Kibana specific object
      * such as stored dashboards
      */
-    kibana_index: "kibana-int",
+    kibana_index: "kibana3-int",
 
 
     /*
@@ -124,7 +124,25 @@ function (Settings) {
      *
      * Valid value: true, false
      */
-    dashboard_metrics: false
+    dashboard_metrics: false,
+
+    /** @scratch /configuration/config.js/5
+     *
+     * ==== enable_webhooks
+     *
+     * Optional webhook URL triggered when viewing a dashboard
+     * 
+     * Valid value: true, false
+     */
+     enable_webhooks: true,
+
+    /** @scratch /configuration/config.js/5
+     *
+     * ==== dashboard_view_webhook_url
+     *
+     * Optional webhook URL triggered when viewing a dashboard
+     */
+     dashboard_view_webhook_url: "http://127.0.0.1:5601/webhook",
 
   });
 });

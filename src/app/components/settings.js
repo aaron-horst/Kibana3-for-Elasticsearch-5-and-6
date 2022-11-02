@@ -20,7 +20,9 @@ function (_) {
       panel_names         : [],
       kibana_index        : 'kibana-int',
       default_route       : '/dashboard/file/default.json',
-      dashboard_metrics  : false
+      dashboard_metrics   : false,
+      enable_webhooks     : false,
+      dashboard_view_webhook_url  : null
     };
 
     // This initializes a new hash on purpose, to avoid adding parameters to

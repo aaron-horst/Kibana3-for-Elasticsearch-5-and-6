@@ -233,6 +233,26 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       // Take out any that we're not allowed to add from the gui.
       self.availablePanels = _.difference(self.availablePanels,config.hidden_panels);
 
+      if(config.enable_webhooks) {
+        if (config.dashboard_view_webhook_url == null) {
+          console.error("Error: enable_webhooks is enabled in config.js however no dashboard_view_webhook_url is specified, webhook will not be triggered");
+        } else {
+          // trigger the webhook
+          return $http({
+            url: config.dashboard_view_webhook_url,
+            method: "POST",
+            data: {
+              "identity": "k3-user",
+              "title": self.current.title
+            }
+          }).then(function(data) {
+            return data;
+          }, function() {
+            return false;
+          });
+        }
+      }
+      
       if(config.dashboard_metrics){
         // if config is set to collect dashboard metrics, 
         // increment or add view count, set last viewed to now
