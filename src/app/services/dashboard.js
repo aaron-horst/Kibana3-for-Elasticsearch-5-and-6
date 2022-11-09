@@ -244,8 +244,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
               url: config.identity_provider_api_url,
               method: "GET"
             }).then(function(data) {
-              identity = data.data;
-
+              if (data !== undefined) {
+                identity = data.data;
+              }
               // trigger the webhook
               return $http({
                 url: config.dashboard_view_webhook_url,
@@ -255,7 +256,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
                 },
                 data: {
                   "identity": identity,
-                  "title": self.current.title
+                  "title": self.current.title,
+                  "kibanaversion": "3.7.0.2",
                 }
               }).then(function(data) {
                 return data;
