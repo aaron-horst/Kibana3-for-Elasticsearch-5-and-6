@@ -162,7 +162,7 @@ function(angular, app, _) {
           // unused.. var output = []; // files is a FileList of File objects. List some properties.
           var readerOnload = function() {
             return function(e) {
-              dashboard.dash_load(JSON.parse(e.target.result));
+              dashboard.dash_load(JSON.parse(e.target.result), "dashboard");
               scope.$apply();
             };
           };

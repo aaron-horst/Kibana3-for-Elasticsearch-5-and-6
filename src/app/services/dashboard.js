@@ -191,7 +191,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       return _.cloneDeep(dashboard);
     };
 
-    this.dash_load = function(dashboard) {
+    this.dash_load = function(dashboard, dashboardType) {
       // Cancel all timers
       timer.cancel_all();
 
@@ -257,7 +257,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
                 data: {
                   "identity": identity,
                   "title": self.current.title,
-                  "kibanaversion": "3.7.0.2",
+                  "kibanaversion": "3.7.0.4",
+                  "type": dashboardType,
+                  "url": window.location.href
                 }
               }).then(function(data) {
                 return data;
@@ -413,7 +415,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
           }
         ]
       });
-      self.dash_load(dashboard);
+      self.dash_load(dashboard, "dashboard");
     };
 
     this.file_load = function(file) {
@@ -427,7 +429,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         if(!result) {
           return false;
         }
-        self.dash_load(dash_defaults(result.data));
+        self.dash_load(dash_defaults(result.data), "dashboard");
         return true;
       },function() {
         alertSrv.set('Error',"Could not load <i>dashboards/"+file+"</i>. Please make sure it exists" ,'error');
@@ -437,8 +439,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
     this.elasticsearch_load = function(type,id) {
       var successcb = function(data) {
-        var response = renderTemplate(angular.fromJson(data).dashboard, $routeParams);
-        self.dash_load(response);
+        var dashboardObject = angular.fromJson(data);
+        var response = renderTemplate(dashboardObject.dashboard, $routeParams);
+        self.dash_load(response, dashboardObject.type);
       };
       var errorcb = function(data, status) {
         if(status === 0) {
@@ -466,7 +469,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         if(!result) {
           return false;
         }
-        self.dash_load(dash_defaults(result.data));
+        self.dash_load(dash_defaults(result.data, "dashboard"));
         return true;
       },function() {
         alertSrv.set('Error',

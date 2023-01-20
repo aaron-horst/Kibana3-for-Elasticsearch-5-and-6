@@ -15,7 +15,7 @@ function (angular) {
           var readerOnload = function() {
             return function(event) {
               try {
-                dashboard.dash_load(JSON.parse(event.target.result));
+                dashboard.dash_load(JSON.parse(event.target.result), "dashboard");
               }
               catch (err)  {
                 alertSrv.set('Oops','The dashboard file you want to upload is malformed, please correct it and retry.','error');
