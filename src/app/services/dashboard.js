@@ -232,7 +232,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
       // Take out any that we're not allowed to add from the gui.
       self.availablePanels = _.difference(self.availablePanels,config.hidden_panels);
-
+      
       if(config.enable_webhooks) {
         var identity = "Anonymous";
         if (config.dashboard_view_webhook_url == null) {
@@ -259,7 +259,11 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
                   "title": self.current.title,
                   "kibanaversion": "3.7.0.4",
                   "type": dashboardType,
-                  "url": window.location.href
+                  "url": window.location.href,
+                  "indexpattern": self.current.index.pattern,
+                  "indexinterval": self.current.index.interval,
+                  'querycount': self.current.services.filter.ids.length,
+                  'filtercount': self.current.services.query.ids.length
                 }
               }).then(function(data) {
                 return data;
