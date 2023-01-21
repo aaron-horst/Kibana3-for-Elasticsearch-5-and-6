@@ -262,8 +262,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
                   "url": window.location.href,
                   "indexpattern": self.current.index.pattern,
                   "indexinterval": self.current.index.interval,
-                  'querycount': self.current.services.filter.ids.length,
-                  'filtercount': self.current.services.query.ids.length
+                  'querycount': self.current.services.query.ids.length,
+                  'filtercount': self.current.services.filter.ids.length
                 }
               }).then(function(data) {
                 return data;
