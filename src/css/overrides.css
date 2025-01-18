@@ -1,0 +1,10 @@
+a { color: #90ccfc; }
+
+.bgPrimary { background: #0261d1; }
+.bgSuccess { background: #01273d; }
+.bgWarning { background: #29ce6b; }
+
+.btn-danger { background-color: #DC3545; }
+.btn-success { background-color: #29ce6b; } /* was #699e00 */
+
+/*.ng-binding { background: #90ccfc; }*/
