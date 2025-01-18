@@ -1,5 +1,4 @@
-a { color: #90ccfc; }
-a:hover { color: ##25B960; }
+button:hover { color: #25B960; }
 
 .bgPrimary { background: #0261d1; }
 .bgSuccess { background: #01273d; }
