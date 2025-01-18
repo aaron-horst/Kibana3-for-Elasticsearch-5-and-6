@@ -41,7 +41,7 @@
     <div ng-cloak class="navbar navbar-static-top">
       <div class="navbar-inner">
         <div class="container-fluid">
-          <span class="brand"><img src="img/small.png" bs-tooltip="'Kibana '+(kbnVersion=='@REV@'?'master':kbnVersion)" data-placement="bottom"> {{dashboard.current.title}}</span>
+          <span class="brand"><img ng-src="{{config.logo_url}}" style="max-width: 25px; max-height: 25px" bs-tooltip="'Kibana '+(kbnVersion=='@REV@'?'master':kbnVersion)" data-placement="bottom"> {{dashboard.current.title}}</span>
 
           <ul class="nav pull-right" ng-controller='dashLoader' ng-init="init()" ng-include="'app/partials/dashLoader.html'">
           </ul>

@@ -152,6 +152,12 @@ function (Settings) {
      */
      identity_provider_api_url: "http://127.0.0.1:5601/identityprovider",
 
-
+     /** @scratch /configuration/config.js/5
+      *
+      * ==== logo_url
+      *
+      * URL that returns the logo for the dashboard's overall branding. The default is relative to kibana (/img/small.png), but you can use external resources
+      */
+     logo_url: "/img/small.png",
   });
 });
