@@ -18,11 +18,12 @@ define([
   'lodash',
   'kbn',
   'moment',
+  'config',
   'jsonpath',
   'filesaver',
   'blob'
 ],
-function (angular, app, _, kbn, moment) {
+function (angular, app, _, kbn, moment, config) {
   'use strict';
 
   var module = angular.module('kibana.panels.table', []);
@@ -551,27 +552,9 @@ function (angular, app, _, kbn, moment) {
       return obj;
     };
 
-    $scope.hyperlinked_fields = [
-      {
-        fieldName: 'generatedfor.userid',
-        urlTemplate: 'https://masteradmin.ihire.com/users/{0}/products?utm_source=kibana3custom&utm_content=panel_table&realm={1}',
-        tokens: ['generatedfor.userid', 'realm.name']
-      },
-      {
-        fieldName: 'generatedby.name',
-        urlTemplate: 'https://masteradmin.ihire.com/users/{0}/products?utm_source=kibana3custom&utm_content=panel_table&realm={1}',
-        tokens: ['generatedby.userid', 'realm.name']
-      },
-      {
-        fieldName: 'account.id',
-        urlTemplate: 'https://crm.example.com/accounts/{0}',
-        tokens: ['account.id']
-      }
-    ];
-
     $scope.getDynamicUrl = function(field, row) {
       // Find the hyperlink rules for the given field
-      const rules = $scope.hyperlinked_fields.find(hf => hf.fieldName === field);
+      const rules = config.hyperlinked_fields.find(hf => hf.fieldName === field);
       if (!rules) return null; // If no rules found, return null
     
       // Extract token values directly from the row object
@@ -583,7 +566,7 @@ function (angular, app, _, kbn, moment) {
     };
     
     $scope.isLinkable = function(field) {
-      var retval = $scope.hyperlinked_fields.some(hf => hf.fieldName === field);
+      var retval = config.hyperlinked_fields.some(hf => hf.fieldName === field);
       return retval;
     };
 

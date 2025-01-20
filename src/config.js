@@ -159,5 +159,45 @@ function (Settings) {
       * URL that returns the logo for the dashboard's overall branding. The default is relative to kibana (/img/small.png), but you can use external resources
       */
      logo_url: "/img/small.png",
+
+          /** @scratch /configuration/config.js/5
+      *
+      * ==== hyperlinked_fields
+      *
+      * Optional array of rules targeting specific fields in your data's structure that will transform areas of kibana to hyperlinks when displaying those fields
+      */
+          hyperlinked_fields: [
+            {
+              fieldName: 'generatedfor.userid',
+              urlTemplate: 'https://masteradmin.ihire.com/users/{0}/products?utm_source=kibana3custom&utm_content=panel_table&realm={1}',
+              tokens: ['generatedfor.userid', 'realm.name']
+            },
+            {
+              fieldName: 'generatedby.name',
+              urlTemplate: 'https://masteradmin.ihire.com/users/{0}/products?utm_source=kibana3custom&utm_content=panel_table&realm={1}',
+              tokens: ['generatedby.userid', 'realm.name']
+            },
+            {
+              fieldName: 'generatedfor.candidate.careertitle',
+              urlTemplate: 'https://masteradmin.ihire.com/users/{0}/candidate/edit?utm_source=kibana3custom&utm_content=panel_table&realm={1}',
+              tokens: ['generatedby.userid', 'realm.name']
+            },
+            {
+              fieldName: 'generatedfor.organization',
+              urlTemplate: 'https://masteradmin.ihire.com/?Company={0}&UserId={1}&utm_source=kibana3custom&utm_content=panel_table&realm={1}',
+              tokens: ['generatedfor.organization', 'generatedby.userid']
+            },
+            {
+              fieldName: 'custom.company',
+              urlTemplate: 'https://masteradmin.ihire.com/?Company={0}&UserId={1}&utm_source=kibana3custom&utm_content=panel_table&realm={1}',
+              tokens: ['custom.company']
+            },
+            {
+              fieldName: 'custom.employerid',
+              urlTemplate: 'https://masteradmin.ihire.com/?EmployerId={0}&utm_source=kibana3custom&utm_content=panel_table&realm={1}',
+              tokens: ['custom.employerid']
+            },    
+            // Add more rules as needed
+          ],
   });
 });
