@@ -389,6 +389,7 @@ function (angular, app, _, $, kbn, config) {
       return true;
     };
 
+    // note this currently DOESNT WORK well, never figured out...
     $scope.getDynamicUrlFriendlyName = function(field) {
       // Find the hyperlink rules for the given field
       const rules = config.hyperlinked_fields_aggregates.find(hf => hf.fieldName === field);
@@ -397,12 +398,11 @@ function (angular, app, _, $, kbn, config) {
       const url = rules.urlTemplate;
 
       try {
-        // Extract protocol and hostname using the URL constructor
-        const parsedUrl = new URL(url('{')[0]); // Ignore placeholders like {0}, {1}
-        return `${parsedUrl.protocol}//${parsedUrl.hostname}`;
-      } catch (e) {
-        console.error('Invalid URL template:', urlTemplate, e);
-        return null; // Return null for invalid URLs
+        const parsedUrl = new URL(url); // Parse the URL
+        return `${parsedUrl.protocol}//${parsedUrl.hostname}`; // Construct the base URL
+      } catch (error) {
+        console.error('Invalid URL:', url, error);
+        return "error"; // Return null if the URL is invalid
       }
     };
 
