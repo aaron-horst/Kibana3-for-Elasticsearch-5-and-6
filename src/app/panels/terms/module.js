@@ -16,9 +16,10 @@ define([
   'app',
   'lodash',
   'jquery',
-  'kbn'
+  'kbn',
+  'config',
 ],
-function (angular, app, _, $, kbn) {
+function (angular, app, _, $, kbn, config) {
   'use strict';
 
   var module = angular.module('kibana.panels.terms', []);
@@ -360,6 +361,53 @@ function (angular, app, _, $, kbn) {
         return false;
       }
       return true;
+    };
+
+    $scope.getDynamicUrl = function(field, row) {
+      // console.log('Field',field);
+      // console.log("Row:", row);
+
+      // Find the hyperlink rules for the given field
+      const rules = config.hyperlinked_fields_aggregates.find(hf => hf.fieldName === field);
+      if (!rules) return null; // If no rules found, return null
+    
+      // Extract token values directly from the row object
+      const tokens = rules.tokens.map(token => row[token] || ''); // Use the token as the key
+    
+      // Replace the {0}, {1}, etc., in the URL template with token values
+      const newUrl = rules.urlTemplate.replace(/{(\d+)}/g, (_, index) => tokens[index] || '');
+      return newUrl;
+    };
+    
+    $scope.isLinkable = function(field, termLabel) {
+      if (termLabel == undefined || termLabel == 'Other values') return false; // other pie slice value
+
+      // var retval = config.hyperlinked_fields_doclevel.some(hf => hf.fieldName === field);
+      const rules = config.hyperlinked_fields_aggregates.find(hf => hf.fieldName === field);
+      if (!rules) return false; // If no rules found, return null
+
+      return true;
+    };
+
+    $scope.getDynamicUrlFriendlyName = function(field) {
+      // Find the hyperlink rules for the given field
+      const rules = config.hyperlinked_fields_aggregates.find(hf => hf.fieldName === field);
+      if (!rules) return null; // If no rules found, return null
+
+      const url = rules.urlTemplate;
+
+      try {
+        // Extract protocol and hostname using the URL constructor
+        const parsedUrl = new URL(url('{')[0]); // Ignore placeholders like {0}, {1}
+        return `${parsedUrl.protocol}//${parsedUrl.hostname}`;
+      } catch (e) {
+        console.error('Invalid URL template:', urlTemplate, e);
+        return null; // Return null for invalid URLs
+      }
+    };
+
+    $scope.getRowData = function(panel, termObj) {
+      return { [panel.field]: termObj.label }; // Dynamically create the row object
     };
 
   });

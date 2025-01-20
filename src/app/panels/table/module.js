@@ -554,7 +554,7 @@ function (angular, app, _, kbn, moment, config) {
 
     $scope.getDynamicUrl = function(field, row) {
       // Find the hyperlink rules for the given field
-      const rules = config.hyperlinked_fields.find(hf => hf.fieldName === field);
+      const rules = config.hyperlinked_fields_doclevel.find(hf => hf.fieldName === field);
       if (!rules) return null; // If no rules found, return null
     
       // Extract token values directly from the row object
@@ -566,8 +566,11 @@ function (angular, app, _, kbn, moment, config) {
     };
     
     $scope.isLinkable = function(field) {
-      var retval = config.hyperlinked_fields.some(hf => hf.fieldName === field);
-      return retval;
+      // var retval = config.hyperlinked_fields_doclevel.some(hf => hf.fieldName === field);
+      const rules = config.hyperlinked_fields_doclevel.find(hf => hf.fieldName === field);
+      if (!rules) return false; // If no rules found, return null
+
+      return true;
     };
 
   });
