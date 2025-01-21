@@ -336,12 +336,36 @@ function (angular, app, _, $, kbn, config) {
     };
 
     $scope.multi_search = function() {
-      _.each($scope.panel.multiterms, function(t) {
-        var f = build_multi_search(t);
-        filterSrv.set(f, undefined, true);
-      });
+      if (!Array.isArray($scope.panel.multiterms)) {
+        console.error('Input must be an array.');
+        return null;
+      }
+      
+      var labelValues = $scope.panel.multiterms.map(obj => {
+        if (typeof obj.label !== 'string') {
+          console.error('Each object must have a label property of type string:', obj);
+          return '';
+        }
+        // Escape quotes and wrap the label in double quotes
+        const escapedLabel = obj.label.replace(/"/g, '\\"');
+        return `"${escapedLabel}"`;
+      })
+      .filter(label => label) // Remove any empty strings from invalid entries
+      .join(', ');
+
+      const q = $scope.field + ":(" + labelValues + ")";
+
+      filterSrv.set({
+        editing   : false,
+        type      : 'querystring',
+        query     : q,
+        mandate   : 'must'
+      },undefined,false);
+
       dashboard.refresh();
+      $scope.panel.multiterms.length = 0; // reset
     };
+
     $scope.add_multi_search = function(term) {
       $scope.panel.multiterms.push(term);
     };
