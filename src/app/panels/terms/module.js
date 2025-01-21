@@ -301,8 +301,22 @@ function (angular, app, _, $, kbn, config) {
 
     $scope.build_search = function(term,negate) {
       if(_.isUndefined(term.meta)) {
-        filterSrv.set({type:'terms',field:$scope.field,value:term.label,
-          mandate:(negate ? 'mustNot':'must')});
+        var labelValue = term.label;
+        if (typeof labelValue !== 'string') {
+          console.error('Label Input must be a string.');
+        } else {
+          // escape commas and quotes
+          labelValue = labelValue.replace(/["|,]/g, match => `\\${match}`);
+        }
+
+        const q = $scope.field + ":(\"" + labelValue + "\")";
+
+        filterSrv.set({
+          editing   : false,
+          type      : 'querystring',
+          query     : q,
+          mandate   : (negate ? 'mustNot' : 'must')
+        },undefined,false);
       } else if(term.meta === 'missing') {
         filterSrv.set({type:'exists',field:$scope.field,
           mandate:(negate ? 'must':'mustNot')});
