@@ -34,13 +34,15 @@
   </style>
 
   <div class="terms-wrapper">
+    <div ng-show="panel.multiterms.length"><button class="btn btn-mini btn-success" ng-click="multi_search()" ng-bind-html="getSubmitButtonText()"></button></div>
+
     <!-- LEGEND -->
     <div class="terms-legend" ng-show="panel.counter_pos == 'above' && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend'>
       <!-- vertical legend above -->
       <table class="small" ng-show="panel.arrangement == 'vertical'">
         <tr ng-repeat="term in legend">
           <td><i class="icon-circle" ng-style="{color:term.color}" ng-click="build_search(term)"></i></td>
-          <td class="terms-legend-term" style="padding-right:10px;padding-left:10px;" ng-click="build_search(term)">{{term.label}}</td>
+          <td class="terms-legend-term" style="padding-right:10px;padding-left:10px;" ng-click="build_search(term,false,$event)">{{term.label}}</td>
           <td>({{term.data[0][1].toLocaleString('en-US')}}) 
             <a ng-if="isLinkable(panel.field, term.label)" ng-href="{{ getDynamicUrl(panel.field, getRowData(panel, term)) }}" target="_blank"><i class="icon-link"> </i></a>
           </td>
@@ -49,7 +51,7 @@
 
       <!-- horizontal legend above -->
       <span class="small" ng-show="panel.arrangement == 'horizontal'" ng-repeat="term in legend" style="float:left;padding-left: 10px;">
-        <span ng-click="build_search(term)">
+        <span ng-click="build_search(term,false,$event)">
           <i class="icon-circle" ng-style="{color:term.color}"></i>
           <span class="terms-legend-term">{{term.label}}</span> 
         </span>
@@ -85,7 +87,7 @@
 
       <!-- horizontal legend below -->
       <span class="small" ng-show="panel.arrangement == 'horizontal'" ng-repeat="term in legend" style="float:left;padding-left: 10px;">
-        <span ng-click="build_search(term)">
+        <span ng-click="build_search(term,false,$event)">
           <i class="icon-circle" ng-style="{color:term.color}"></i>
           <span class="terms-legend-term">{{term.label}}</span> 
         </span>

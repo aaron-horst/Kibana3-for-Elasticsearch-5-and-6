@@ -299,7 +299,17 @@ function (angular, app, _, $, kbn, config) {
       });
     };
 
-    $scope.build_search = function(term,negate) {
+    $scope.build_search = function(term, negate, event) {
+      console.log('build_search called with:', term, negate, event);
+
+      // Check if the Ctrl key is pressed
+      if (event && event.ctrlKey) {
+        // Add term to multiterms instead of executing a search
+        console.log('Ctrl key pressed. Adding term to multiterms:', term);
+        $scope.add_multi_search(term);
+        return;
+      }
+
       if(_.isUndefined(term.meta)) {
         var labelValue = term.label;
         if (typeof labelValue !== 'string') {
@@ -366,8 +376,18 @@ function (angular, app, _, $, kbn, config) {
       $scope.panel.multiterms.length = 0; // reset
     };
 
+    $scope.getSubmitButtonText = function() {
+      return 'Submit ' + $scope.panel.multiterms.length + ' Filters';
+    };
+
     $scope.add_multi_search = function(term) {
-      $scope.panel.multiterms.push(term);
+      if ($scope.check_multi_search(term)) {
+        // exists, so remove
+        $scope.delete_multi_search(term);
+      } else {
+        // add
+        $scope.panel.multiterms.push(term);
+      }
     };
     $scope.delete_multi_search = function(term) {
       _.remove($scope.panel.multiterms, term);
@@ -627,8 +647,21 @@ function (angular, app, _, $, kbn, config) {
         }
 
         elem.bind("plotclick", function (event, pos, object) {
-          if(object) {
-            scope.build_search(scope.data[object.seriesIndex]);
+          // if(object) {
+          //   scope.build_search(scope.data[object.seriesIndex],false,event);
+          // }
+
+          if (object) {
+            // Check if the Ctrl key is pressed
+            const isCtrlPressed = window.event && window.event.ctrlKey;
+            if (isCtrlPressed) {
+              console.log('Ctrl+Click detected on Flot chart item:', object);
+              scope.add_multi_search(scope.data[object.seriesIndex]);
+              scope.$apply(); // Ensure Angular detects the changes
+            } else {
+              console.log('Regular click detected on Flot chart item:', scope.data[object.seriesIndex]);
+              scope.build_search(scope.data[object.seriesIndex]),false,event;
+            }
           }
         });
 
