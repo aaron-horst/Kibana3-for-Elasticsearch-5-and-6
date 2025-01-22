@@ -9,3 +9,6 @@ button:hover { color: #25B960; }
 .btn-success:hover { background-color: #25B960; }
 
 /*.ng-binding { background: #90ccfc; }*/
+
+[ng\:cloak],[ng-cloak],.ng-cloak {
+    display:none!important}
