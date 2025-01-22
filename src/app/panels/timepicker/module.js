@@ -180,6 +180,69 @@ function (angular, app, _, moment, kbn) {
       return $scope.panel.filter_id;
     };
 
+    $scope.setPrebuiltFilter = function (timeRange) {
+      var startDate = new Date();
+      var endDate = new Date(); // eessentially now
+      var isNowMode = true;
+
+      // Logic to apply the selected prebuilt time filter
+      switch (timeRange) {
+        case 'This Week':
+          startDate = moment().startOf('week').toDate(); 
+          break;
+        case 'This Month':
+          startDate = moment().startOf('month').toDate(); 
+          break;
+        case 'This Quarter':
+          //startDate = moment().startOf('quarter').toDate(); 
+          startDate = getStartOfQuarter(moment()).toDate(); 
+          break;
+        case 'Last Week':
+          startDate = moment().subtract(1, 'week').startOf('week').toDate(); 
+          endDate = moment().startOf('week').subtract(1, 'millisecond').toDate(); 
+          isNowMode = false;
+          break;
+        case 'Last Month':
+          startDate = moment().subtract(1, 'month').startOf('month').toDate(); 
+          endDate = moment().startOf('month').subtract(1, 'millisecond').toDate(); 
+          isNowMode = false;
+          break;
+        case 'Last Quarter':
+          // FYI moment's 'quarter' option isn't working, probably outdated library version but i didn't want to regression test an upgrade 1/2025 flook
+          startDate = getStartOfQuarter(moment()).subtract(3,'month').toDate(); 
+          endDate = getStartOfQuarter(moment()).subtract(1, 'millisecond').toDate(); 
+          isNowMode = false;
+          break;
+      }
+
+      // set datetime range
+      $scope.panel.now = isNowMode;
+      // Create filter object
+      var _filter = {
+        type : 'time',
+        field : $scope.panel.timefield,
+        from : startDate,
+        to: (isNowMode? "now" : endDate)
+      };
+
+      // Clear all time filters, set a new one
+      filterSrv.removeByType('time',true);
+
+      // Set the filter
+      $scope.panel.filter_id = filterSrv.set(_filter);
+
+      // Update our representation     
+      $scope.time = getScopeTimeObj(startDate,endDate);
+
+      return $scope.panel.filter_id;
+    };
+
+    function getStartOfQuarter(date = moment()) {
+      const month = date.month(); // Get the current month (0-indexed)
+      const quarterStartMonth = Math.floor(month / 3) * 3; // Calculate the start month of the quarter
+      return moment(date).month(quarterStartMonth).startOf('month'); // Set the month and reset to the start
+    }
+
     var pad = function(n, width, z) {
       z = z || '0';
       n = n + '';
