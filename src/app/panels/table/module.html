@@ -177,7 +177,7 @@
                     <!-- At some point we need to create a more efficient way of applying the filter pipeline -->
                     <td ng-if="!isLinkable(key) && (!panel.localTime || panel.timeField != key)" style="white-space:pre-wrap;word-wrap:break-word" bo-html="value|noXml|urlLink|stringify"></td>
                     <td ng-if="!isLinkable(key) && (panel.localTime && panel.timeField == key)" style="white-space:pre-wrap;word-wrap:break-word" bo-html="value|noXml|urlLink|stringify|tableLocalTime:event"></td>
-                    <td><a ng-if="isLinkable(key)" ng-href="{{ getDynamicUrl(key, event.kibana._source) }}" bo-html="event.kibana._source[key]" target="_blank"></a></td>
+                    <td ng-if="isLinkable(key)"><a ng-href="{{ getDynamicUrl(key, event.kibana._source) }}" bo-html="event.kibana._source[key]" target="_blank"></a></td>
                   </tr>
                 </table>
                 <pre style="white-space:pre-wrap;word-wrap:break-word"  bo-html="without_kibana(event)|tableJson:2" ng-switch-when="json"></pre>
