@@ -31,14 +31,13 @@ function (angular, _, config, kbn) {
     //   "#E0F9D7","#FCEACA","#CFFAFF","#F9E2D2","#FCE2DE","#BADFF4","#F9D9F9","#DEDAF7"  //7
     // ];
     this.colors = [
-      "#0257bc", "#25b960", "#012337", "#a2e481", "#82b8e3", "#cc074c", "#13a37a",
-  "#024ea7", "#21a556", "#011f31", "#90ca72", "#73a3ca", "#b60644", "#11916c",
-  "#014492", "#1d904b", "#011b2b", "#7eb164", "#658fb0", "#9f063b", "#0f7f5e",
-  "#013a7d", "#197c40", "#011725", "#6c9856", "#567a97", "#880533", "#0d6d51",
-  "#1b71d6", "#3ed37a", "#1a3d50", "#bcfd9a", "#9bd1fc", "#e62166", "#2cbc93",
-  "#3581da", "#54d889", "#345264", "#c3fda5", "#a6d6fd", "#e93977", "#44c49f",
-  "#4e90df", "#69dd97", "#4d6877", "#cbfeb1", "#b1dbfd", "#eb5288", "#5bcbab",
-  "#67a0e3", "#7fe2a6", "#677d8b", "#d2febc", "#bce0fd", "#ee6b99", "#73d3b7"
+      "#0257bc", "#25b960", "#012337", "#a2e481", "#82b8e3", "#cc074c", "#13a37a",  // Core colors
+      "#1b68c3", "#3bc070", "#1a394b", "#abe78e", "#8ebfe6", "#d1205e", "#2bac87",  // Slightly lighter
+      "#3075c8", "#4cc67d", "#2f4b5b", "#b3e998", "#98c5e8", "#d5346c", "#3db492",  // Lighter
+      "#4483cd", "#5ecb89", "#435c6b", "#baeba2", "#a2caea", "#d9477b", "#50bb9d",  // Even lighter
+      "#5890d3", "#6fd196", "#576e7b", "#c2edac", "#acd0ed", "#dd5b89", "#63c2a7",  // Lighter still
+      "#6c9ed8", "#81d6a3", "#6c7f8b", "#c9efb6", "#b6d6ef", "#e16f97", "#76cab2",  // More lightened
+      "#80abde", "#92dcb0", "#80919b", "#d0f2c0", "#c0dcf1", "#e683a5", "#89d1bc"   // Lightest variant
     ];
 
     // For convenience
