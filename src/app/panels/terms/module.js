@@ -311,15 +311,9 @@ function (angular, app, _, $, kbn, config) {
       }
 
       if(_.isUndefined(term.meta)) {
-        var labelValue = term.label;
-        if (typeof labelValue !== 'string') {
-          console.error('Label Input must be a string.');
-        } else {
-          // escape commas and quotes
-          labelValue = labelValue.replace(/["|,]/g, match => `\\${match}`);
-        }
+        var labelValue = angular.toJson(term.label);
 
-        const q = $scope.field + ":(\"" + labelValue + "\")";
+        const q = $scope.field + ":(" + labelValue + ")";
 
         filterSrv.set({
           editing   : false,
@@ -596,7 +590,7 @@ function (angular, app, _, $, kbn, config) {
               }
               if(scope.panel.chart === 'pie') {
                 var labelFormat = function(label, series){
-                  return '<div ng-click="build_search(panel.field,\''+label+'\')'+
+                  return '<div ng-click="build_search(panel.field,\''+label.replace(/'/g, "\\'").replace(/"/g, '&quot;')+'\')'+
                     ' "style="font-size:8pt;text-align:center;padding:2px;color:white;">'+
                     label+'<br/>'+Math.round(series.percent)+'%</div>';
                 };
