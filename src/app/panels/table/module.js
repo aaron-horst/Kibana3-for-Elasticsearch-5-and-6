@@ -18,11 +18,12 @@ define([
   'lodash',
   'kbn',
   'moment',
+  'config',
   'jsonpath',
   'filesaver',
   'blob'
 ],
-function (angular, app, _, kbn, moment) {
+function (angular, app, _, kbn, moment, config) {
   'use strict';
 
   var module = angular.module('kibana.panels.table', []);
@@ -199,15 +200,33 @@ function (angular, app, _, kbn, moment) {
         return val;
       };
 
-      var rows = _.map($scope.data, function(e) {
+      // Function to safely get nested properties
+      var getNestedValue = function (obj, path) {
+        return path.split('.').reduce(function (acc, key) {
+          return acc && acc[key] !== undefined ? acc[key] : undefined;
+        }, obj);
+      };
+
+      // Start with an array for rows, adding the header as the first element
+      var retVal = [$scope.panel.fields.join($scope.csv.separator)];
+
+      // Map through the data to create data rows
+      _.each($scope.data, function (e) {
         var exportFields = [];
-        _.each($scope.panel.fields, function(field) {
-          exportFields.push(escape(e._source[field]));
+        _.each($scope.panel.fields, function (field) {
+          // Use getNestedValue to fetch the value for dot-notation paths
+          var value = getNestedValue(e._source, field);
+          exportFields.push(escape(value || "-undefined error-"));
         });
-        return exportFields.join($scope.csv.separator) + '\r\n';
+        // Add the data row as a joined string to retVal
+        retVal.push(exportFields.join($scope.csv.separator));
       });
 
-      var blob = new Blob(rows, { type: 'text/plain' });
+      // Combine the rows into a single string with line breaks
+      var finalOutput = retVal.join('\r\n');
+
+      // Create a Blob
+      var blob = new Blob([finalOutput], { type: 'text/plain' });
 
       window.saveAs(blob, $scope.csv.filename);
     };
@@ -379,7 +398,14 @@ function (angular, app, _, kbn, moment) {
         query = angular.toJson(value);
       }
       $scope.panel.offset = 0;
-      filterSrv.set({type:'field',field:field,query:query,mandate:(negate ? 'mustNot':'must')});
+
+      const q = field + ":(" + query + ")";
+      filterSrv.set({
+        editing   : false,
+        type      : 'querystring',
+        query     : q,
+        mandate   : (negate ? 'mustNot' : 'must')
+      },undefined,false);
     };
 
     $scope.fieldExists = function(field,mandate) {
@@ -551,6 +577,26 @@ function (angular, app, _, kbn, moment) {
       return obj;
     };
 
+    $scope.getDynamicUrl = function(field, row) {
+      // Find the hyperlink rules for the given field
+      const rules = config.hyperlinked_fields_doclevel.find(hf => hf.fieldName === field);
+      if (!rules) return null; // If no rules found, return null
+    
+      // Extract token values directly from the row object
+      const tokens = rules.tokens.map(token => row[token] || ''); // Use the token as the key
+    
+      // Replace the {0}, {1}, etc., in the URL template with token values
+      const newUrl = rules.urlTemplate.replace(/{(\d+)}/g, (_, index) => tokens[index] || '');
+      return newUrl;
+    };
+    
+    $scope.isLinkable = function(field) {
+      // var retval = config.hyperlinked_fields_doclevel.some(hf => hf.fieldName === field);
+      const rules = config.hyperlinked_fields_doclevel.find(hf => hf.fieldName === field);
+      if (!rules) return false; // If no rules found, return null
+
+      return true;
+    };
 
   });
 

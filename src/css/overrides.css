@@ -1,0 +1,14 @@
+button:hover { color: #25B960; }
+
+.bgPrimary { background: #0261d1; }
+.bgSuccess { background: #01273d; }
+.bgWarning { background: #29ce6b; }
+
+.btn-danger { background-color: #DC3545; }
+.btn-success { background-color: #29ce6b; } /* was #699e00 */
+.btn-success:hover { background-color: #25B960; }
+
+/*.ng-binding { background: #90ccfc; }*/
+
+[ng\:cloak],[ng-cloak],.ng-cloak {
+    display:none!important}

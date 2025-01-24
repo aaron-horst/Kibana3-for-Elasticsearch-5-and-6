@@ -508,11 +508,15 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
     }
 
     function buildAggs(query_id, interval, scopedQuery){
-        // define the date histogram aggregation
-        var aggr = $scope.ejs.DateHistogramAggregation(query_id)
-                    .field($scope.panel.time_field)
-                    .interval(interval);
-        
+          // define the date histogram aggregation
+          var aggr = $scope.ejs.DateHistogramAggregation(query_id)
+            .field($scope.panel.time_field)
+            .interval(interval);
+            
+          if ($scope.panel.timezone == "browser") {
+            aggr.timeZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+          }
+
         if($scope.panel.mode !== 'count') {
           if(_.isNull($scope.panel.value_field)) {
             $scope.panel.error = "In " + $scope.panel.mode + " mode a field must be specified";
@@ -708,7 +712,8 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
                 max: _.isUndefined(scope.range.to) ? null : scope.range.to.getTime(),
                 timeformat: time_format(scope.panel.interval),
                 label: "Datetime",
-                ticks: elem.width()/100
+                ticks: elem.width()/100,
+                minTickSize: [1, "day"]
               },
               grid: {
                 backgroundColor: null,

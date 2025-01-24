@@ -24,6 +24,9 @@ function (_) {
       enable_webhooks     : false,
       dashboard_view_webhook_url  : null,
       identity_provider_api_url : null,
+      logo_url : "/img/small.png",
+      hyperlinked_fields_doclevel : null,
+      hyperlinked_fields_aggregates : null,
     };
 
     // This initializes a new hash on purpose, to avoid adding parameters to

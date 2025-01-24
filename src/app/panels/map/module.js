@@ -45,6 +45,23 @@ function (angular, app, _, $) {
        " Elasticsearch terms aggregation, so it is important that you set it to the correct field."
     };
 
+    // Predefined mapping of state names to 2-letter codes
+    const stateNameToCodeMap = {
+      "Alabama": "AL", "Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR",
+      "California": "CA", "Colorado": "CO", "Connecticut": "CT", "Delaware": "DE",
+      "Florida": "FL", "Georgia": "GA", "Hawaii": "HI", "Idaho": "ID",
+      "Illinois": "IL", "Indiana": "IN", "Iowa": "IA", "Kansas": "KS",
+      "Kentucky": "KY", "Louisiana": "LA", "Maine": "ME", "Maryland": "MD",
+      "Massachusetts": "MA", "Michigan": "MI", "Minnesota": "MN", "Mississippi": "MS",
+      "Missouri": "MO", "Montana": "MT", "Nebraska": "NE", "Nevada": "NV",
+      "New Hampshire": "NH", "New Jersey": "NJ", "New Mexico": "NM", "New York": "NY",
+      "North Carolina": "NC", "North Dakota": "ND", "Ohio": "OH", "Oklahoma": "OK",
+      "Oregon": "OR", "Pennsylvania": "PA", "Rhode Island": "RI",
+      "South Carolina": "SC", "South Dakota": "SD", "Tennessee": "TN",
+      "Texas": "TX", "Utah": "UT", "Vermont": "VT", "Virginia": "VA",
+      "Washington": "WA", "West Virginia": "WV", "Wisconsin": "WI", "Wyoming": "WY"
+    };
+
     // Set and populate defaults
     var _d = {
       /** @scratch /panels/map/3
@@ -177,12 +194,17 @@ function (angular, app, _, $) {
         $scope.hits = results.hits.total;
         $scope.data = {};
         _.each(results.aggregations.map.buckets, function(v) {
+          let key = v.key;
+          if (stateNameToCodeMap[key]) {
+            key = stateNameToCodeMap[key]; // Transform full state name to 2-letter code
+          }
+
           if($scope.panel.tmode === 'terms') {
             //slice = { label : v.term, data : [[k,v.count]], actions: true};
-            $scope.data[v.key] = v.doc_count;
+            $scope.data[key] = v.doc_count;
           }
           if($scope.panel.tmode === 'terms_stats') {
-            $scope.data[v.key] = v.subaggs.value;
+            $scope.data[key] = v.subaggs.value;
 
             //slice = { label : v.term, data : [[k,v[scope.panel.tstat]]], actions: true};
           }
@@ -197,8 +219,18 @@ function (angular, app, _, $) {
       $scope.inspector = request.toJSON();
     };
 
-    $scope.build_search = function(field, value) {
-      filterSrv.set({type:'field', field:field, query:value, mandate:"must"});
+    $scope.build_search = function (field, value) {
+      // Reverse the stateNameToCodeMap to map 2-letter codes to full names
+      const codeToStateNameMap = Object.fromEntries(
+        Object.entries(stateNameToCodeMap).map(([fullName, code]) => [code, fullName])
+      );
+
+      // Transform the value if it is a 2-character state code
+      if (value.length === 2 && codeToStateNameMap[value]) {
+        value = codeToStateNameMap[value]; // Convert to full state name
+      }
+
+      filterSrv.set({ type: 'field', field: field, query: value, mandate: "must" });
     };
 
     $scope.set_refresh = function (state) {
