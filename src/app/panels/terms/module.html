@@ -79,7 +79,7 @@
         <tr ng-repeat="term in legend">
           <td><i class="icon-circle" ng-style="{color:term.color}" ng-click="build_search(term)"></i></i></td>
           <td class="terms-legend-term" style="padding-right:10px;padding-left:10px;" ng-click="build_search(term)">{{term.label}}</td>
-          <td>({{term.data[0][1].toLocaleString('en-US')}}) 
+          <td>{{term.data[0][1].toLocaleString('en-US')}}
             <a ng-if="isLinkable(panel.field, term.label)" ng-href="{{ getDynamicUrl(panel.field, getRowData(panel, term)) }}" target="_blank"><i class="icon-link"> </i></a>
           </td>
         </tr>
