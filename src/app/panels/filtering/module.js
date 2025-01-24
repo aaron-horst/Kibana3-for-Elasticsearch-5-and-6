@@ -66,7 +66,7 @@ function (angular, app, _) {
     };
 
     $scope.show_key = function(key) {
-      return !_.contains(['type','id','alias','mandate','active','editing'],key);
+      return !_.contains(['type','id','alias','mandate','active','editing','istemp'],key);
     };
 
     $scope.getFilterClass = function(filter) {
@@ -87,6 +87,14 @@ function (angular, app, _) {
       }
     };
 
+    $scope.getFilterBackgroundClass = function(filter) {
+      if(filter.istemp) {
+        return 'filter-panel-filter-temp';
+      } else {
+        return '';
+      }
+    };
+    
     $scope.isEditable = function(filter) {
       var uneditable = ['time'];
       if(_.contains(uneditable,filter.type)) {

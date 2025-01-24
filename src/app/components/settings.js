@@ -19,7 +19,14 @@ function (_) {
       request_timeout     : 30000,
       panel_names         : [],
       kibana_index        : 'kibana-int',
-      default_route       : '/dashboard/file/default.json'
+      default_route       : '/dashboard/file/default.json',
+      dashboard_metrics   : false,
+      enable_webhooks     : false,
+      dashboard_view_webhook_url  : null,
+      identity_provider_api_url : null,
+      logo_url : "/img/small.png",
+      hyperlinked_fields_doclevel : null,
+      hyperlinked_fields_aggregates : null,
     };
 
     // This initializes a new hash on purpose, to avoid adding parameters to

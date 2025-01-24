@@ -61,7 +61,7 @@
 </div>
 <div class="modal-footer">
   <button ng-show="editor.index == 1" ng-click="editor.index = 2;" class="btn btn-info" ng-disabled="panel.loadingEditor">Add Panel</button>
-  <button ng-show="panel.type && editor.index == 2" ng-click="editSave(row);add_panel(row,panel);reset_panel();editor.index = 0;dismiss();" class="btn btn-success" ng-disabled="panel.loadingEditor">Save</button>
-  <button ng-hide="panel.type && editor.index == 2" ng-click="editor.index=0;editSave(row);dismiss();reset_panel();close_edit()" class="btn btn-success">Save</button>
+  <button ng-show="panel.type && editor.index == 2" ng-click="editSave(row);add_panel(row,panel);reset_panel();editor.index = 0;dismiss();" class="btn btn-success" ng-disabled="panel.loadingEditor">Apply</button>
+  <button ng-hide="panel.type && editor.index == 2" ng-click="editor.index=0;editSave(row);dismiss();reset_panel();close_edit()" class="btn btn-success">Apply</button>
   <button type="button" class="btn btn-danger" ng-click="editor.index=0;dismiss();reset_panel();close_edit()">Cancel</button>
 </div>

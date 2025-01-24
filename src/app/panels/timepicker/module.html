@@ -29,6 +29,25 @@
           <li ng-repeat='timespan in panel.time_options track by $index'>
             <a ng-click="setRelativeFilter(timespan)">Last {{timespan}}</a>
           </li>
+          <!-- Prebuilt Times -->
+          <li style="border-top: 1px dashed #000;">
+            <a ng-click="setPrebuiltFilter('This Week')">This Week</a>
+          </li>
+          <li>
+            <a ng-click="setPrebuiltFilter('This Month')">This Month</a>
+          </li>
+          <li>
+            <a ng-click="setPrebuiltFilter('This Quarter')">This Quarter</a>
+          </li>
+          <li>
+            <a ng-click="setPrebuiltFilter('Last Week')">Last Week</a>
+          </li>
+          <li>
+            <a ng-click="setPrebuiltFilter('Last Month')">Last Month</a>
+          </li>
+          <li style="border-bottom: 1px dashed#000;">
+            <a ng-click="setPrebuiltFilter('Last Quarter')">Last Quarter</a>
+          </li>
 
           <!-- Auto refresh submenu -->
           <li class="dropdown-submenu">

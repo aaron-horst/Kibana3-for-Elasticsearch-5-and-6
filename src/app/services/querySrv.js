@@ -21,14 +21,23 @@ function (angular, _, config, kbn) {
       ids : [],
     });
 
+    // this.colors = [
+    //   "#7EB26D","#EAB839","#6ED0E0","#EF843C","#E24D42","#1F78C1","#BA43A9","#705DA0", //1
+    //   "#508642","#CCA300","#447EBC","#C15C17","#890F02","#0A437C","#6D1F62","#584477", //2
+    //   "#B7DBAB","#F4D598","#70DBED","#F9BA8F","#F29191","#82B5D8","#E5A8E2","#AEA2E0", //3
+    //   "#629E51","#E5AC0E","#64B0C8","#E0752D","#BF1B00","#0A50A1","#962D82","#614D93", //4
+    //   "#9AC48A","#F2C96D","#65C5DB","#F9934E","#EA6460","#5195CE","#D683CE","#806EB7", //5
+    //   "#3F6833","#967302","#2F575E","#99440A","#58140C","#052B51","#511749","#3F2B5B", //6
+    //   "#E0F9D7","#FCEACA","#CFFAFF","#F9E2D2","#FCE2DE","#BADFF4","#F9D9F9","#DEDAF7"  //7
+    // ];
     this.colors = [
-      "#7EB26D","#EAB839","#6ED0E0","#EF843C","#E24D42","#1F78C1","#BA43A9","#705DA0", //1
-      "#508642","#CCA300","#447EBC","#C15C17","#890F02","#0A437C","#6D1F62","#584477", //2
-      "#B7DBAB","#F4D598","#70DBED","#F9BA8F","#F29191","#82B5D8","#E5A8E2","#AEA2E0", //3
-      "#629E51","#E5AC0E","#64B0C8","#E0752D","#BF1B00","#0A50A1","#962D82","#614D93", //4
-      "#9AC48A","#F2C96D","#65C5DB","#F9934E","#EA6460","#5195CE","#D683CE","#806EB7", //5
-      "#3F6833","#967302","#2F575E","#99440A","#58140C","#052B51","#511749","#3F2B5B", //6
-      "#E0F9D7","#FCEACA","#CFFAFF","#F9E2D2","#FCE2DE","#BADFF4","#F9D9F9","#DEDAF7"  //7
+      "#0257bc", "#25b960", "#012337", "#a2e481", "#82b8e3", "#cc074c", "#13a37a",  // Core colors
+      "#1b68c3", "#3bc070", "#1a394b", "#abe78e", "#8ebfe6", "#d1205e", "#2bac87",  // Slightly lighter
+      "#3075c8", "#4cc67d", "#2f4b5b", "#b3e998", "#98c5e8", "#d5346c", "#3db492",  // Lighter
+      "#4483cd", "#5ecb89", "#435c6b", "#baeba2", "#a2caea", "#d9477b", "#50bb9d",  // Even lighter
+      "#5890d3", "#6fd196", "#576e7b", "#c2edac", "#acd0ed", "#dd5b89", "#63c2a7",  // Lighter still
+      "#6c9ed8", "#81d6a3", "#6c7f8b", "#c9efb6", "#b6d6ef", "#e16f97", "#76cab2",  // More lightened
+      "#80abde", "#92dcb0", "#80919b", "#d0f2c0", "#c0dcf1", "#e683a5", "#89d1bc"   // Lightest variant
     ];
 
     // For convenience
@@ -55,7 +64,7 @@ function (angular, _, config, kbn) {
       },
       "topN": {
         query: "*",
-        field: "_type",
+        field: "_index",
         size: 5,
         union: 'AND'
       }

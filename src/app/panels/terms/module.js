@@ -16,9 +16,10 @@ define([
   'app',
   'lodash',
   'jquery',
-  'kbn'
+  'kbn',
+  'config',
 ],
-function (angular, app, _, $, kbn) {
+function (angular, app, _, $, kbn, config) {
   'use strict';
 
   var module = angular.module('kibana.panels.terms', []);
@@ -54,7 +55,12 @@ function (angular, app, _, $, kbn) {
        *
        * field:: The field on which to compute the aggregation
        */
-      field   : '_type',
+      field   : '_index',
+      /**
+       * 
+       * alternate field to aggregate upon for 'unique' filtering
+       */
+      value_field: '',
       /** @scratch /panels/terms/5
        * exclude:: terms to exclude from the results
        */
@@ -255,7 +261,7 @@ function (angular, app, _, $, kbn) {
           .size($scope.panel.size);
 
         var sub_aggs2 = $scope.ejs.CardinalityAggregation('subaggs')
-            .field($scope.panel.field);
+            .field($scope.panel.value_field);
 
         switch($scope.panel.order) {
         case 'term':
@@ -293,10 +299,28 @@ function (angular, app, _, $, kbn) {
       });
     };
 
-    $scope.build_search = function(term,negate) {
+    $scope.build_search = function(term, negate, event) {
+      console.log('build_search called with:', term, negate, event);
+
+      // Check if the Ctrl key is pressed
+      if (event && event.ctrlKey) {
+        // Add term to multiterms instead of executing a search
+        console.log('Ctrl key pressed. Adding term to multiterms:', term);
+        $scope.add_multi_search(term);
+        return;
+      }
+
       if(_.isUndefined(term.meta)) {
-        filterSrv.set({type:'terms',field:$scope.field,value:term.label,
-          mandate:(negate ? 'mustNot':'must')});
+        var labelValue = angular.toJson(term.label);
+
+        const q = $scope.field + ":(" + labelValue + ")";
+
+        filterSrv.set({
+          editing   : false,
+          type      : 'querystring',
+          query     : q,
+          mandate   : (negate ? 'mustNot' : 'must')
+        },undefined,false);
       } else if(term.meta === 'missing') {
         filterSrv.set({type:'exists',field:$scope.field,
           mandate:(negate ? 'must':'mustNot')});
@@ -316,14 +340,48 @@ function (angular, app, _, $, kbn) {
     };
 
     $scope.multi_search = function() {
-      _.each($scope.panel.multiterms, function(t) {
-        var f = build_multi_search(t);
-        filterSrv.set(f, undefined, true);
-      });
+      if (!Array.isArray($scope.panel.multiterms)) {
+        console.error('Input must be an array.');
+        return null;
+      }
+      
+      var labelValues = $scope.panel.multiterms.map(obj => {
+        if (typeof obj.label !== 'string') {
+          console.error('Each object must have a label property of type string:', obj);
+          return '';
+        }
+        // Escape quotes and wrap the label in double quotes
+        const escapedLabel = obj.label.replace(/"/g, '\\"');
+        return `"${escapedLabel}"`;
+      })
+      .filter(label => label) // Remove any empty strings from invalid entries
+      .join(', ');
+
+      const q = $scope.field + ":(" + labelValues + ")";
+
+      filterSrv.set({
+        editing   : false,
+        type      : 'querystring',
+        query     : q,
+        mandate   : 'must'
+      },undefined,false);
+
       dashboard.refresh();
+      $scope.panel.multiterms.length = 0; // reset
     };
+
+    $scope.getSubmitButtonText = function() {
+      return 'Submit ' + $scope.panel.multiterms.length + ' Filters';
+    };
+
     $scope.add_multi_search = function(term) {
-      $scope.panel.multiterms.push(term);
+      if ($scope.check_multi_search(term)) {
+        // exists, so remove
+        $scope.delete_multi_search(term);
+      } else {
+        // add
+        $scope.panel.multiterms.push(term);
+      }
     };
     $scope.delete_multi_search = function(term) {
       _.remove($scope.panel.multiterms, term);
@@ -357,6 +415,53 @@ function (angular, app, _, $, kbn) {
       return true;
     };
 
+    $scope.getDynamicUrl = function(field, row) {
+      // console.log('Field',field);
+      // console.log("Row:", row);
+
+      // Find the hyperlink rules for the given field
+      const rules = config.hyperlinked_fields_aggregates.find(hf => hf.fieldName === field);
+      if (!rules) return null; // If no rules found, return null
+    
+      // Extract token values directly from the row object
+      const tokens = rules.tokens.map(token => row[token] || ''); // Use the token as the key
+    
+      // Replace the {0}, {1}, etc., in the URL template with token values
+      const newUrl = rules.urlTemplate.replace(/{(\d+)}/g, (_, index) => tokens[index] || '');
+      return newUrl;
+    };
+    
+    $scope.isLinkable = function(field, termLabel) {
+      if (termLabel == undefined || termLabel == 'Other values') return false; // other pie slice value
+
+      // var retval = config.hyperlinked_fields_doclevel.some(hf => hf.fieldName === field);
+      const rules = config.hyperlinked_fields_aggregates.find(hf => hf.fieldName === field);
+      if (!rules) return false; // If no rules found, return null
+
+      return true;
+    };
+
+    // note this currently DOESNT WORK well, never figured out...
+    $scope.getDynamicUrlFriendlyName = function(field) {
+      // Find the hyperlink rules for the given field
+      const rules = config.hyperlinked_fields_aggregates.find(hf => hf.fieldName === field);
+      if (!rules) return null; // If no rules found, return null
+
+      const url = rules.urlTemplate;
+
+      try {
+        const parsedUrl = new URL(url); // Parse the URL
+        return `${parsedUrl.protocol}//${parsedUrl.hostname}`; // Construct the base URL
+      } catch (error) {
+        console.error('Invalid URL:', url, error);
+        return "error"; // Return null if the URL is invalid
+      }
+    };
+
+    $scope.getRowData = function(panel, termObj) {
+      return { [panel.field]: termObj.label }; // Dynamically create the row object
+    };
+
   });
 
   module.directive('termsChart', function(querySrv) {
@@ -387,6 +492,10 @@ function (angular, app, _, $, kbn) {
           scope.data = [];
           _.each(scope.results.aggregations.terms.buckets, function(v) {
             var slice;
+            //if the value is 1/0 but is meant to be true/false, update the key value
+            if (v.key_as_string !== undefined) {
+              v.key = v.key_as_string;
+            }
             if(scope.panel.tmode === 'terms') {
               slice = { label : v.key, data : [[k,v.doc_count]], actions: true};
             }
@@ -481,7 +590,7 @@ function (angular, app, _, $, kbn) {
               }
               if(scope.panel.chart === 'pie') {
                 var labelFormat = function(label, series){
-                  return '<div ng-click="build_search(panel.field,\''+label+'\')'+
+                  return '<div ng-click="build_search(panel.field,\''+label.replace(/'/g, "\\'").replace(/"/g, '&quot;')+'\')'+
                     ' "style="font-size:8pt;text-align:center;padding:2px;color:white;">'+
                     label+'<br/>'+Math.round(series.percent)+'%</div>';
                 };
@@ -532,8 +641,21 @@ function (angular, app, _, $, kbn) {
         }
 
         elem.bind("plotclick", function (event, pos, object) {
-          if(object) {
-            scope.build_search(scope.data[object.seriesIndex]);
+          // if(object) {
+          //   scope.build_search(scope.data[object.seriesIndex],false,event);
+          // }
+
+          if (object) {
+            // Check if the Ctrl key is pressed
+            const isCtrlPressed = window.event && window.event.ctrlKey;
+            if (isCtrlPressed) {
+              console.log('Ctrl+Click detected on Flot chart item:', object);
+              scope.add_multi_search(scope.data[object.seriesIndex]);
+              scope.$apply(); // Ensure Angular detects the changes
+            } else {
+              console.log('Regular click detected on Flot chart item:', scope.data[object.seriesIndex]);
+              scope.build_search(scope.data[object.seriesIndex]),false,event;
+            }
           }
         });
 

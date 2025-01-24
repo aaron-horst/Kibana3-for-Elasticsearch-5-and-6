@@ -98,7 +98,7 @@ function (angular,$) {
             placeholder: 'keep'
           };
 
-          // compile the module and uncloack. We're done
+          // compile the module and uncloak. We're done
           function loadModule($module) {
             $module.appendTo(elem);
             elem.wrapInner(container);

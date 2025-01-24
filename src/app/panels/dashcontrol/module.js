@@ -110,7 +110,13 @@ function(angular, app, _) {
       );
     };
 
+    /**
+     * List the kibana dashes based on a search query
+     * @param {String} query 
+     */
     $scope.elasticsearch_dblist = function(query) {
+      //don't allow brackets in the query
+      query = query.replaceAll("[", "").replaceAll("]", "");
       dashboard.elasticsearch_list(query,$scope.panel.elasticsearch_size).then(
         function(result) {
         if(!_.isUndefined(result.hits)) {
@@ -156,7 +162,7 @@ function(angular, app, _) {
           // unused.. var output = []; // files is a FileList of File objects. List some properties.
           var readerOnload = function() {
             return function(e) {
-              dashboard.dash_load(JSON.parse(e.target.result));
+              dashboard.dash_load(JSON.parse(e.target.result), "dashboard");
               scope.$apply();
             };
           };

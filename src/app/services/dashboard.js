@@ -100,10 +100,10 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
         switch(_type) {
         case ('elasticsearch'):
-          self.elasticsearch_load('dashboard',_id);
+          self.elasticsearch_load('_doc',_id);
           break;
         case ('temp'):
-          self.elasticsearch_load('dashboard',_id);
+          self.elasticsearch_load('_doc',_id);
           break;
         case ('file'):
           self.file_load(_id);
@@ -191,7 +191,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       return _.cloneDeep(dashboard);
     };
 
-    this.dash_load = function(dashboard) {
+    this.dash_load = function(dashboard, dashboardType) {
       // Cancel all timers
       timer.cancel_all();
 
@@ -232,6 +232,95 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
       // Take out any that we're not allowed to add from the gui.
       self.availablePanels = _.difference(self.availablePanels,config.hidden_panels);
+      
+      if(config.enable_webhooks) {
+        var identity = "Anonymous";
+        if (config.dashboard_view_webhook_url == null) {
+          console.error("Error: enable_webhooks is enabled in config.js however no dashboard_view_webhook_url is specified");
+        } else {
+          // call the identity provider when present to return the current authenticated user information
+          if (config.identity_provider_api_url != null) {
+            return $http({
+              url: config.identity_provider_api_url,
+              method: "GET"
+            }).then(function(data) {
+              if (data !== undefined) {
+                identity = data.data;
+              }
+              // trigger the webhook
+              return $http({
+                url: config.dashboard_view_webhook_url,
+                method: "POST",
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                data: {
+                  "identity": identity,
+                  "title": self.current.title,
+                  "kibanaversion": "3.7.0.4",
+                  "type": dashboardType,
+                  "url": window.location.href,
+                  "indexpattern": self.current.index.pattern,
+                  "indexinterval": self.current.index.interval,
+                  'querycount': self.current.services.query.ids.length,
+                  'filtercount': self.current.services.filter.ids.length
+                }
+              }).then(function(data) {
+                return data;
+              }, function() {
+                return false;
+              });
+            }, function() {
+              return false;
+            });
+          }
+          
+        }
+      }
+      
+      if(config.dashboard_metrics){
+        // if config is set to collect dashboard metrics, 
+        // increment or add view count, set last viewed to now
+        // copy the other fields in the dashboard's document in the kibana index
+        var id = self.current.title;
+        var type = 'dashboard';
+        // we need to get these values from the existing document for this dash
+        // this doesn't seem to work how I would expect
+        var existingdoc = ejs.getSource(config.kibana_index, type, id).then(
+          // Success - set as jsonified document
+          function(data) { 
+            // data exists here
+            //alert(angular.toJson(data));
+            return angular.toJson(data); 
+          },
+          // Failure
+          function() { return {}; }
+        );
+        // data does not exist here
+        //alert(existingdoc);
+        if(!_.isUndefined(existingdoc)){
+          var indexSource = {
+            title: self.current.title,
+            user: existingdoc.user,
+            dashboard: angular.toJson(self.current),
+            type: type,
+            lastmodifieddate: existingdoc.lastmodifieddate,
+            lastvieweddate: new Date().getTime(),
+            countofviews: _.isUndefined(existingdoc.countofviews) ? 1 : 1 + existingdoc.countofviews
+          };
+          // update by id
+          ejs.doIndex(config.kibana_index,type,id, indexSource).then(
+            // Success
+            function() {
+              return true;
+            },
+            // Failure
+            function() {
+              return false;
+            }
+          );
+        }
+      } // end config.dashboard_metrics
 
       return true;
     };
@@ -330,7 +419,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
           }
         ]
       });
-      self.dash_load(dashboard);
+      self.dash_load(dashboard, "dashboard");
     };
 
     this.file_load = function(file) {
@@ -344,7 +433,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         if(!result) {
           return false;
         }
-        self.dash_load(dash_defaults(result.data));
+        self.dash_load(dash_defaults(result.data), "dashboard");
         return true;
       },function() {
         alertSrv.set('Error',"Could not load <i>dashboards/"+file+"</i>. Please make sure it exists" ,'error');
@@ -354,8 +443,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
     this.elasticsearch_load = function(type,id) {
       var successcb = function(data) {
-        var response = renderTemplate(angular.fromJson(data).dashboard, $routeParams);
-        self.dash_load(response);
+        var dashboardObject = angular.fromJson(data);
+        var response = renderTemplate(dashboardObject.dashboard, $routeParams);
+        self.dash_load(response, dashboardObject.type);
       };
       var errorcb = function(data, status) {
         if(status === 0) {
@@ -383,7 +473,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         if(!result) {
           return false;
         }
-        self.dash_load(dash_defaults(result.data));
+        self.dash_load(dash_defaults(result.data, "dashboard"));
         return true;
       },function() {
         alertSrv.set('Error',
@@ -398,19 +488,59 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       var save = _.clone(self.current);
       var id;
 
+      // do not persist temp filters when saving
+      _.each(save.services.filter.list, function(f, idx){
+              
+        if (f.istemp){
+          delete save.services.filter.list[idx];
+          // This must happen on the full path also since _.without returns a copy
+          save.services.filter.ids = save.services.filter.ids = _.without(save.services.filter.ids,f.id);
+        }
+      });
+
       // Change title on object clone
       if (type === 'dashboard') {
         id = save.title = _.isUndefined(title) ? self.current.title : title;
       }
 
-      // Create request with id as title. Rethink this.
-      var indexSource = {
-        title: save.title,
-        user: _.isUndefined(user) ? null : user,
-        dashboard: angular.toJson(save),
-        type: type,
-        lastmodifieddate: new Date().getTime()
-      };
+      var indexSource = {};
+
+      if(config.dashboard_metrics){
+        var existingdoc = ejs.getSource(config.kibana_index, type, id).then(
+          // Success - return jsonified document
+          function(data) { return angular.toJson(data); },
+          // Failure
+          function() { return false; }
+        );
+        var lastvieweddate = new Date().getTime();  
+        var countofviews = 1;
+        if(!_.isUndefined(existingdoc)){
+          // if it exists, we're saving a change to the current dash, so do not increment
+          lastvieweddate = _.isUndefined(existingdoc.lastvieweddate) ? new Date().getTime() : existingdoc.lastvieweddate;
+          countofviews = _.isUndefined(existingdoc.countofviews) ? 1 : existingdoc.countofviews;
+        }
+  
+        // Create request with id as title. Rethink this.
+        indexSource = {
+          title: save.title,
+          user: _.isUndefined(user) ? null : user,
+          dashboard: angular.toJson(save),
+          type: type,
+          lastmodifieddate: new Date().getTime(),
+          lastvieweddate: lastvieweddate,
+          countofviews: countofviews
+        };
+        // end config.dashboard_metrics
+      } else {  
+        // Create request with id as title. Rethink this.
+        indexSource = {
+          title: save.title,
+          user: _.isUndefined(user) ? null : user,
+          dashboard: angular.toJson(save),
+          type: type,
+          lastmodifieddate: new Date().getTime()
+        };
+      }
 
       return ejs.doIndex(config.kibana_index,'dashboard',id, indexSource).then(
         // Success

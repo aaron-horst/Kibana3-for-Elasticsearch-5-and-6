@@ -12,6 +12,9 @@
       color: #fff;
       background-color: #444;
     }
+    .filter-panel-filter.filter-panel-filter-temp {
+      background-color: #006CB6;
+    }
     .filter-panel-filter ul {
       margin-bottom: 3px;
     }
@@ -36,7 +39,7 @@
     <span ng-show="dashboard.current.services.filter.ids.length == 0">
       <h5>No filters available</h5>
     </span>
-    <div ng-repeat="id in dashboard.current.services.filter.ids" class="small filter-panel-filter">
+    <div ng-repeat="id in dashboard.current.services.filter.ids" class="small filter-panel-filter" ng-class="getFilterBackgroundClass(dashboard.current.services.filter.list[id])">
       <div>
         <strong>{{dashboard.current.services.filter.list[id].type}}</strong>
         <span ng-show="!dashboard.current.services.filter.list[id].editing && isEditable(dashboard.current.services.filter.list[id])" class="filter-mandate" ng-click="dashboard.current.services.filter.list[id].editing = true">

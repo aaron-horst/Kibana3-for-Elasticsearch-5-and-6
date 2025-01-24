@@ -8,7 +8,7 @@ define([
 
   var module = angular.module('kibana.services');
 
-  module.service('filterSrv', function(dashboard, ejsResource, $rootScope, $timeout) {
+  module.service('filterSrv', function(dashboard, ejsResource, $rootScope, $timeout, $window) {
     // Create an object to hold our service state on the dashboard
     dashboard.current.services.filter = dashboard.current.services.filter || {};
 
@@ -24,6 +24,63 @@ define([
     // Save a reference to this
     var self = this;
 
+    // local fn to handle parsing of query string params
+    function parseDashboardFilters(fullQueryString) {
+
+      var resultObj = { hasFilters: false };
+  
+      if (!fullQueryString) { 
+        return resultObj;
+      }
+  
+      // make sure query string does not contain any encoded characters
+      fullQueryString = decodeURIComponent(fullQueryString);
+  
+      var filters = fullQueryString.substring(1)  // remove leading ?
+          .split('=')[1]                          // remove query string sub key ('filters=')
+          .replace('params:', '')                 // remove leading identifier
+          .replace('),(', ') , (').split(' , ');  // expand item delimeter and split
+  
+      if (filters.length === 0) {
+        return resultObj;
+      }
+  
+      resultObj.hasFilters = true;
+      resultObj.queryValue = fullQueryString.substring(1);
+      resultObj.filters = [];
+  
+      for (var i = 0; i < filters.length; i++) {
+        var item = filters[i];
+
+        var rawQuery = item.substring(0, item.length - 1).replace('(query:', '');
+
+        var queryParts = rawQuery.split(',');
+
+        // grab the last itme in the array split on commans for the query type in case the actual query contains a comma
+        var queryType = queryParts[queryParts.length - 1];
+
+        // remove the query type segement from the raw query
+        var itemQuery = rawQuery.replace(',' + queryType, '');
+
+        var mandate = queryType.replace('type:', '');
+        var field = itemQuery.split(':')[0];
+        var query = itemQuery.split(':')[1];
+          
+        resultObj.filters.push({
+            //id: nextId(),
+            alias: "",
+            active: true,
+            field: field,
+            query: query.replace('\'', '"').replace('\'', '"'), // hacky way of ensuring " instead of '
+            type: 'field',
+            mandate: mandate,
+            istemp: true
+          });
+      }
+  
+      return resultObj;
+    }
+
     // Call this whenever we need to reload the important stuff
     this.init = function() {
       // Populate defaults
@@ -33,6 +90,17 @@ define([
         self.set(f,f.id,true);
       });
 
+      // add filters from query string if needed
+      if (dashboard.current.services.filter.list[0] && $window.location.search){
+        
+        var qsFilterCheckResult = parseDashboardFilters($window.location.search);
+        if (qsFilterCheckResult.hasFilters){
+          
+          _.each(qsFilterCheckResult.filters,function(fi) {
+            self.set(fi,fi.id,false);
+          });
+        }
+      }
     };
 
     this.ids = function() {

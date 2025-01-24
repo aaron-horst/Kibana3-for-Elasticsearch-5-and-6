@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width">
 
     <title>Kibana 3{{dashboard.current.title ? " - "+dashboard.current.title : ""}}</title>
-    <link rel="stylesheet" href="css/bootstrap.light.min.css" title="Light">
+    <!-- <link rel="stylesheet" href="css/bootstrap.light.min.css" title="Light"> -->
     <link rel="stylesheet" href="css/timepicker.css">
     <link rel="stylesheet" href="css/animate.min.css">
     <link rel="stylesheet" href="css/normalize.min.css">
@@ -29,6 +29,7 @@
     <link rel="stylesheet" ng-href="css/bootstrap.{{dashboard.current.style||'dark'}}.min.css">
     <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/overrides.css">
 
     <div ng-cloak class="alert-info dashboard-notice" ng-show="config.notice">
       <button type="button" class="close" ng-click="config.notice=null;" style="padding-right:50px">&times;</button>
@@ -41,7 +42,7 @@
     <div ng-cloak class="navbar navbar-static-top">
       <div class="navbar-inner">
         <div class="container-fluid">
-          <span class="brand"><img src="img/small.png" bs-tooltip="'Kibana '+(kbnVersion=='@REV@'?'master':kbnVersion)" data-placement="bottom"> {{dashboard.current.title}}</span>
+          <span class="brand"><img ng-src="{{config.logo_url}}" style="max-width: 25px; max-height: 25px" bs-tooltip="'Kibana '+(kbnVersion=='@REV@'?'master':kbnVersion)" data-placement="bottom"> {{dashboard.current.title}}</span>
 
           <ul class="nav pull-right" ng-controller='dashLoader' ng-init="init()" ng-include="'app/partials/dashLoader.html'">
           </ul>

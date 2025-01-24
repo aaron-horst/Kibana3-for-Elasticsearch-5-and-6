@@ -141,7 +141,7 @@ define([
 
       results.then(function(results) {
         $scope.panelMeta.loading = false;
-        var complete  = results.hits.total;
+        var complete  = results.hits.total.value;
         var remaining = $scope.panel.query.goal - complete;
         $scope.data = [
           { label : 'Complete', data : complete, color: querySrv.colors[parseInt($scope.$id, 16)%8] },

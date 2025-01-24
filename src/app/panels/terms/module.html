@@ -25,30 +25,38 @@
       display: table-row;
     }
 
-    .terms-legend .icon-circle {
+    .terms-legend .icon-circle, .terms-legend-term {
       cursor: pointer;
+    }
+    .text-right {
+      text-align: right !important;
     }
   </style>
 
-
   <div class="terms-wrapper">
+    <div ng-show="panel.multiterms.length"><button class="btn btn-mini btn-success" ng-click="multi_search()" ng-bind-html="getSubmitButtonText()"></button></div>
+
     <!-- LEGEND -->
     <div class="terms-legend" ng-show="panel.counter_pos == 'above' && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend'>
       <!-- vertical legend above -->
       <table class="small" ng-show="panel.arrangement == 'vertical'">
         <tr ng-repeat="term in legend">
           <td><i class="icon-circle" ng-style="{color:term.color}" ng-click="build_search(term)"></i></td>
-          <td class="terms-legend-term" style="padding-right:10px;padding-left:10px;">{{term.label}}</td>
-          <td>{{term.data[0][1]}}</td>
+          <td class="terms-legend-term" style="padding-right:10px;padding-left:10px;" ng-click="build_search(term,false,$event)">{{term.label}}</td>
+          <td>({{term.data[0][1].toLocaleString('en-US')}}) 
+            <a ng-if="isLinkable(panel.field, term.label)" ng-href="{{ getDynamicUrl(panel.field, getRowData(panel, term)) }}" target="_blank"><i class="icon-link"> </i></a>
+          </td>
         </tr>
       </table>
 
       <!-- horizontal legend above -->
       <span class="small" ng-show="panel.arrangement == 'horizontal'" ng-repeat="term in legend" style="float:left;padding-left: 10px;">
-        <span>
-          <i class="icon-circle" ng-style="{color:term.color}" ng-click="build_search(term)"></i>
-          <span class="terms-legend-term">{{term.label}}</span> ({{term.data[0][1]}})
+        <span ng-click="build_search(term,false,$event)">
+          <i class="icon-circle" ng-style="{color:term.color}"></i>
+          <span class="terms-legend-term">{{term.label}}</span> 
         </span>
+        <span>({{term.data[0][1].toLocaleString('en-US')}})</span>
+        <!-- <a ng-if="isLinkable(panel.field, term.label)" ng-href="{{ getDynamicUrl(panel.field, getRowData(panel, term)) }}" target="_blank"><i class="icon-link"> </i> </a>-->
       </span>
 
       <span class="small pull-left" ng-show="panel.tmode == 'terms_stats'">
@@ -70,17 +78,21 @@
       <table class="small" ng-show="panel.arrangement == 'vertical'">
         <tr ng-repeat="term in legend">
           <td><i class="icon-circle" ng-style="{color:term.color}" ng-click="build_search(term)"></i></i></td>
-          <td class="terms-legend-term" style="padding-right:10px;padding-left:10px;">{{term.label}}</td>
-          <td>{{term.data[0][1]}}</td>
+          <td class="terms-legend-term" style="padding-right:10px;padding-left:10px;" ng-click="build_search(term)">{{term.label}}</td>
+          <td>{{term.data[0][1].toLocaleString('en-US')}}
+            <a ng-if="isLinkable(panel.field, term.label)" ng-href="{{ getDynamicUrl(panel.field, getRowData(panel, term)) }}" target="_blank"><i class="icon-link"> </i></a>
+          </td>
         </tr>
       </table>
 
       <!-- horizontal legend below -->
       <span class="small" ng-show="panel.arrangement == 'horizontal'" ng-repeat="term in legend" style="float:left;padding-left: 10px;">
-        <span>
-          <i class="icon-circle" ng-style="{color:term.color}" ng-click="build_search(term)"></i>
-          <span class="terms-legend-term">{{term.label}}</span> ({{term.data[0][1]}})
+        <span ng-click="build_search(term,false,$event)">
+          <i class="icon-circle" ng-style="{color:term.color}"></i>
+          <span class="terms-legend-term">{{term.label}}</span> 
         </span>
+        <span>({{term.data[0][1].toLocaleString('en-US')}})</span>
+        <a ng-if="isLinkable(panel.field, term.label)" ng-href="{{ getDynamicUrl(panel.field, getRowData(panel, term)) }}" target="_blank"><i class="icon-link"></i></a>
       </span>
 
       <span class="small pull-left" ng-show="panel.tmode == 'terms_stats'">
@@ -95,13 +107,13 @@
   <!-- TABLE -->
   <table ng-style="panel.style" class="table table-striped table-condensed" ng-show="panel.chart == 'table'">
     <thead>
-      <th>Term</th> <th>{{ panel.tmode == 'terms_stats' ? panel.tstat : 'Count' }}</th>
+      <th>Term</th> <th class="text-right">{{ panel.tmode == 'terms_stats' ? panel.tstat : 'Count' }}</th>
       <th ng-hide="panel.multiterms.length">Action</th>
       <th ng-show="panel.multiterms.length"><button class="btn btn-mini btn-success" ng-click="multi_search()">Submit</button></th>
     </thead>
     <tr ng-repeat="term in data" ng-show="showMeta(term)">
       <td class="terms-legend-term" ng-click="add_multi_search(term)">{{term.label}}</td>
-      <td>{{term.data[0][1]}}</td>
+      <td class="text-right">{{term.data[0][1].toLocaleString('en-US')}}</td>
       <td>
         <span ng-hide="term.meta == 'other'">
           <i class='icon-search pointer' ng-click="build_search(term)"></i>
@@ -111,5 +123,6 @@
       </td>
     </tr>
   </table>
+  <div ng-if="isLinkable(panel.field, 'xyz')" style="padding-top:10px;font-style:italic;" class="small"><a href="#"><i class="icon-link"></i></a> = External Link</div>
 
 </div>

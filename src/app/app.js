@@ -76,11 +76,10 @@ function (angular, $, _, appLevelRequire) {
   app.config(function ($routeProvider, $controllerProvider, $httpProvider, $compileProvider, $filterProvider, $provide) {
 
 
-    $httpProvider.interceptors.push(['$location', function($location) {
+    $httpProvider.interceptors.push(['$location', function() {
       return {
         responseError: function(resp) {
           if (resp.status === 0) {
-            $location.path('/connectionFailed');
             console.log(resp);
           }
         }
@@ -88,9 +87,6 @@ function (angular, $, _, appLevelRequire) {
     }]);
 
     $routeProvider
-      .when('/connectionFailed', {
-        templateUrl: 'app/partials/connectionFailed.html',
-      })
       .when('/dashboard', {
         templateUrl: 'app/partials/dashboard.html',
       })

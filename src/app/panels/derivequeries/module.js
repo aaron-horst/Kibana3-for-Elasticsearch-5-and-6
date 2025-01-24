@@ -34,7 +34,7 @@ function (angular, app, _) {
       label   : "Search",
       query   : "*",
       ids     : [],
-      field   : '_type',
+      field   : '_index',
       fields  : [],
       spyable : true,
       rest    : false,

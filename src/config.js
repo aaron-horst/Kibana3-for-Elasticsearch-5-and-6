@@ -73,7 +73,7 @@ function (Settings) {
      * The default ES index to use for storing Kibana specific object
      * such as stored dashboards
      */
-    kibana_index: "kibana-int",
+    kibana_index: "kibana3-int",
 
 
     /*
@@ -116,5 +116,132 @@ function (Settings) {
       'percentiles'
     ],
 
+    /** @scratch /configuration/config.js/5
+     *
+     * ==== dashboard_metrics
+     *
+     * Whether to update kibana_index dashboard docs with view metrics
+     *
+     * Valid value: true, false
+     */
+    dashboard_metrics: false,
+
+    /** @scratch /configuration/config.js/5
+     *
+     * ==== enable_webhooks
+     *
+     * Optional webhook URL triggered when viewing a dashboard
+     * 
+     * Valid value: true, false
+     */
+     enable_webhooks: true,
+
+    /** @scratch /configuration/config.js/5
+     *
+     * ==== dashboard_view_webhook_url
+     *
+     * Optional webhook URL triggered when viewing a dashboard
+     */
+     dashboard_view_webhook_url: "https://localhost:44369/kibana/post",
+
+    /** @scratch /configuration/config.js/5
+     *
+     * ==== dashboard_view_webhook_url
+     *
+     * URL that returns an object referencing the current autheed user name accessed via HTTP GET
+     */
+     identity_provider_api_url: "http://127.0.0.1:5601/identityprovider",
+
+     /** @scratch /configuration/config.js/5
+      *
+      * ==== logo_url
+      *
+      * URL that returns the logo for the dashboard's overall branding. The default is relative to kibana (/img/small.png), but you can use external resources
+      */
+     logo_url: "/img/small.png",
+
+          /** @scratch /configuration/config.js/5
+      *
+      *
+      * Optional array of rules targeting specific fields in your data's structure that will transform areas of kibana to hyperlinks when displaying those fields. This collection will be used will document-level (row-level) data access is available
+      */
+      hyperlinked_fields_doclevel: [
+        {
+          fieldName: 'generatedfor.userid',
+          urlTemplate: 'https://masteradmin.ihire.com/users/{0}/products?utm_source=kibana3custom&utm_content=panel_table&realm={1}',
+          tokens: ['generatedfor.userid']
+        },
+        {
+          fieldName: 'generatedby.name',
+          urlTemplate: 'https://masteradmin.ihire.com/users/{1}/products?utm_source=kibana3custom&utm_content=panel_table&realm={2}',
+          tokens: ['generatedby.name','generatedby.userid', 'realm.name']
+        },
+        {
+          fieldName: 'generatedfor.name',
+          urlTemplate: 'https://masteradmin.ihire.com/users/{1}/products?utm_source=kibana3custom&utm_content=panel_table&realm={2}',
+          tokens: ['generatedfor.name','generatedfor.userid', 'realm.name']
+        },
+        {
+          fieldName: 'generatedfor.candidate.careertitle',
+          urlTemplate: 'https://masteradmin.ihire.com/users/{0}/candidate/edit?utm_source=kibana3custom&utm_content=panel_table&realm={1}',
+          tokens: ['generatedby.userid', 'realm.name']
+        },
+        {
+          fieldName: 'generatedfor.organization',
+          urlTemplate: 'https://masteradmin.ihire.com/?Company={0}&UserId={1}&utm_source=kibana3custom&utm_content=panel_table&realm={1}',
+          tokens: ['generatedfor.organization', 'generatedfor.userid']
+        },
+        {
+          fieldName: 'custom.company',
+          urlTemplate: 'https://masteradmin.ihire.com/?Company={0}&UserId={1}&utm_source=kibana3custom&utm_content=panel_table&realm={1}',
+          tokens: ['custom.company']
+        },
+        {
+          fieldName: 'custom.employerid',
+          urlTemplate: 'https://masteradmin.ihire.com/?EmployerId={0}&utm_source=kibana3custom&utm_content=panel_table&realm={1}',
+          tokens: ['custom.employerid']
+        },    
+        // Add more rules as needed
+      ],
+          /** @scratch /configuration/config.js/5
+      *
+      * ==== hyperlinked_fields_aggregates
+      *
+      * Optional array of rules targeting specific fields in your data's structure that will transform areas of kibana to hyperlinks when displaying those fields. This collection will be used on aggregates-based panels, like the Terms panel
+      */
+      hyperlinked_fields_aggregates: [
+        {
+          fieldName: 'generatedfor.userid',
+          urlTemplate: 'https://masteradmin.ihire.com/users/{0}/products?utm_source=kibana3custom&utm_content=panel_aggregates',
+          tokens: ['generatedfor.userid']
+        },
+        {
+          fieldName: 'generatedby.name',
+          urlTemplate: 'https://masteradmin.ihire.com/?FirstName={0}&utm_source=kibana3custom&utm_content=panel_aggregates',
+          tokens: ['generatedby.name']
+        },
+        {
+          fieldName: 'generatedfor.name',
+          urlTemplate: 'https://masteradmin.ihire.com/?FirstName={0}&utm_source=kibana3custom&utm_content=panel_aggregates',
+          tokens: ['generatedfor.name']
+        },
+        {
+          fieldName: 'generatedfor.organization',
+          urlTemplate: 'https://masteradmin.ihire.com/?Company={0}&utm_source=kibana3custom&utm_content=panel_aggregates',
+          tokens: ['generatedfor.organization']
+        },
+        {
+          fieldName: 'custom.company',
+          urlTemplate: 'https://masteradmin.ihire.com/?Company={0}&UserId={1}&utm_source=kibana3custom&utm_content=panel_aggregates',
+          tokens: ['custom.company']
+        },
+        {
+          fieldName: 'custom.employerid',
+          urlTemplate: 'https://masteradmin.ihire.com/?EmployerId={0}&utm_source=kibana3custom&utm_content=panel_aggregates',
+          tokens: ['custom.employerid']
+        },    
+        // Add more rules as needed
+      ],
+          
   });
 });

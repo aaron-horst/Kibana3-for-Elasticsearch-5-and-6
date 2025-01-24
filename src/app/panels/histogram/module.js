@@ -135,7 +135,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
         enable      : false,
         query       : "*",
         size        : 20,
-        field       : '_type',
+        field       : '_index',
         sort        : ['_score','desc']
       },
       /** @scratch /panels/histogram/3
@@ -154,7 +154,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
       /** @scratch /panels/histogram/3
        * interval:: Array of possible intervals in the *View* selector. Example [`auto',`1s',`5m',`3h']
        */
-      intervals     : ['auto','1s','1m','5m','10m','30m','1h','3h','12h','1d','1w','1y'],
+      intervals     : ['auto','1s','1m','5m','10m','30m','1h','3h','12h','1d','1w', '1M,', '1y'],
       /** @scratch /panels/histogram/3
        * ==== Drawing options
        * lines:: Show line chart
@@ -475,7 +475,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
 
         if ($scope.panel.mode === 'count') {
           value = (time_series._data[entry.key] || 0) + entry.doc_count;
-        } else if ($scope.panel.mode === 'uniq') {
+        } else if ($scope.panel.mode === 'uniq' || $scope.panel.mode === 'distinct') {
           value = (time_series._data[entry.key] || 0) + entry.subaggs.value;
         } else if ($scope.panel.mode === 'mean') {
           // Compute the ongoing mean by
@@ -508,11 +508,15 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
     }
 
     function buildAggs(query_id, interval, scopedQuery){
-        // define the date histogram aggregation
-        var aggr = $scope.ejs.DateHistogramAggregation(query_id)
-                    .field($scope.panel.time_field)
-                    .interval(interval);
-        
+          // define the date histogram aggregation
+          var aggr = $scope.ejs.DateHistogramAggregation(query_id)
+            .field($scope.panel.time_field)
+            .interval(interval);
+            
+          if ($scope.panel.timezone == "browser") {
+            aggr.timeZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+          }
+
         if($scope.panel.mode !== 'count') {
           if(_.isNull($scope.panel.value_field)) {
             $scope.panel.error = "In " + $scope.panel.mode + " mode a field must be specified";
@@ -521,6 +525,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           var sub_aggs;
           switch($scope.panel.mode) {
           case 'uniq':
+          case 'distinct':
             sub_aggs = $scope.ejs.CardinalityAggregation('subaggs')
             .field($scope.panel.value_field);
             break;
@@ -707,7 +712,8 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
                 max: _.isUndefined(scope.range.to) ? null : scope.range.to.getTime(),
                 timeformat: time_format(scope.panel.interval),
                 label: "Datetime",
-                ticks: elem.width()/100
+                ticks: elem.width()/100,
+                minTickSize: [1, "day"]
               },
               grid: {
                 backgroundColor: null,
