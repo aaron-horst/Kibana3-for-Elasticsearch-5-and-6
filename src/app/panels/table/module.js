@@ -200,15 +200,33 @@ function (angular, app, _, kbn, moment, config) {
         return val;
       };
 
-      var rows = _.map($scope.data, function(e) {
+      // Function to safely get nested properties
+      var getNestedValue = function (obj, path) {
+        return path.split('.').reduce(function (acc, key) {
+          return acc && acc[key] !== undefined ? acc[key] : undefined;
+        }, obj);
+      };
+
+      // Start with an array for rows, adding the header as the first element
+      var retVal = [$scope.panel.fields.join($scope.csv.separator)];
+
+      // Map through the data to create data rows
+      _.each($scope.data, function (e) {
         var exportFields = [];
-        _.each($scope.panel.fields, function(field) {
-          exportFields.push(escape(e._source[field]));
+        _.each($scope.panel.fields, function (field) {
+          // Use getNestedValue to fetch the value for dot-notation paths
+          var value = getNestedValue(e._source, field);
+          exportFields.push(escape(value || "-undefined error-"));
         });
-        return exportFields.join($scope.csv.separator) + '\r\n';
+        // Add the data row as a joined string to retVal
+        retVal.push(exportFields.join($scope.csv.separator));
       });
 
-      var blob = new Blob(rows, { type: 'text/plain' });
+      // Combine the rows into a single string with line breaks
+      var finalOutput = retVal.join('\r\n');
+
+      // Create a Blob
+      var blob = new Blob([finalOutput], { type: 'text/plain' });
 
       window.saveAs(blob, $scope.csv.filename);
     };
