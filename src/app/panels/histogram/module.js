@@ -712,7 +712,8 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
                 max: _.isUndefined(scope.range.to) ? null : scope.range.to.getTime(),
                 timeformat: time_format(scope.panel.interval),
                 label: "Datetime",
-                ticks: elem.width()/100
+                ticks: elem.width()/100,
+                minTickSize: [1, "day"]
               },
               grid: {
                 backgroundColor: null,
