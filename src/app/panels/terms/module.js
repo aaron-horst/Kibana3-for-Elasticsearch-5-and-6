@@ -205,6 +205,14 @@ function (angular, app, _, $, kbn, config) {
           termsAggs.order('_count');
         }
         request = request.query(query).agg(termsAggs).size(0);
+
+        // add exists agg if requested
+        if ($scope.panel.missing) {
+          var missingAggs = $scope.ejs.MissingAggregation('missing')
+            .field($scope.panel.field);
+
+          request = request.agg(missingAggs);
+        }
       }
       else if($scope.panel.tmode === 'terms_stats') {
         var terms_aggs = $scope.ejs.TermsAggregation('terms')
@@ -527,19 +535,26 @@ function (angular, app, _, $, kbn, config) {
             }
           });
 
-          // todo: wireup missing terms data
-          // scope.data.push({
-          //     label: 'Missing field',
-          //     data: [[k, 'unknown']], meta: "missing", color: '#aaa', opacity: 0
-          // });
-
           if (scope.panel.tmode === 'terms') {
             scope.data.push({
-                label: 'Other values',
-                data: [[k + 1, scope.results.aggregations.terms.sum_other_doc_count]],
-                meta: "other",
-                color: '#444'
+              label: 'Other values',
+              data: [[k + 1, scope.results.aggregations.terms.sum_other_doc_count]],
+              meta: "other",
+              color: '#444'
+            });
+
+            // wireup missing terms data
+            if (scope.panel.missing) {
+              var tmp = scope.results.aggregations.missing;
+
+              scope.data.push({
+                label: 'Missing field',
+                data: [[k + 2, scope.results.aggregations.missing.doc_count, 'unknown']],
+                meta: "missing",
+                color: '#aaa',
+                opacity: 0
               });
+            }
           }
         }
 
