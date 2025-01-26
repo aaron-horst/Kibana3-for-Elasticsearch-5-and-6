@@ -354,12 +354,8 @@ function (angular, app, _, $, kbn, config) {
       }
       
       var labelValues = $scope.panel.multiterms.map(obj => {
-        if (typeof obj.label !== 'string') {
-          console.error('Each object must have a label property of type string:', obj);
-          return '';
-        }
         // Escape quotes and wrap the label in double quotes
-        const escapedLabel = obj.label.replace(/"/g, '\\"');
+        const escapedLabel = String(obj.label).replace(/"/g, '\\"');
         return `"${escapedLabel}"`;
       })
       .filter(label => label) // Remove any empty strings from invalid entries
