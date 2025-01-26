@@ -233,10 +233,10 @@ textarea {
 
 body {
 	margin: 0;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-size: 14px;
+	font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+	font-size: 15px;
 	line-height: 20px;
-	color: #555;
+	color: #333;
 	background-color: #eee
 }
 
@@ -4416,7 +4416,7 @@ input[type="submit"].btn.btn-mini {
 	margin-left: -20px;
 	font-size: 20px;
 	font-weight: 200;
-	color: #555555;
+	color: #333333;
 }
 
 .navbar .brand:hover,
@@ -6852,7 +6852,8 @@ pre {
 .panel-title {
 	border: 0;
 	text-transform: uppercase;
-	font-weight: bold
+	font-weight: bold;
+	font-size:1.1em;
 }
 
 .panel-loading {
@@ -7380,6 +7381,7 @@ div.flot-text {
 .filter-panel-filter {
 	color: #555 !important;
 	background-color: #fff !important;
+	border: 1px solid #d7d7d7;
 }
 
 a {

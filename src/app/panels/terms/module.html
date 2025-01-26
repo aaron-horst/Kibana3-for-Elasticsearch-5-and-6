@@ -93,7 +93,7 @@
           <i class="icon-circle" ng-style="{color:term.color}"></i>
           <span class="terms-legend-term">{{term.label}}</span> 
         </span>
-        <span>({{term.data[0][1].toLocaleString('en-US')}})</span>
+        <span class="terms-legend-metric">({{term.data[0][1].toLocaleString('en-US')}})</span>
         <a ng-if="isLinkable(panel.field, term.label)" ng-href="{{ getDynamicUrl(panel.field, getRowData(panel, term)) }}" target="_blank"><i class="icon-link"></i></a>
       </span>
 
