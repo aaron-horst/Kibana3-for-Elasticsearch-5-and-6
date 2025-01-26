@@ -18,10 +18,10 @@ define([
   'lodash',
   'jquery',
   'kbn',
-
+  'numeral',
   'jquery.flot',
   'jquery.flot.pie'
-], function (angular, app, _, $, kbn) {
+], function (angular, app, _, $, kbn, numeral) {
   'use strict';
 
   var module = angular.module('kibana.panels.hits', []);
@@ -47,7 +47,7 @@ define([
 
     // Set and populate defaults
     var _d = {
-      style   : { "font-size": '10pt'},
+      style   : { "font-size": '10pt','text-align': 'left'},
       /** @scratch /panels/hits/3
        *
        * === Parameters
@@ -86,6 +86,7 @@ define([
        * queries.mode::: Of the queries available, which to use. Options: +all, pinned, unpinned, selected+
        * queries.ids::: In +selected+ mode, which query ids are selected.
        */
+      totalsFormat : true,
       queries     : {
         mode        : 'all',
         ids         : []
@@ -290,6 +291,15 @@ define([
         });
 
       }
+    };
+  });
+
+  module.filter('displayHits', function(){
+    return function (value,format) {    
+      if (format) {
+        value = numeral(value).format('0,0');
+      }
+      return value;
     };
   });
 });

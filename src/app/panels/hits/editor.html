@@ -25,5 +25,11 @@
     <div class="editor-option" ng-show="panel.chart == 'pie'">
       <label class="small">Labels</label><input type="checkbox" ng-model="panel.labels" ng-checked="panel.labels">
     </div>
+    <div class="editor-option" ng-show="panel.chart == 'total' || panel.chart == 'list'">
+      <label class="small">Total - Format?</label><input type="checkbox" ng-model="panel.totalsFormat" ng-checked="panel.totalsFormat">
+    </div>
+    <div class="editor-option" ng-show="panel.chart == 'total' || panel.chart == 'list'">
+      <label class="small">Total - Alignment</label><select class="input-small" ng-model="panel.style['text-align']" ng-options="f for f in ['Left','Center','Right']"></select>
+    </div>
   </div>
 </div>
