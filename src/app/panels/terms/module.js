@@ -138,7 +138,10 @@ function (angular, app, _, $, kbn, config) {
       /** @scratch /panels/terms/5
        * valuefield:: Terms_stats aggregation value field
        */
-      valuefield  : ''
+      valuefield  : '',
+      description : '',
+      descriptionLocation : 'Top',
+      descriptionUrl  : '',
     };
 
     _.defaults($scope.panel,_d);

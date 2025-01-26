@@ -236,6 +236,9 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
        * tooltip.value_type::: Individual or cumulative controls how tooltips are display on stacked charts
        * tooltip.query_as_alias::: If no alias is set, should the query be displayed?
        */
+      description : '',
+      descriptionLocation : 'Top',
+      descriptionUrl  : '',
       tooltip       : {
         value_type: 'cumulative',
         query_as_alias: true

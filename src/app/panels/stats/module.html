@@ -10,7 +10,9 @@
 
 
   </style>
-
+  <div ng-show="panel.description != '' && panel.descriptionLocation == 'Top'" class="small" style="font-style: italic; padding-bottom: 5px;">{{ panel.description }} 
+    <span ng-show="panel.descriptionUrl != ''"><a href="{{ panel.descriptionUrl }}" class="small" target="_blank">more info</a></span>
+  </div>
   <h1 ng-style="panel.style" style="text-align: center; line-height: .6em">{{data.value|formatstats:panel.format}} <small style="font-size: .5em; line-height: 0;">{{panel.unit}} ({{panel.mode}})</small></h1>
   <table ng-show="panel.display_breakdown == 'yes'" cellspacing="0" class="table-hover table table-condensed stats-table" style="margin-top: 38px;">
     <tbody>
@@ -34,4 +36,7 @@
       </tr>
     </tbody>
   </table>
+</div>
+<div ng-show="panel.description != '' && panel.descriptionLocation == 'Bottom'" class="small" style="font-style: italic; padding-top: 5px;">{{ panel.description }} 
+  <span ng-show="panel.descriptionUrl != ''"><a href="{{ panel.descriptionUrl }}" class="small" target="_blank">more info</a></span>
 </div>

@@ -64,6 +64,9 @@ define([
       label_name: 'Query',
       value_name: 'Value',
       spyable     : true,
+      description : '',
+      descriptionLocation : 'Top',
+      descriptionUrl  : '',
       show: {
         count: true,
         min: true,
