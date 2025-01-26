@@ -605,9 +605,11 @@ function (angular, app, _, $, kbn, config) {
               }
               if(scope.panel.chart === 'pie') {
                 var labelFormat = function(label, series){
-                  return '<div ng-click="build_search(panel.field,\''+label.replace(/'/g, "\\'").replace(/"/g, '&quot;')+'\')'+
+                  var safeLabel = String(label).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+                  return '<div ng-click="build_search(panel.field,\''+ safeLabel +'\')'+
                     ' "style="font-size:8pt;text-align:center;padding:2px;color:white;">'+
-                    label+'<br/>'+Math.round(series.percent)+'%</div>';
+                    safeLabel +'<br/>'+Math.round(series.percent)+'%</div>';
                 };
 
                 plot = $.plot(elem, chartData, {
