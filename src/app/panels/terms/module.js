@@ -340,16 +340,6 @@ function (angular, app, _, $, kbn, config) {
       }
     };
 
-    var build_multi_search = function(term) {
-      if(_.isUndefined(term.meta)) {
-        return({type:'terms',field:$scope.field,value:term.label, mandate:'either'});
-      } else if(term.meta === 'missing') {
-        return({type:'exists',field:$scope.field, mandate:'either'});
-      } else {
-        return;
-      }
-    };
-
     $scope.multi_search = function() {
       if (!Array.isArray($scope.panel.multiterms)) {
         console.error('Input must be an array.');
@@ -428,7 +418,9 @@ function (angular, app, _, $, kbn, config) {
 
       // Find the hyperlink rules for the given field
       const rules = config.hyperlinked_fields_aggregates.find(hf => hf.fieldName === field);
-      if (!rules) return null; // If no rules found, return null
+      if (!rules) {
+        return null; // If no rules found, return null
+      }
     
       // Extract token values directly from the row object
       const tokens = rules.tokens.map(token => row[token] || ''); // Use the token as the key
@@ -456,7 +448,9 @@ function (angular, app, _, $, kbn, config) {
     $scope.getDynamicUrlFriendlyName = function(field) {
       // Find the hyperlink rules for the given field
       const rules = config.hyperlinked_fields_aggregates.find(hf => hf.fieldName === field);
-      if (!rules) return null; // If no rules found, return null
+      if (!rules) {
+        return null; // If no rules found, return null
+      }
 
       const url = rules.urlTemplate;
 
@@ -548,8 +542,6 @@ function (angular, app, _, $, kbn, config) {
 
             // wireup missing terms data
             if (scope.panel.missing) {
-              var tmp = scope.results.aggregations.missing;
-
               scope.data.push({
                 label: 'Missing field',
                 data: [[k + 2, scope.results.aggregations.missing.doc_count, 'unknown']],
