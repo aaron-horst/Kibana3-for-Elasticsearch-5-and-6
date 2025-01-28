@@ -24,6 +24,20 @@ define([
     // Save a reference to this
     var self = this;
 
+    var nextId = function() {
+      var idCount = dashboard.current.services.filter.ids.length;
+      if(idCount > 0) {
+        // Make a sorted copy of the ids array
+        var ids = _.sortBy(_.clone(dashboard.current.services.filter.ids),function(num){
+          return num;
+        });
+        return kbn.smallestMissing(ids);
+      } else {
+        // No ids currently in list
+        return 0;
+      }
+    };
+    
     // local fn to handle parsing of query string params
     function parseDashboardFilters(fullQueryString) {
 
@@ -297,20 +311,6 @@ define([
           from : kbn.parseDate(_from),
           to : kbn.parseDate(_to)
         };
-      }
-    };
-
-    var nextId = function() {
-      var idCount = dashboard.current.services.filter.ids.length;
-      if(idCount > 0) {
-        // Make a sorted copy of the ids array
-        var ids = _.sortBy(_.clone(dashboard.current.services.filter.ids),function(num){
-          return num;
-        });
-        return kbn.smallestMissing(ids);
-      } else {
-        // No ids currently in list
-        return 0;
       }
     };
 

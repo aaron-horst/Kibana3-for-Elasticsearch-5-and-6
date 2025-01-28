@@ -32,7 +32,9 @@
       text-align: right !important;
     }
   </style>
-
+  <div ng-show="panel.description != '' && panel.descriptionLocation == 'Top'" class="small" style="font-style: italic; padding-bottom: 5px;">{{ panel.description }} 
+    <span ng-show="panel.descriptionUrl != ''"><a href="{{ panel.descriptionUrl }}" class="small" target="_blank">more info</a></span>
+  </div>
   <div class="terms-wrapper">
     <div ng-show="panel.multiterms.length"><button class="btn btn-mini btn-success" ng-click="multi_search()" ng-bind-html="getSubmitButtonText()"></button></div>
 
@@ -91,7 +93,7 @@
           <i class="icon-circle" ng-style="{color:term.color}"></i>
           <span class="terms-legend-term">{{term.label}}</span> 
         </span>
-        <span>({{term.data[0][1].toLocaleString('en-US')}})</span>
+        <span class="terms-legend-metric">({{term.data[0][1].toLocaleString('en-US')}})</span>
         <a ng-if="isLinkable(panel.field, term.label)" ng-href="{{ getDynamicUrl(panel.field, getRowData(panel, term)) }}" target="_blank"><i class="icon-link"></i></a>
       </span>
 
@@ -125,4 +127,7 @@
   </table>
   <div ng-if="isLinkable(panel.field, 'xyz')" style="padding-top:10px;font-style:italic;" class="small"><a href="#"><i class="icon-link"></i></a> = External Link</div>
 
+</div>
+<div ng-show="panel.description != '' && panel.descriptionLocation == 'Bottom'" class="small" style="font-style: italic; padding-top: 5px;">{{ panel.description }} 
+  <span ng-show="panel.descriptionUrl != ''"><a href="{{ panel.descriptionUrl }}" class="small" target="_blank">more info</a></span>
 </div>

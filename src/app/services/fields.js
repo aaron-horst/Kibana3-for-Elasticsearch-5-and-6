@@ -18,10 +18,21 @@ function (angular, _, config) {
 
     this.list = ['_index'];
     this.indices = [];
+    
+    // Move function definition to the top
+    var mapFields = function (m) {
+      var fields = [];
+      _.each(m, function(types) {
+        _.each(types, function(type) {
+          fields = _.difference(_.union(fields,_.keys(type)),
+            ['_parent','_routing','_size','_ttl','_all','_uid','_version','_boost','_source']);
+        });
+      });
+      return fields;
+    };
 
     // Stop tracking the full mapping, too expensive, instead we only remember the index names
     // we've already seen.
-    //
     $rootScope.$watch(function(){return dashboard.indices;},function(n) {
       if(!_.isUndefined(n) && n.length && dashboard.current.index.warm_fields) {
         // Only get the mapping for indices we don't know it for
@@ -35,44 +46,6 @@ function (angular, _, config) {
         }
       }
     });
-
-    var mapFields = function (m) {
-      var fields = [];
-      _.each(m, function(types) {
-        _.each(types, function(type) {
-          fields = _.difference(_.union(fields,_.keys(type)),
-            ['_parent','_routing','_size','_ttl','_all','_uid','_version','_boost','_source']);
-        });
-      });
-      return fields;
-    };
-
-    this.map = function(indices) {
-      var request = ejs.getMapping(indices);
-
-      // Flatten the mapping of each index into dot notated keys.
-      return request.then(function(p) {
-        var mapping = {};
-        return esVersion.gte('1.0.0.RC1').then(function(version) {
-          _.each(p, function(indexMap,index) {
-            mapping[index] = {};
-            _.each((version ? indexMap.mappings : indexMap), function (typeMap,type) {
-              mapping[index][type] = flatten(typeMap);
-            });
-          });
-          return mapping;
-        });
-      }, function(data, status) {
-          if(status === 0) {
-            alertSrv.set('Error',"Could not contact Elasticsearch at "+ejs.config.host+
-              ". Please ensure that Elasticsearch is reachable from your system." ,'error');
-          } else {
-            alertSrv.set('Error',"No index found at "+ejs.config.host+"/" +
-              indices.join(',')+"/_mapping. Please create at least one index."  +
-              "If you're using a proxy ensure it is configured correctly.",'error');
-          }
-        });
-    };
 
     // This should understand both the 1.0 format and the 0.90 format for mappings. Ugly.
     var flatten = function(obj,prefix) {
@@ -103,6 +76,33 @@ function (angular, _, config) {
         }
       }
       return ret;
+    };
+
+    this.map = function(indices) {
+      var request = ejs.getMapping(indices);
+
+      // Flatten the mapping of each index into dot notated keys.
+      return request.then(function(p) {
+        var mapping = {};
+        return esVersion.gte('1.0.0.RC1').then(function(version) {
+          _.each(p, function(indexMap,index) {
+            mapping[index] = {};
+            _.each((version ? indexMap.mappings : indexMap), function (typeMap,type) {
+              mapping[index][type] = flatten(typeMap);
+            });
+          });
+          return mapping;
+        });
+      }, function(data, status) {
+          if(status === 0) {
+            alertSrv.set('Error',"Could not contact Elasticsearch at "+ejs.config.host+
+              ". Please ensure that Elasticsearch is reachable from your system." ,'error');
+          } else {
+            alertSrv.set('Error',"No index found at "+ejs.config.host+"/" +
+              indices.join(',')+"/_mapping. Please create at least one index."  +
+              "If you're using a proxy ensure it is configured correctly.",'error');
+          }
+        });
     };
 
   });

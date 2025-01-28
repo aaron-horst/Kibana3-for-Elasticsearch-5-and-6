@@ -101,6 +101,9 @@ function (angular, app, _, $, kbn) {
       * queries.mode::: Of the queries available, which to use. Options: +all, pinned, unpinned, selected+
       * queries.ids::: In +selected+ mode, which query ids are selected.
       */
+      description : '',
+      descriptionLocation : 'Top',
+      descriptionUrl  : '',
       queries     : {
         mode        : 'all',
         ids         : []

@@ -43,6 +43,45 @@ function (angular, app, _, moment, kbn) {
     };
     _.defaults($scope.panel,_d);
 
+    var pad = function(n, width, z) {
+      z = z || '0';
+      n = n + '';
+      return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+    };
+
+    var cloneTime = function(time) {
+      var _n = {
+        from: _.clone(time.from),
+        to: _.clone(time.to)
+      };
+      // Create new dates as _.clone is shallow.
+      _n.from.date = new Date(_n.from.date);
+      _n.to.date = new Date(_n.to.date);
+      return _n;
+    };
+  
+    var getTimeObj = function(date) {
+      return {
+        date: new Date(date),
+        hour: pad(date.getHours(), 2),
+        minute: pad(date.getMinutes(), 2),
+        second: pad(date.getSeconds(), 2),
+        millisecond: pad(date.getMilliseconds(), 3)
+      };
+    };
+
+    var getScopeTimeObj = function(from, to) {
+      return {
+        from: getTimeObj(from),
+        to: getTimeObj(to)
+      };
+    };
+
+    var datepickerToLocal = function(date) {
+      date = moment(date).clone().toDate();
+      return moment(new Date(date.getTime() + date.getTimezoneOffset() * 60000)).toDate();
+    };
+
     var customTimeModal = $modal({
       template: './app/panels/timepicker/custom.html',
       persist: true,
@@ -208,7 +247,7 @@ function (angular, app, _, moment, kbn) {
           isNowMode = false;
           break;
         case 'Last Quarter':
-          // FYI moment's 'quarter' option isn't working, probably outdated library version but i didn't want to regression test an upgrade 1/2025 flook
+          // FYI moment's 'quarter' option isn't working due to outdated version
           startDate = getStartOfQuarter(moment()).subtract(3,'month').toDate(); 
           endDate = getStartOfQuarter(moment()).subtract(1, 'millisecond').toDate(); 
           isNowMode = false;
@@ -242,47 +281,5 @@ function (angular, app, _, moment, kbn) {
       const quarterStartMonth = Math.floor(month / 3) * 3; // Calculate the start month of the quarter
       return moment(date).month(quarterStartMonth).startOf('month'); // Set the month and reset to the start
     }
-
-    var pad = function(n, width, z) {
-      z = z || '0';
-      n = n + '';
-      return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-    };
-
-    var cloneTime = function(time) {
-      var _n = {
-        from: _.clone(time.from),
-        to: _.clone(time.to)
-      };
-      // Create new dates as _.clone is shallow.
-      _n.from.date = new Date(_n.from.date);
-      _n.to.date = new Date(_n.to.date);
-      return _n;
-    };
-
-    var getScopeTimeObj = function(from,to) {
-      return {
-        from: getTimeObj(from),
-        to: getTimeObj(to)
-      };
-    };
-
-    var getTimeObj = function(date) {
-      return {
-        date: new Date(date),
-        hour: pad(date.getHours(),2),
-        minute: pad(date.getMinutes(),2),
-        second: pad(date.getSeconds(),2),
-        millisecond: pad(date.getMilliseconds(),3)
-      };
-    };
-
-    // Do not use the results of this function unless you plan to use setHour/Minutes/etc on the result
-    var datepickerToLocal = function(date) {
-      date = moment(date).clone().toDate();
-      return moment(new Date(date.getTime() + date.getTimezoneOffset() * 60000)).toDate();
-    };
-
-
   });
 });

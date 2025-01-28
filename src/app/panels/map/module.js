@@ -251,6 +251,7 @@ function (angular, app, _, $) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
+        var slow = _.debounce(render_panel, 200);
 
         elem.html('<center><img src="img/load_big.gif"></center>');
 
@@ -300,8 +301,6 @@ function (angular, app, _, $) {
             elem.children('.map-legend').hide();
           });
         }
-
-        var slow = _.debounce(render_panel, 200);
       }
     };
   });

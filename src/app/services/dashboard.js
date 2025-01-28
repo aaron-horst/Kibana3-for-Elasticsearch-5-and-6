@@ -75,23 +75,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     this.last = {};
     this.availablePanels = [];
 
-    $rootScope.$on('$routeChangeSuccess',function(){
-      // Clear the current dashboard to prevent reloading
-      self.current = {};
-      self.indices = [];
-      esVersion.isMinimum().then(function(isMinimum) {
-        if(_.isUndefined(isMinimum)) {
-          return;
-        }
-        if(isMinimum) {
-          route();
-        } else {
-          alertSrv.set('Upgrade Required',"Your version of Elasticsearch is too old. Kibana requires" +
-            " Elasticsearch " + esMinVersion + " or above.", "error");
-        }
-      });
-    });
-
     var route = function() {
       // Is there a dashboard type and id in the URL?
       if(!(_.isUndefined($routeParams.kbnType)) && !(_.isUndefined($routeParams.kbnId))) {
@@ -138,6 +121,23 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         }
       }
     };
+
+    $rootScope.$on('$routeChangeSuccess',function(){
+      // Clear the current dashboard to prevent reloading
+      self.current = {};
+      self.indices = [];
+      esVersion.isMinimum().then(function(isMinimum) {
+        if(_.isUndefined(isMinimum)) {
+          return;
+        }
+        if(isMinimum) {
+          route();
+        } else {
+          alertSrv.set('Upgrade Required',"Your version of Elasticsearch is too old. Kibana requires" +
+            " Elasticsearch " + esMinVersion + " or above.", "error");
+        }
+      });
+    });
 
     // Since the dashboard is responsible for index computation, we can compute and assign the indices
     // here before telling the panels to refresh

@@ -138,7 +138,10 @@ function (angular, app, _, $, kbn, config) {
       /** @scratch /panels/terms/5
        * valuefield:: Terms_stats aggregation value field
        */
-      valuefield  : ''
+      valuefield  : '',
+      description : '',
+      descriptionLocation : 'Top',
+      descriptionUrl  : '',
     };
 
     _.defaults($scope.panel,_d);
@@ -205,6 +208,14 @@ function (angular, app, _, $, kbn, config) {
           termsAggs.order('_count');
         }
         request = request.query(query).agg(termsAggs).size(0);
+
+        // add exists agg if requested
+        if ($scope.panel.missing) {
+          var missingAggs = $scope.ejs.MissingAggregation('missing')
+            .field($scope.panel.field);
+
+          request = request.agg(missingAggs);
+        }
       }
       else if($scope.panel.tmode === 'terms_stats') {
         var terms_aggs = $scope.ejs.TermsAggregation('terms')
@@ -329,16 +340,6 @@ function (angular, app, _, $, kbn, config) {
       }
     };
 
-    var build_multi_search = function(term) {
-      if(_.isUndefined(term.meta)) {
-        return({type:'terms',field:$scope.field,value:term.label, mandate:'either'});
-      } else if(term.meta === 'missing') {
-        return({type:'exists',field:$scope.field, mandate:'either'});
-      } else {
-        return;
-      }
-    };
-
     $scope.multi_search = function() {
       if (!Array.isArray($scope.panel.multiterms)) {
         console.error('Input must be an array.');
@@ -346,12 +347,8 @@ function (angular, app, _, $, kbn, config) {
       }
       
       var labelValues = $scope.panel.multiterms.map(obj => {
-        if (typeof obj.label !== 'string') {
-          console.error('Each object must have a label property of type string:', obj);
-          return '';
-        }
         // Escape quotes and wrap the label in double quotes
-        const escapedLabel = obj.label.replace(/"/g, '\\"');
+        const escapedLabel = String(obj.label).replace(/"/g, '\\"');
         return `"${escapedLabel}"`;
       })
       .filter(label => label) // Remove any empty strings from invalid entries
@@ -421,7 +418,9 @@ function (angular, app, _, $, kbn, config) {
 
       // Find the hyperlink rules for the given field
       const rules = config.hyperlinked_fields_aggregates.find(hf => hf.fieldName === field);
-      if (!rules) return null; // If no rules found, return null
+      if (!rules) {
+        return null; // If no rules found, return null
+      }
     
       // Extract token values directly from the row object
       const tokens = rules.tokens.map(token => row[token] || ''); // Use the token as the key
@@ -432,11 +431,15 @@ function (angular, app, _, $, kbn, config) {
     };
     
     $scope.isLinkable = function(field, termLabel) {
-      if (termLabel == undefined || termLabel == 'Other values') return false; // other pie slice value
+      if (termLabel === undefined || termLabel === 'Other values') {
+        return false; // other pie slice value
+      }
 
       // var retval = config.hyperlinked_fields_doclevel.some(hf => hf.fieldName === field);
       const rules = config.hyperlinked_fields_aggregates.find(hf => hf.fieldName === field);
-      if (!rules) return false; // If no rules found, return null
+      if (!rules) {
+        return false; // If no rules found, return null
+      }
 
       return true;
     };
@@ -445,7 +448,9 @@ function (angular, app, _, $, kbn, config) {
     $scope.getDynamicUrlFriendlyName = function(field) {
       // Find the hyperlink rules for the given field
       const rules = config.hyperlinked_fields_aggregates.find(hf => hf.fieldName === field);
-      if (!rules) return null; // If no rules found, return null
+      if (!rules) {
+        return null; // If no rules found, return null
+      }
 
       const url = rules.urlTemplate;
 
@@ -527,19 +532,24 @@ function (angular, app, _, $, kbn, config) {
             }
           });
 
-          // todo: wireup missing terms data
-          // scope.data.push({
-          //     label: 'Missing field',
-          //     data: [[k, 'unknown']], meta: "missing", color: '#aaa', opacity: 0
-          // });
-
           if (scope.panel.tmode === 'terms') {
             scope.data.push({
-                label: 'Other values',
-                data: [[k + 1, scope.results.aggregations.terms.sum_other_doc_count]],
-                meta: "other",
-                color: '#444'
+              label: 'Other values',
+              data: [[k + 1, scope.results.aggregations.terms.sum_other_doc_count]],
+              meta: "other",
+              color: '#444'
+            });
+
+            // wireup missing terms data
+            if (scope.panel.missing) {
+              scope.data.push({
+                label: 'Missing field',
+                data: [[k + 2, scope.results.aggregations.missing.doc_count, 'unknown']],
+                meta: "missing",
+                color: '#aaa',
+                opacity: 0
               });
+            }
           }
         }
 
@@ -590,9 +600,11 @@ function (angular, app, _, $, kbn, config) {
               }
               if(scope.panel.chart === 'pie') {
                 var labelFormat = function(label, series){
-                  return '<div ng-click="build_search(panel.field,\''+label.replace(/'/g, "\\'").replace(/"/g, '&quot;')+'\')'+
+                  var safeLabel = String(label).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+                  return '<div ng-click="build_search(panel.field,\''+ safeLabel +'\')'+
                     ' "style="font-size:8pt;text-align:center;padding:2px;color:white;">'+
-                    label+'<br/>'+Math.round(series.percent)+'%</div>';
+                    safeLabel +'<br/>'+Math.round(series.percent)+'%</div>';
                 };
 
                 plot = $.plot(elem, chartData, {

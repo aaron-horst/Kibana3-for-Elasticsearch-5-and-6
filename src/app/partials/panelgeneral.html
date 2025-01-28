@@ -21,4 +21,30 @@
         <input type="checkbox" ng-model="panel.spyable" ng-checked="panel.spyable">
       </div>
     </div>
+  </div><!-- New row for Panel Description -->
+  <div class="editor-row">
+    <div class="section">
+      <div class="editor-option">
+        <label class="small">
+          Panel Description
+          <i class="icon-question-sign"
+            bs-tooltip="'A brief explanation to your report viewers to explain what this metric or visualization is all about'"></i>
+        </label>
+        <textarea class="input-large" rows="3" ng-model="panel.description"></textarea>
+      </div>
+      <div class="editor-option">
+        <label class="small">
+          Description Location
+        </label>
+        <select class="input-medium" ng-model="panel.descriptionLocation" ng-options="f for f in ['Top','Bottom']" ng-change="set_refresh(true)"></select>
+      </div>
+      <div class="editor-option">
+        <label class="small">
+          More Info URL
+          <i class="icon-question-sign"
+            bs-tooltip="'A optional URL to details on your data visualization, if your report viewers want to learn even more about the information'"></i>
+        </label>
+        <input type="text" class="input-large" ng-model='panel.descriptionUrl'></input>
+      </div>
+    </div>
   </div>

@@ -91,6 +91,62 @@ function (angular, app, _, kbn) {
       $scope.get_data();
     };
 
+    var process_results = function(results, _segment, query_id) {
+      results.then(function(results) {
+        $scope.panelMeta.loading = false;
+        if(_segment === 0) {
+          $scope.hits = {};
+          $scope.data = [];
+          query_id = $scope.query_id = new Date().getTime();
+        }
+
+        // Check for error and abort if found
+        if(!(_.isUndefined(results.error))) {
+          $scope.panel.error = $scope.parse_error(results.error);
+          return;
+        }
+
+        // Make sure we're still on the same query/queries
+        if($scope.query_id === query_id) {
+          var i = 0;
+          var queries = querySrv.getQueryObjs($scope.panel.queries.ids);
+
+          _.each(queries, function(query) {
+            var n = results.aggregations[query.id].doc_count;
+            var o = results.aggregations['old_'+query.id].doc_count;
+
+            var hits = {
+              new : _.isUndefined($scope.data[i]) || _segment === 0 ? n : $scope.data[i].hits.new+n,
+              old : _.isUndefined($scope.data[i]) || _segment === 0 ? o : $scope.data[i].hits.old+o
+            };
+
+            $scope.hits.new += n;
+            $scope.hits.old += o;
+
+            var percent = percentage(hits.old,hits.new) == null ?
+              '?' : Math.round(percentage(hits.old,hits.new)*100)/100;
+            // Create series
+            $scope.data[i] = {
+              info: query,
+              hits: {
+                new : hits.new,
+                old : hits.old
+              },
+              percent: percent
+            };
+
+            i++;
+          });
+          $scope.$emit('render');
+          if(_segment < $scope.index.length-1) {
+            $scope.get_data(_segment+1,query_id);
+          } else {
+            $scope.trends = $scope.data;
+          }
+        }
+      });
+    };
+
     $scope.get_data = function(segment,query_id) {
       delete $scope.panel.error;
       $scope.panelMeta.loading = true;
@@ -176,63 +232,6 @@ function (angular, app, _, kbn) {
         process_results($scope.ejs.doSearch($scope.index[_segment], request),_segment,query_id);
       }
 
-    };
-
-    // Populate scope when we have results
-    var process_results = function(results,_segment,query_id) {
-      results.then(function(results) {
-        $scope.panelMeta.loading = false;
-        if(_segment === 0) {
-          $scope.hits = {};
-          $scope.data = [];
-          query_id = $scope.query_id = new Date().getTime();
-        }
-
-        // Check for error and abort if found
-        if(!(_.isUndefined(results.error))) {
-          $scope.panel.error = $scope.parse_error(results.error);
-          return;
-        }
-
-        // Make sure we're still on the same query/queries
-        if($scope.query_id === query_id) {
-          var i = 0;
-          var queries = querySrv.getQueryObjs($scope.panel.queries.ids);
-
-          _.each(queries, function(query) {
-            var n = results.aggregations[query.id].doc_count;
-            var o = results.aggregations['old_'+query.id].doc_count;
-
-            var hits = {
-              new : _.isUndefined($scope.data[i]) || _segment === 0 ? n : $scope.data[i].hits.new+n,
-              old : _.isUndefined($scope.data[i]) || _segment === 0 ? o : $scope.data[i].hits.old+o
-            };
-
-            $scope.hits.new += n;
-            $scope.hits.old += o;
-
-            var percent = percentage(hits.old,hits.new) == null ?
-              '?' : Math.round(percentage(hits.old,hits.new)*100)/100;
-            // Create series
-            $scope.data[i] = {
-              info: query,
-              hits: {
-                new : hits.new,
-                old : hits.old
-              },
-              percent: percent
-            };
-
-            i++;
-          });
-          $scope.$emit('render');
-          if(_segment < $scope.index.length-1) {
-            $scope.get_data(_segment+1,query_id);
-          } else {
-            $scope.trends = $scope.data;
-          }
-        }
-      });
     };
 
     function percentage(x,y) {

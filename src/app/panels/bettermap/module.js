@@ -219,14 +219,14 @@ function (angular, app, _, L, localRequire) {
           render_panel();
         });
 
+        var map, layerGroup;
+
         scope.$on('render', function(){
           if(!_.isUndefined(map)) {
             map.invalidateSize();
             map.getPanes();
           }
         });
-
-        var map, layerGroup;
 
         function render_panel() {
           elem.css({height:scope.panel.height||scope.row.height});

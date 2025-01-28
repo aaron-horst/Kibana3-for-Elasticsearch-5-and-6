@@ -64,6 +64,9 @@ define([
       label_name: 'Query',
       value_name: 'Value',
       spyable     : true,
+      description : '',
+      descriptionLocation : 'Top',
+      descriptionUrl  : '',
       show: {
         count: true,
         min: true,
@@ -208,7 +211,12 @@ define([
   });
 
   module.filter('formatstats', function(){
-    return function (value,format) {
+    return function (value,format,stat) {
+      // If the stat is "count", return the value unformatted
+      if (stat === 'count') {
+        return value;
+      }
+      
       switch (format) {
       case 'money':
         value = numeral(value).format('$0,0.00');

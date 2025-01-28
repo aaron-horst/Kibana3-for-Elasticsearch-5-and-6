@@ -42,6 +42,9 @@
     }
 
   </style>
+  <div ng-show="panel.description != '' && panel.descriptionLocation == 'Top'" class="small" style="font-style: italic; padding-bottom: 5px;">{{ panel.description }} 
+      <span ng-show="panel.descriptionUrl != ''"><a href="{{ panel.descriptionUrl }}" class="small" target="_blank">more info</a></span>
+    </div>
   <div>
     <span ng-show='panel.options'>
       <a class="link small" ng-show='panel.options' ng-click="options=!options">
@@ -105,4 +108,7 @@
   </form>
   <center><img ng-show='panel.loading' src="img/load_big.gif"></center>
   <div histogram-chart class="pointer histogram-chart" params="{{panel}}"></div>
+</div>
+<div ng-show="panel.description != '' && panel.descriptionLocation == 'Bottom'" class="small" style="font-style: italic; padding-top: 5px;">{{ panel.description }} 
+  <span ng-show="panel.descriptionUrl != ''"><a href="{{ panel.descriptionUrl }}" class="small" target="_blank">more info</a></span>
 </div>

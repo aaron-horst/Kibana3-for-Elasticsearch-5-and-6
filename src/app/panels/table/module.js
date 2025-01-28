@@ -237,6 +237,11 @@ function (angular, app, _, kbn, moment, config) {
       }
     };
 
+    var showModal = function(panel,type) {
+      $scope.facetPanel = panel;
+      $scope.facetType = type;
+    };
+
     $scope.termsModal = function(field,chart) {
       $scope.closeFacet();
       $timeout(function() {
@@ -271,32 +276,27 @@ function (angular, app, _, kbn, moment, config) {
       },0);
     };
 
-    $scope.getStyle = function(event){
-      var backgroundColor = getBackgroundColor(event);
-      if(backgroundColor){
-        return {'background-color': backgroundColor};
-      }
-    };
-
-    var getBackgroundColor = function(event){
+    var getBackgroundColor = function(event) {
       var i, len, cr, data;
 
-      for(i=0, len=$scope.panel.colorRules.length; i<len; i++){
+      for(i=0, len=$scope.panel.colorRules.length; i<len; i++) {
         cr = $scope.panel.colorRules[i];
-        if(cr.field != '_index' && cr.field != '_id' && cr.field != '_score'){
+        if(cr.field != '_index' && cr.field != '_id' && cr.field != '_score') {
           data = event._source;
-        } else{
+        } else {
           data = event;
         }
-        if(data[cr.field] && data[cr.field].match(new RegExp(cr.value))){
+        if(data[cr.field] && data[cr.field].match(new RegExp(cr.value))) {
           return cr.color;
         }
       }
     };
 
-    var showModal = function(panel,type) {
-      $scope.facetPanel = panel;
-      $scope.facetType = type;
+    $scope.getStyle = function(event){
+      var backgroundColor = getBackgroundColor(event);
+      if(backgroundColor){
+        return {'background-color': backgroundColor};
+      }
     };
 
     $scope.toggle_micropanel = function(field,groups) {
@@ -580,7 +580,9 @@ function (angular, app, _, kbn, moment, config) {
     $scope.getDynamicUrl = function(field, row) {
       // Find the hyperlink rules for the given field
       const rules = config.hyperlinked_fields_doclevel.find(hf => hf.fieldName === field);
-      if (!rules) return null; // If no rules found, return null
+      if (!rules) {
+        return null; // If no rules found, return null
+      }
     
       // Extract token values directly from the row object
       const tokens = rules.tokens.map(token => row[token] || ''); // Use the token as the key
@@ -593,7 +595,9 @@ function (angular, app, _, kbn, moment, config) {
     $scope.isLinkable = function(field) {
       // var retval = config.hyperlinked_fields_doclevel.some(hf => hf.fieldName === field);
       const rules = config.hyperlinked_fields_doclevel.find(hf => hf.fieldName === field);
-      if (!rules) return false; // If no rules found, return null
+      if (!rules) {
+        return false; // If no rules found, return null
+      }
 
       return true;
     };

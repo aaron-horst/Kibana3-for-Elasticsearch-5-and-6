@@ -56,7 +56,7 @@
         <select class="input-small" ng-model="panel.arrangement" ng-options="f for f in ['horizontal','vertical']"></select></span>
       </div>
       <div class="editor-option">
-        <label class="small">Missing</label><input type="checkbox" ng-model="panel.missing" ng-checked="panel.missing">
+        <label class="small">Missing</label><input type="checkbox" ng-model="panel.missing" ng-checked="panel.missing" ng-change="set_refresh(true)">
       </div>
       <div class="editor-option">
         <label class="small">Other</label><input type="checkbox" ng-model="panel.other" ng-checked="panel.other">
