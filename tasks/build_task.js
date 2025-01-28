@@ -8,7 +8,7 @@ module.exports = function(grunt) {
     'copy:almost_everything_to_temp',
     'htmlmin:build',
     'cssmin:build',
-    'ngmin:build',
+    'ngAnnotate:build',
     'requirejs:build',
     'clean:temp',
     'build:write_revision'
