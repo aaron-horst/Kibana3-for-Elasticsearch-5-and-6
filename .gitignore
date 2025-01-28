@@ -5,3 +5,4 @@ dist
 kbnauth/kbn_auth.conf.sina
 .vscode
 .vs
+tmp
