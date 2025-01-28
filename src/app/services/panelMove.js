@@ -8,9 +8,15 @@ function (angular, _) {
   var module = angular.module('kibana.services');
 
   module.service('panelMove', function(dashboard, $rootScope) {
+    // Define the function before its use
+    var cleanup = function () {
+      _.each(dashboard.current.rows, function(row) {
+        row.panels = _.without(row.panels,{});
+        row.panels = _.compact(row.panels);
+      });
+    };
 
     /* each of these can take event,ui,data parameters */
-
     this.onStart = function() {
       dashboard.panelDragging =  true;
       $rootScope.$apply();
@@ -55,13 +61,6 @@ function (angular, _) {
       dashboard.panelDragging = false;
       cleanup();
       $rootScope.$apply();
-    };
-
-    var cleanup = function () {
-      _.each(dashboard.current.rows, function(row) {
-        row.panels = _.without(row.panels,{});
-        row.panels = _.compact(row.panels);
-      });
     };
 
   });

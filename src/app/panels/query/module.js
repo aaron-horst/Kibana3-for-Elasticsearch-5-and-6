@@ -86,6 +86,16 @@ define([
       });
     };
 
+    var update_history = function(query) {
+      if($scope.panel.remember > 0) {
+        $scope.panel.history = _.union(query.reverse(),$scope.panel.history);
+        var _length = $scope.panel.history.length;
+        if(_length > $scope.panel.remember) {
+          $scope.panel.history = $scope.panel.history.slice(0,$scope.panel.remember);
+        }
+      }
+    };
+
     $scope.typeChange = function(q) {
       var _nq = {
         id   : q.id,
@@ -95,16 +105,6 @@ define([
         color: q.color
       };
       dashboard.current.services.query.list[_nq.id] = querySrv.defaults(_nq);
-    };
-
-    var update_history = function(query) {
-      if($scope.panel.remember > 0) {
-        $scope.panel.history = _.union(query.reverse(),$scope.panel.history);
-        var _length = $scope.panel.history.length;
-        if(_length > $scope.panel.remember) {
-          $scope.panel.history = $scope.panel.history.slice(0,$scope.panel.remember);
-        }
-      }
     };
 
     $scope.init();

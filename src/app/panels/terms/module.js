@@ -439,11 +439,15 @@ function (angular, app, _, $, kbn, config) {
     };
     
     $scope.isLinkable = function(field, termLabel) {
-      if (termLabel == undefined || termLabel == 'Other values') return false; // other pie slice value
+      if (termLabel === undefined || termLabel === 'Other values') {
+        return false; // other pie slice value
+      }
 
       // var retval = config.hyperlinked_fields_doclevel.some(hf => hf.fieldName === field);
       const rules = config.hyperlinked_fields_aggregates.find(hf => hf.fieldName === field);
-      if (!rules) return false; // If no rules found, return null
+      if (!rules) {
+        return false; // If no rules found, return null
+      }
 
       return true;
     };

@@ -20,8 +20,6 @@
  *
  */
 
-'use strict';
-
 // Setup some variables
 var dashboard, queries, _d_timespan;
 

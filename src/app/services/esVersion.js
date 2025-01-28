@@ -50,17 +50,6 @@ function (angular, _, config) {
 
     };
 
-    // Get the max version in this cluster
-    this.max = function(versions) {
-      return _.last(versions);
-    };
-
-    // Return the lowest version in the cluster
-    this.min = function(versions) {
-      return _.first(versions);
-    };
-
-    // Sort versions from lowest to highest
     var sortVersions = function(versions) {
       var _versions = _.clone(versions),
         _r = [];
@@ -77,6 +66,16 @@ function (angular, _, config) {
         _r.push(_h);
       }
       return _r.reverse();
+    };
+
+    // Get the max version in this cluster
+    this.max = function(versions) {
+      return _.last(versions);
+    };
+
+    // Return the lowest version in the cluster
+    this.min = function(versions) {
+      return _.first(versions);
     };
 
     /*
