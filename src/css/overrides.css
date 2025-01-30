@@ -15,6 +15,6 @@ button:hover { color: #25B960; }
 
 /* progressive disclosure of panel config options - desktop/hover devices only */
 @media (hover: hover) and (pointer: fine) {
-    .panel-extra-container .extra { display: none; }
-    .panel-container:hover .panel-extra-container .extra { display: inline; }
+    .panel-extra-container i:not(.icon-spinner) { display: none; }
+    .panel-container:hover .panel-extra-container i:not(.icon-spinner) { display: inline; }
 }
