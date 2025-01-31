@@ -10,9 +10,9 @@
 
     <title>Kibana 3{{dashboard.current.title ? " - "+dashboard.current.title : ""}}</title>
     <!-- <link rel="stylesheet" href="css/bootstrap.light.min.css" title="Light"> -->
-    <link rel="stylesheet" href="css/timepicker.css">
-    <link rel="stylesheet" href="css/animate.min.css">
-    <link rel="stylesheet" href="css/normalize.min.css">
+    <link rel="stylesheet" ng-href="css/timepicker.css?v={{kbnVersion}}">
+    <link rel="stylesheet" ng-href="css/animate.min.css?v={{kbnVersion}}">
+    <link rel="stylesheet" ng-href="css/normalize.min.css?v={{kbnVersion}}">
     <!-- load the root require context -->
     <script src="vendor/require/require.js"></script>
     <script src="app/components/require.config.js"></script>
@@ -25,11 +25,10 @@
         <center><h3>You must enable javascript to use Kibana</h3></center>
       </div>
     </noscript>
-    <!--<link rel="stylesheet" ng-href="css/bootstrap.{{dashboard.current.style||'dark'}}.min.css">-->
-    <link rel="stylesheet" ng-href="css/bootstrap.{{dashboard.current.style||'dark'}}.min.css">
-    <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/overrides.css">
+    <link rel="stylesheet" ng-href="css/bootstrap.{{dashboard.current.style||'dark'}}.min.css?v={{kbnVersion}}">
+    <link rel="stylesheet" ng-href="css/bootstrap-responsive.min.css?v={{kbnVersion}}">
+    <link rel="stylesheet" ng-href="css/font-awesome.min.css?v={{kbnVersion}}">
+    <link rel="stylesheet" ng-href="css/overrides.css?v={{kbnVersion}}" />
 
     <div ng-cloak class="alert-info dashboard-notice" ng-show="config.notice">
       <button type="button" class="close" ng-click="config.notice=null;" style="padding-right:50px">&times;</button>
