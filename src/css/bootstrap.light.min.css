@@ -7382,6 +7382,7 @@ div.flot-text {
 	color: #555 !important;
 	background-color: #fff !important;
 	border: 1px solid #d7d7d7;
+	overflow-wrap: break-word;
 }
 
 a {

@@ -5441,4 +5441,5 @@
     .filter-panel-filter  {
        color: #fff !important;
        background-color: #444 !important;
+       overflow-wrap: break-word;
     }
