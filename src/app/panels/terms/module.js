@@ -431,8 +431,8 @@ function (angular, app, _, $, kbn, config) {
     };
     
     $scope.isLinkable = function(field, termLabel) {
-      if (termLabel === undefined || termLabel === 'Other values') {
-        return false; // other pie slice value
+      if (termLabel === undefined || termLabel === 'Other values' || termLabel === 'Missing field') {
+        return false; // special slices we want to ignore
       }
 
       // var retval = config.hyperlinked_fields_doclevel.some(hf => hf.fieldName === field);
