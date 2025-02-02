@@ -672,6 +672,8 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
           var barwidth = kbn.interval_to_ms(scope.panel.interval);
 
           var stack = scope.panel.stack ? true : null;
+          // Calculate the difference in milliseconds and convert to hours
+          var hoursDifference = Math.abs(scope.range.to - scope.range.from) / (1000 * 60 * 60);
 
           // Populate element
           try {
@@ -716,7 +718,7 @@ function (angular, app, $, _, kbn, moment, timeSeries, numeral) {
                 timeformat: time_format(scope.panel.interval),
                 label: "Datetime",
                 ticks: elem.width()/100,
-                minTickSize: [1, "day"]
+                minTickSize: hoursDifference > 48 ? [1, "day"] : [1, "hour"]
               },
               grid: {
                 backgroundColor: null,
