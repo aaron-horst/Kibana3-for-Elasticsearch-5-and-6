@@ -10,7 +10,7 @@
     </div>
     <div class="editor-option">
       <label class="small">Unit</label>
-        <input type="text" class="input-large" ng-model="panel.unit">
+        <input type="text" class="input-small" ng-model="panel.unit">
     </div>
 
     <h5>Columns</h5>
@@ -21,7 +21,7 @@
     <h5>Formating</h5>
     <div class="editor-option">
       <label class="small">Format</label>
-      <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.format" ng-options="f for f in ['number','float','money','bytes']"></select>
+      <select ng-change="set_refresh(true)" class="input-medium" ng-model="panel.format" ng-options="f for f in ['number','float','money','bytes']"></select>
     </div>
     <div class="editor-option">
       <label class="small">Font Size</label>
@@ -33,6 +33,6 @@
     </div>
     <div class="editor-option">
       <label class="small">Query column name</label>
-        <input type="text" class="input-large" ng-model="panel.label_name">
+      <input type="text" class="input-large" ng-model="panel.label_name">
     </div>
 </div>

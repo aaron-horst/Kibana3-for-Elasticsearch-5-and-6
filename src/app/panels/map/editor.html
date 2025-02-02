@@ -7,11 +7,11 @@
       </div>
       <div class="editor-option">
         <label class="small">Field <tip>2 letter country or state code</tip></label>
-        <input type="text" class="input-small" bs-typeahead="fields.list" ng-model="panel.field" ng-change="set_refresh(true)">
+        <input type="text" class="input-large" bs-typeahead="fields.list" ng-model="panel.field" ng-change="set_refresh(true)">
       </div>
       <div class="editor-option" ng-show="panel.tmode == 'terms_stats'">
         <label class="small">Value field</label>
-        <input type="text" class="input-small" bs-typeahead="fields.list" ng-model="panel.valuefield" ng-change="set_refresh(true)">
+        <input type="text" class="input-large" bs-typeahead="fields.list" ng-model="panel.valuefield" ng-change="set_refresh(true)">
       </div>
       <div class="editor-option" ng-show="panel.tmode == 'terms_stats'">
         <label class="small">Stats type of Value</label>
@@ -23,7 +23,7 @@
       </div>
       <div class="editor-option">
         <label class="small">Map</label>
-        <select ng-change="$emit('render')" class="input-small" ng-model="panel.map" ng-options="f for f in ['cn','world','europe','usa']"></select>
+        <select ng-change="$emit('render')" class="input-medium" ng-model="panel.map" ng-options="f for f in ['cn','world','europe','usa']"></select>
       </div>
     </div>
   </div>

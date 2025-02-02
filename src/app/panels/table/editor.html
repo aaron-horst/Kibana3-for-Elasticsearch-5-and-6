@@ -9,7 +9,7 @@
       </div>
       <div class="editor-option" style="white-space:nowrap" ng-show='panel.sortable'>
         <label class="small">Sort</label>
-        <input class="input-small" bs-typeahead="fields.list" ng-model="panel.sort[0]" type="text"></input>
+        <input class="input-large" bs-typeahead="fields.list" ng-model="panel.sort[0]" type="text"></input>
         <i ng-click="set_sort(panel.sort[0])" ng-class="{'icon-chevron-up': panel.sort[1] == 'asc','icon-chevron-down': panel.sort[1] == 'desc'}"></i>
       </div>
       <div class="editor-option"><label class="small">Font Size</label>
@@ -25,7 +25,7 @@
       </div>
       <div class="editor-option" ng-show="panel.localTime">
         <label class="small">Time Field</label>
-        <input type="text" class="input-small" ng-model="panel.timeField" ng-change="set_refresh(true)" bs-typeahead="fields.list">
+        <input type="text" class="input-large" ng-model="panel.timeField" ng-change="set_refresh(true)" bs-typeahead="fields.list">
       </div>
     </div>
     <div class="section span6">
@@ -37,7 +37,7 @@
       <span style="margin-left:3px" ng-repeat="field in panel.fields" class="label">{{field}} <i class="pointer icon-remove-sign" ng-click="panel.fields = _.toggleInOut(panel.fields,field)"></i></span>
       <h5>Highlighted Fields</h5>
       <form class="input-append editor-option">
-        <input bs-typeahead="fields.list" type="text" class="input-small" ng-model='newhighlight' ng-change="set_refresh(true)">
+        <input bs-typeahead="fields.list" type="text" class="input-large" ng-model='newhighlight' ng-change="set_refresh(true)">
         <button class="btn" ng-click="panel.highlight = _.toggleInOut(panel.highlight,newhighlight);newhighlight=''"><i class="icon-plus"></i></button>
       </form><br>
       <span style="margin-left:3px" ng-repeat="field in panel.highlight" class="label">{{field}} <i class="pointer icon-remove-sign" ng-click="panel.highlight = _.toggleInOut(panel.highlight,field);set_refresh(true)" ></i></span>

@@ -38,11 +38,8 @@ function (angular, app, _, $, kbn) {
         {title:'Queries', src:'app/partials/querySelect.html'}
       ],
       status  : "Stable",
-      description : "ALPHA PANEL - Displays the results of an elasticsearch aggregation " +
-      "as a pie chart, bar chart, or a table.<br>" +
-      "The filter built from bucket has an open issue issue: " +
-      "https://github.com/chenryn/kibana-authorization/issues/23<br>" +
-      "THIS IS EXPERIMENTAL AT THIS POINT."
+      description : "Displays the results of an elasticsearch aggregation " +
+      "as a pie chart, bar chart, or a table in ranges or buckets of values.<br>"
     };
 
     // Set and populate defaults

@@ -39,13 +39,8 @@ function (angular, app, _, $, kbn, config) {
         {title:'Queries', src:'app/partials/querySelect.html'}
       ],
       status  : "Stable",
-      description : "Displays the results of an elasticsearch aggregation as a pie " +
-        "chart, bar chart, or a table.<br>" +
-        "In order to be forward compatible, we reserve the right to display " +
-        "min and order by max/avg/total. So we have to use stats aggregate, " +
-        "But I think single min/max/avg/sum aggregation performs better.<br>" +
-        "And also we remove total_count option in editor.html<br>" +
-        "We do not support missing/other currently."
+      description : "Displays the results of popular terms on your selected field as a pie " +
+        "chart, bar chart, or a table format.<br>"
     };
 
     // Set and populate defaults
