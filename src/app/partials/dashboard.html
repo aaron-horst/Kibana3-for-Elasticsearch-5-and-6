@@ -20,7 +20,7 @@
           <div class="" style="padding:0px;margin:0px;position:relative;">
 
             <div class="row-close" ng-show="row.collapse" data-placement="bottom" >
-              <span class="row-button bgWarning" config-modal="app/partials/roweditor.html" kbn-model="row" class="pointer">
+              <span class="row-button bgWarning" config-modal="app/partials/roweditor.html?@REV@" kbn-model="row" class="pointer">
                 <i bs-tooltip="'Configure row'" data-placement="right" ng-show="row.editable" class="icon-cog pointer"></i>
               </span>
               <span class="row-button bgPrimary" ng-click="toggle_row(row)" ng-show="row.collapsable">
@@ -34,11 +34,11 @@
                 <i bs-tooltip="'Collapse row'" data-placement="right"  class="icon-caret-right" ></i>
                 <br>
               </div>
-              <div config-modal="app/partials/roweditor.html" kbn-model="row" class='row-tab bgWarning' ng-show="row.editable">
+              <div config-modal="app/partials/roweditor.html?@REV@" kbn-model="row" class='row-tab bgWarning' ng-show="row.editable">
                 <i bs-tooltip="'Configure row'" data-placement="right"  class="icon-cog pointer"></i>
                 <br>
               </div>
-              <div class="bgSuccess row-tab" ng-click="editor.index = 2" config-modal="app/partials/roweditor.html" kbn-model="row" ng-show="row.editable">
+              <div class="bgSuccess row-tab" ng-click="editor.index = 2" config-modal="app/partials/roweditor.html?@REV@" kbn-model="row" ng-show="row.editable">
                 <i class="icon-plus-sign" bs-tooltip="'Add Panel'" data-placement="right"></i>
                 <br>
               </div>
@@ -65,7 +65,7 @@
               Or drop on top of any other panel to insert in that row
             </div>
 
-            <span config-modal="app/partials/roweditor.html" kbn-model="row" ng-show="row.editable && !dashboard.panelDragging">
+            <span config-modal="app/partials/roweditor.html?@REV@" kbn-model="row" ng-show="row.editable && !dashboard.panelDragging">
               <span ng-click="editor.index = 2" style="margin-top: 3px; margin-left: 5px" ng-show="row.panels.length==0" class="btn btn-mini">Add panel to empty row</span>
             </span>
 
@@ -76,7 +76,7 @@
 
       <div class="row-fluid" ng-show='dashboard.current.editable'>
         <div class="span12" style="text-align:right;">
-          <span class="pointer btn btn-mini row-add-button" config-modal="app/partials/dasheditor.html" kbn-model="dashboard">
+          <span class="pointer btn btn-mini row-add-button" config-modal="app/partials/dasheditor.html?@REV@" kbn-model="dashboard">
             <span ng-click="editor.index = 2"><i class="icon-plus-sign"></i> ADD A ROW</span>
           </span>
         </div>

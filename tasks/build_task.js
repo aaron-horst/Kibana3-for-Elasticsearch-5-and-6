@@ -6,6 +6,7 @@ module.exports = function(grunt) {
     'clean:on_start',
     'less:dist',
     'copy:almost_everything_to_temp',
+    'replace_rev_in_html',
     'htmlmin:build',
     'cssmin:build',
     'ngAnnotate:build',

@@ -10,9 +10,6 @@ button:hover { color: #25B960; }
 
 /*.ng-binding { background: #90ccfc; }*/
 
-[ng\:cloak],[ng-cloak],.ng-cloak {
-    display:none!important}
-
 /* progressive disclosure of panel config options - desktop/hover devices only */
 @media (hover: hover) and (pointer: fine) {
     .panel-extra-container i:not(.icon-spinner) { display: none; }

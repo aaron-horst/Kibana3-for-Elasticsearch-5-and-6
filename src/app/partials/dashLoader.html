@@ -23,7 +23,7 @@
         <tr bindonce ng-repeat="row in elasticsearch.dashboards | orderBy:['_score']">
           <td><a confirm-click="elasticsearch_delete(row._id)" confirmation="Are you sure you want to delete the {{row._id}} dashboard"><i class="icon-remove"></i></a></td>
           <td><a href="/#/dashboard/elasticsearch/{{row._id}}" bo-text="row._id"></a></td>
-          <td><a><i class="icon-share" ng-click="share = dashboard.share_link(row._id,'elasticsearch',row._id)" bs-modal="'app/partials/dashLoaderShare.html'"></i></a></td>
+          <td><a><i class="icon-share" ng-click="share = dashboard.share_link(row._id,'elasticsearch',row._id)" bs-modal="'app/partials/dashLoaderShare.html?v=@REV@'"></i></a></td>
         </tr>
       </table>
     </li>
@@ -101,6 +101,6 @@
 
 
 </li>
-<li ng-show="showDropdown('share')"><a bs-tooltip="'Share'" data-placement="bottom" ng-click="elasticsearch_save('temp')" bs-modal="'app/partials/dashLoaderShare.html'"><i class='icon-share'></i></a></li>
+<li ng-show="showDropdown('share')"><a bs-tooltip="'Share'" data-placement="bottom" ng-click="elasticsearch_save('temp')" bs-modal="'app/partials/dashLoaderShare.html?v=@REV@'"><i class='icon-share'></i></a></li>
 
-<li ng-show="dashboard.current.editable" bs-tooltip="'Configure dashboard'" data-placement="bottom"><a class="link" config-modal="app/partials/dasheditor.html" kbn-model="dashboard"><i class='icon-cog'></i></a></li>
+<li ng-show="dashboard.current.editable" bs-tooltip="'Configure dashboard'" data-placement="bottom"><a class="link" config-modal="app/partials/dasheditor.html?@REV@" kbn-model="dashboard"><i class='icon-cog'></i></a></li>
