@@ -29,19 +29,8 @@
     }
 
     .table-details {
-      table-layout: fixed;
-    }
-
-    .table-details-field {
-      width: 200px;
-    }
-
-    .table-details-action {
-      width: 60px;
-      text-align: center;
-    }
-
-    .table-details-value {
+      width: 100%;
+      border-collapse: collapse;
     }
 
     .table-field-value {
@@ -162,13 +151,18 @@
                   <i class="link pull-right icon-chevron-up" ng-click="toggle_details(event)"></i>
                 </span>
                 <table class='table table-bordered table-condensed table-details' ng-switch-when="table">
+                  <colgroup>
+                    <col style="width: auto;">
+                    <col style="width: 60px;">
+                    <col style="width: 100%;">
+                  </colgroup>
                   <thead>
                     <th class="table-details-field">Field</th>
                     <th class="table-details-action">Action</th>
                     <th class="table-details-value">Value</th>
                   </thead>
                   <tr ng-repeat="(key,value) in event.kibana._source track by $index" ng-class-odd="'odd'">
-                    <td style="word-wrap:break-word" bo-text="key"></td>
+                    <td bo-text="key"></td>
                     <td style="white-space:nowrap">
                       <i class='icon-search pointer' ng-click="build_search(key,value)" bs-tooltip="'Add filter to match this value'"></i>
                       <i class='icon-ban-circle pointer' ng-click="build_search(key,value,true)" bs-tooltip="'Add filter to NOT match this value'"></i>
