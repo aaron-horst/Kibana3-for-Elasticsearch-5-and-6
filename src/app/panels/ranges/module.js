@@ -161,6 +161,14 @@ function (angular, app, _, $, kbn) {
         rangeAgg.field($scope.field)
       ).size(0);
 
+      // add exists agg if requested
+      if ($scope.panel.missing) {
+        var missingAggs = $scope.ejs.MissingAggregation('missing')
+          .field($scope.panel.field);
+
+        request = request.agg(missingAggs);
+      }
+
       // Populate the inspector panel
       $scope.inspector = request.toJSON();
 
@@ -236,6 +244,17 @@ function (angular, app, _, $, kbn) {
             scope.data.push(slice);
             k = k + 1;
           });
+
+          // wireup missing terms data
+          if (scope.panel.missing) {
+            scope.data.push({
+              label: 'Missing field',
+              data: [[k + 1, scope.results.aggregations.missing.doc_count, 'unknown']],
+              meta: "missing",
+              color: '#aaa',
+              opacity: 0
+            });
+          }
         }
 
         // Function for rendering panel
