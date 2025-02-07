@@ -88,13 +88,13 @@ function (angular, $, _, appLevelRequire) {
 
     $routeProvider
       .when('/dashboard', {
-        templateUrl: 'app/partials/dashboard.html?v='+app.kbnVersion,
+        templateUrl: 'app/partials/dashboard.html?v=@REV@',
       })
       .when('/dashboard/:kbnType/:kbnId', {
-        templateUrl: 'app/partials/dashboard.html?v='+app.kbnVersion,
+        templateUrl: 'app/partials/dashboard.html?v=@REV@',
       })
       .when('/dashboard/:kbnType/:kbnId/:params', {
-        templateUrl: 'app/partials/dashboard.html?v='+app.kbnVersion,
+        templateUrl: 'app/partials/dashboard.html?v=@REV@',
       })
       .otherwise({
         redirectTo: 'dashboard'

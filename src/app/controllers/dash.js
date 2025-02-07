@@ -83,7 +83,7 @@ function (angular, config, _) {
     $scope.edit_path = function(type) {
       var p = $scope.panel_path(type);
       if(p) {
-        return p+'/editor.html';
+        return p+'/editor.html?v='+kbnVersion;
       } else {
         return false;
       }
