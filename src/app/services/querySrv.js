@@ -100,16 +100,16 @@ function (angular, _, config, kbn) {
           return p.promise;
         }
       },
-      regex: {
-        require:">=0.90.12",
-        icon: "icon-circle",
-        resolve: function(query) {
-          // Simply returns itself
-          var p = $q.defer();
-          p.resolve(_.extend(query,{parent:query.id}));
-          return p.promise;
-        }
-      },
+      // regex: {
+      //   require:">=0.90.12",
+      //   icon: "icon-circle",
+      //   resolve: function(query) {
+      //     // Simply returns itself
+      //     var p = $q.defer();
+      //     p.resolve(_.extend(query,{parent:query.id}));
+      //     return p.promise;
+      //   }
+      // },
       topN : {
         require:">=0.90.3",
         icon: "icon-cog",
