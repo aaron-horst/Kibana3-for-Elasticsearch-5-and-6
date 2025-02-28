@@ -31,7 +31,7 @@
 
 <div ng-show="panel.description != '' && panel.descriptionLocation == 'Top'" class="small"
   style="font-style: italic; padding-bottom: 5px;">{{ panel.description }}
-  <span ng-show="panel.descriptionUrl != ''"><a href="{{ panel.descriptionUrl }}" class="small" target="_blank">more
+  <span ng-show="panel.descriptionUrl"><a href="{{ panel.descriptionUrl }}" class="small" target="_blank">more
       info</a></span>
 </div>
   <div class="ranges-wrapper">
@@ -114,5 +114,5 @@
 
 </div>
 <div ng-show="panel.description != '' && panel.descriptionLocation == 'Bottom'" class="small" style="font-style: italic; padding-top: 5px;">{{ panel.description }} 
-  <span ng-show="panel.descriptionUrl != ''"><a href="{{ panel.descriptionUrl }}" class="small" target="_blank">more info</a></span>
+  <span ng-show="panel.descriptionUrl"><a href="{{ panel.descriptionUrl }}" class="small" target="_blank">more info</a></span>
 </div>

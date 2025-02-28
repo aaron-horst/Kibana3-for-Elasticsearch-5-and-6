@@ -1,4 +1,7 @@
 <div ng-controller='hits' ng-init="init()">
+  <div ng-show="panel.description != '' && panel.descriptionLocation == 'Top'" class="small" style="font-style: italic; padding-bottom: 5px;">{{ panel.description }} 
+    <span ng-show="panel.descriptionUrl"><a href="{{ panel.descriptionUrl }}" class="small" target="_blank">more info</a></span>
+  </div>
   <div ng-show="panel.counter_pos == 'above' && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend'>
     <!-- vertical legend -->
     <table class="small" ng-show="panel.arrangement == 'vertical'">
@@ -41,4 +44,7 @@
     </div>
   </span><br ng-show="panel.arrangement == 'vertical' && panel.chart == 'list'">
 
+  <div ng-show="panel.description != '' && panel.descriptionLocation == 'Bottom'" class="small" style="font-style: italic; padding-top: 5px;">{{ panel.description }} 
+    <span ng-show="panel.descriptionUrl"><a href="{{ panel.descriptionUrl }}" class="small" target="_blank">more info</a></span>
+  </div>
 </div>

@@ -33,7 +33,7 @@
     }
   </style>
   <div ng-show="panel.description != '' && panel.descriptionLocation == 'Top'" class="small" style="font-style: italic; padding-bottom: 5px;">{{ panel.description }} 
-    <span ng-show="panel.descriptionUrl != ''"><a href="{{ panel.descriptionUrl }}" class="small" target="_blank">more info</a></span>
+    <span ng-show="panel.descriptionUrl"><a href="{{ panel.descriptionUrl }}" class="small" target="_blank">more info</a></span>
   </div>
   <div class="terms-wrapper">
     <div ng-show="panel.multiterms.length"><button class="btn btn-mini btn-success" ng-click="multi_search()" ng-bind-html="getSubmitButtonText()"></button></div>
@@ -129,5 +129,5 @@
 
 </div>
 <div ng-show="panel.description != '' && panel.descriptionLocation == 'Bottom'" class="small" style="font-style: italic; padding-top: 5px;">{{ panel.description }} 
-  <span ng-show="panel.descriptionUrl != ''"><a href="{{ panel.descriptionUrl }}" class="small" target="_blank">more info</a></span>
+  <span ng-show="panel.descriptionUrl"><a href="{{ panel.descriptionUrl }}" class="small" target="_blank">more info</a></span>
 </div>
